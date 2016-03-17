@@ -1,3 +1,8 @@
+var characters = {
+	player: new PIXI.Text('@', {'fill':'white'}),
+};
+
+
 $( document ).ready(function() {
 	$('h2').css('color', 'white').css('text-align', 'center');
 	var renderer = PIXI.autoDetectRenderer(800, 400,{backgroundColor : 0x000000});
@@ -14,9 +19,8 @@ $( document ).ready(function() {
 	//example creating an animation
 	//var walk = new PIXI.extras.MovieClip([walkText1, walkText2, walkText3])
 
-	var player = new PIXI.Text('@', {'fill':'white'});
-	player.x = 50;
-	player.y = 50;
+	characters.player.x = 50;
+	characters.player.y = 50;
 
 
 	setupKeybindings();
@@ -30,7 +34,9 @@ $( document ).ready(function() {
 	});
 
 	//add sprites to stage
-	stage.addChild(player);
+	for (key in characters) {
+		stage.addChild(characters[key]);
+	}
 
 	//main loop
 	gameLoop();

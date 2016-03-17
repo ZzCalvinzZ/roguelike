@@ -44,20 +44,29 @@ function setupKeybindings() {
 		down = keyboard(40),
 		hide = keyboard(32);
 
+	left.press = function() {
+		characters.player.x -= CELL_SIZE;
+	};
+
+	left.release = function() {
+	};
 
 	right.press = function() {
+		characters.player.x += CELL_SIZE;
 	};
 
 	right.release = function() {
 	};
 
 	up.press = function() {
+		characters.player.y -= CELL_SIZE;
 	};
 
 	up.release = function() {
 	};
 
 	down.press = function() {
+		characters.player.y += CELL_SIZE;
 	};
 
 	down.release = function() {

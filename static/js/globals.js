@@ -1,1 +1,1 @@
-var CELL_SIZE = 5;
+var CELL_SIZE = 25;
