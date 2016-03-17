@@ -1,6 +1,6 @@
-function keyboard(keyCode) {
+function keyboard(keyCodes) {
 	var key = {};
-	key.code = keyCode;
+	key.codes = keyCodes;
 	key.isDown = false;
 	key.isUp = true;
 	key.press = undefined;
@@ -8,7 +8,7 @@ function keyboard(keyCode) {
 
 	//The `downHandler`
 	key.downHandler = function(event) {
-		if (event.keyCode === key.code) {
+		if ($.inArray(event.keyCode, key.codes) >= 0) {
 			if (key.isUp && key.press) key.press();
 			key.isDown = true;
 			key.isUp = false;
@@ -18,7 +18,7 @@ function keyboard(keyCode) {
 
 	//The `upHandler`
 	key.upHandler = function(event) {
-		if (event.keyCode === key.code) {
+		if ($.inArray(event.keyCode, key.codes) >= 0) {
 			if (key.isDown && key.release) key.release();
 			key.isDown = false;
 			key.isUp = true;
@@ -38,11 +38,10 @@ function keyboard(keyCode) {
 
 function setupKeybindings() {
 
-	var left = keyboard(37),
-		up = keyboard(38),
-		right = keyboard(39),
-		down = keyboard(40),
-		hide = keyboard(32);
+	var left = keyboard([37, 72]),
+		up = keyboard([38, 75]),
+		right = keyboard([39, 76]),
+		down = keyboard([40, 74]);
 
 	left.press = function() {
 		characters.player.x -= CELL_SIZE;
