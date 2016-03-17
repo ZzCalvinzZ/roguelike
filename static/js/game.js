@@ -3,6 +3,8 @@ $( document ).ready(function() {
 	var renderer = PIXI.autoDetectRenderer(800, 400,{backgroundColor : 0x000000});
 	document.body.appendChild(renderer.view);
 
+	var stage = new PIXI.Container();
+
 	// create textures
 	//var monsterText = PIXI.Texture.fromImage('static/img/monster.png');
 
@@ -12,27 +14,12 @@ $( document ).ready(function() {
 	//example creating an animation
 	//var walk = new PIXI.extras.MovieClip([walkText1, walkText2, walkText3])
 
-	//create text
-	//var momComingText = new PIXI.Text('... (better hide)', {'fill':'white'});
+	var player = new PIXI.Text('@', {'fill':'white'});
+	player.x = 50;
+	player.y = 50;
 
 
-	//create keybindings
-	var left = keyboard(37),
-		up = keyboard(38),
-		right = keyboard(39),
-		down = keyboard(40),
-		hide = keyboard(32);
-
-	//create checks
-	var isHiding = false;
-	var hidePressed = false;
-
-	//group hiding places
-	var hidingSpots = [
-		book,
-		dresser,
-		chest
-	];
+	setupKeybindings();
 
 	// setup sounds
 	var mainTrack = new Howl({
@@ -42,10 +29,8 @@ $( document ).ready(function() {
 		volume: 0.3,
 	});
 
-	resetGame();
-
 	//add sprites to stage
-	//stage.addChild(room);
+	stage.addChild(player);
 
 	//main loop
 	gameLoop();
@@ -55,8 +40,6 @@ $( document ).ready(function() {
 
 		// render the container
 		renderer.render(stage);
-
-		timer += 1
 	}
 
 
