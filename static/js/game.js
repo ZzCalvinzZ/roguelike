@@ -43,7 +43,11 @@ $( document ).ready(function() {
 	for (i=0;i < SCREEN_WIDTH / CELL_SIZE;i++) {
 		addWall(i * CELL_SIZE, 0);
 		addWall(i * CELL_SIZE, SCREEN_HEIGHT - CELL_SIZE);
-
+	}
+	for (i=1; i< (SCREEN_HEIGHT / CELL_SIZE)-1; i++) {
+		addWall(0, i * CELL_SIZE);
+		addWall(SCREEN_WIDTH - CELL_SIZE, i * CELL_SIZE);
+	
 	}
 
 	//main loop
