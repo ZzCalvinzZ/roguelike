@@ -14,8 +14,8 @@ $( document ).ready(function() {
 	//example creating an animation
 	//var walk = new PIXI.extras.MovieClip([walkText1, walkText2, walkText3])
 
-	characters.player.x = 0;
-	characters.player.y = 0;
+	characters.player.x = 25;
+	characters.player.y = 25;
 	characters.player.height = 115;
 
 	setupKeybindings();
@@ -32,11 +32,18 @@ $( document ).ready(function() {
 	for (key in characters) {
 		stage.addChild(characters[key]);
 	}
-	for (i=0;i< 5;i++) {
+
+	function addWall (x, y) {
 		var wall = new PIXI.Sprite(textures.stoneWall);
-		wall.x = i*CELL_SIZE;
-		wall.y = 0;
+		wall.x = x;
+		wall.y = y;
 		stage.addChild(wall);
+	}
+
+	for (i=0;i < SCREEN_WIDTH / CELL_SIZE;i++) {
+		addWall(i * CELL_SIZE, 0);
+		addWall(i * CELL_SIZE, SCREEN_HEIGHT - CELL_SIZE);
+
 	}
 
 	//main loop
@@ -51,3 +58,4 @@ $( document ).ready(function() {
 
 
 });
+
