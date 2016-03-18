@@ -1,8 +1,3 @@
-var characters = {
-	player: new PIXI.Text('@', {'fill':'white'}),
-};
-
-
 $( document ).ready(function() {
 	$('h2').css('color', 'white').css('text-align', 'center');
 	var renderer = PIXI.autoDetectRenderer(800, 400,{backgroundColor : 0x000000});
@@ -21,21 +16,28 @@ $( document ).ready(function() {
 
 	characters.player.x = 50;
 	characters.player.y = 50;
+	characters.player.height = 115;
+
+	objects.stoneWall.x = 0;
+	objects.stoneWall.y = 0;
 
 
 	setupKeybindings();
 
 	// setup sounds
-	var mainTrack = new Howl({
-		urls: ['static/sound/ludumdaretrack.mp3'],
-		autoplay: true,
-		loop: true,
-		volume: 0.3,
-	});
+	//var mainTrack = new Howl({
+		//urls: ['static/sound/ludumdaretrack.mp3'],
+		//autoplay: true,
+		//loop: true,
+		//volume: 0.3,
+	//});
 
 	//add sprites to stage
 	for (key in characters) {
 		stage.addChild(characters[key]);
+	}
+	for (key in objects) {
+		stage.addChild(objects[key]);
 	}
 
 	//main loop
