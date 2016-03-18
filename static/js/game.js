@@ -4,6 +4,7 @@ $( document ).ready(function() {
 	document.body.appendChild(renderer.view);
 
 	var stage = new PIXI.Container();
+	var camera = new PIXI.Container();
 
 	// create textures
 	//var monsterText = PIXI.Texture.fromImage('static/img/monster.png');
@@ -50,6 +51,8 @@ $( document ).ready(function() {
 	
 	}
 
+	camera.addChild(stage);
+
 	//main loop
 	gameLoop();
 
@@ -57,7 +60,7 @@ $( document ).ready(function() {
 		requestAnimationFrame(gameLoop);
 
 		// render the container
-		renderer.render(stage);
+		renderer.render(camera);
 	}
 
 
