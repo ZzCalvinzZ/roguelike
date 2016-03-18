@@ -45,6 +45,10 @@ function setupKeybindings() {
 
 	left.press = function() {
 		characters.player.x -= CELL_SIZE;
+		if (characters.player.x < SCREEN_WIDTH/3) {
+			camera.x += 25;
+		}
+
 	};
 
 	left.release = function() {
@@ -52,6 +56,9 @@ function setupKeybindings() {
 
 	right.press = function() {
 		characters.player.x += CELL_SIZE;
+		if (characters.player.x > 2*SCREEN_WIDTH/3) {
+			camera.x -= 25;
+		}
 	};
 
 	right.release = function() {

@@ -1,10 +1,10 @@
+var stage = new PIXI.Container();
+var camera = new PIXI.Container();
+
 $( document ).ready(function() {
 	$('h2').css('color', 'white').css('text-align', 'center');
 	var renderer = PIXI.autoDetectRenderer(SCREEN_WIDTH, SCREEN_HEIGHT,{backgroundColor : 0x000000});
 	document.body.appendChild(renderer.view);
-
-	var stage = new PIXI.Container();
-	var camera = new PIXI.Container();
 
 	// create textures
 	//var monsterText = PIXI.Texture.fromImage('static/img/monster.png');
