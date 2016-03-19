@@ -1,65 +1,151 @@
-var player = new Player({});
-var stage = new PIXI.Container();
-var camera = new PIXI.Container();
+var BaseObject, CELL_SIZE, Player, SCREEN_HEIGHT, SCREEN_WIDTH, StoneWall, camera, keyboard, player, setupKeybindings, stage;
 
-$( document ).ready(function() {
-	$('h2').css('color', 'white').css('text-align', 'center');
-	var renderer = PIXI.autoDetectRenderer(SCREEN_WIDTH, SCREEN_HEIGHT,{backgroundColor : 0x000000});
-	document.body.appendChild(renderer.view);
+CELL_SIZE = 20;
 
-	// create textures
-	//var monsterText = PIXI.Texture.fromImage('static/img/monster.png');
+SCREEN_WIDTH = 800;
 
-	//example creating a sprite
-	//var monster = new PIXI.Sprite(monsterText);
-	
-	//example creating an animation
-	//var walk = new PIXI.extras.MovieClip([walkText1, walkText2, walkText3])
+SCREEN_HEIGHT = 400;
 
-	player.sprite.x = 20;
-	player.sprite.y = 20;
+keyboard = function(keyCodes) {
+  var key;
+  key = {};
+  key.codes = keyCodes;
+  key.isDown = false;
+  key.isUp = true;
+  key.press = void 0;
+  key.release = void 0;
+  key.downHandler = function(event) {
+    if ($.inArray(event.keyCode, key.codes) >= 0) {
+      if (key.isUp && key.press) {
+        key.press();
+        key.isDown = true;
+        key.isUp = false;
+        event.preventDefault();
+      }
+    }
+  };
+  key.upHandler = function(event) {
+    if ($.inArray(event.keyCode, key.codes) >= 0) {
+      if (key.isDown && key.release) {
+        key.release();
+        key.isDown = false;
+        key.isUp = true;
+        event.preventDefault();
+      }
+    }
+  };
+  window.addEventListener('keydown', key.downHandler.bind(key), false);
+  window.addEventListener('keyup', key.upHandler.bind(key), false);
+  return key;
+};
 
-	setupKeybindings();
+setupKeybindings = function() {
+  var down, left, right, up;
+  left = keyboard([37, 72]);
+  up = keyboard([38, 75]);
+  right = keyboard([39, 76]);
+  down = keyboard([40, 74]);
+  left.press = function() {
+    player.sprite.x -= CELL_SIZE;
+    if (player.sprite.x < SCREEN_WIDTH / 3 - camera.x) {
+      camera.x += 25;
+    }
+  };
+  left.release = function() {};
+  right.press = function() {
+    player.sprite.x += CELL_SIZE;
+    if (player.sprite.x > 2 * SCREEN_WIDTH / 3 - camera.x) {
+      camera.x -= 25;
+    }
+  };
+  right.release = function() {};
+  up.press = function() {
+    player.sprite.y -= CELL_SIZE;
+    if (player.sprite.y < SCREEN_HEIGHT / 3 - camera.y) {
+      camera.y += 25;
+    }
+  };
+  up.release = function() {};
+  down.press = function() {
+    player.sprite.y += CELL_SIZE;
+    if (player.sprite.y > 2 * SCREEN_HEIGHT / 3 - camera.y) {
+      camera.y -= 25;
+    }
+  };
+  return down.release = function() {};
+};
 
-	// setup sounds
-	//var mainTrack = new Howl({
-		//urls: ['static/sound/ludumdaretrack.mp3'],
-		//autoplay: true,
-		//loop: true,
-		//volume: 0.3,
-	//});
+BaseObject = function(info) {
+  this.sprite = info.sprite;
+  this.info = {
+    solid: info.solid || true
+  };
+};
 
-	stage.addChild(player.sprite);
+Player = function(info) {
+  info.sprite = new PIXI.Text('@', {
+    'fill': 'white',
+    'font': '17px Arial'
+  });
+  BaseObject.call(this, info);
+};
 
-	function addWall (x, y) {
-		var wall = new PIXI.Sprite(stoneWall.sprite);
-		wall.x = x;
-		wall.y = y;
-		stage.addChild(wall);
-	}
+StoneWall = function(info) {
+  info.sprite = PIXI.Texture.fromImage('static/img/wall20.png');
+  BaseObject.call(this, info);
+};
 
-	for (i=0;i < SCREEN_WIDTH / CELL_SIZE;i++) {
-		stage.addChild(stoneWall.draw(i * CELL_SIZE, 0));
-		stage.addChild(stoneWall.draw(i * CELL_SIZE, SCREEN_HEIGHT - CELL_SIZE));
-	}
+BaseObject.prototype = {
+  constructor: BaseObject,
+  draw: function(x, y) {
+    var spriteInstance;
+    spriteInstance = new PIXI.Sprite(this.sprite);
+    spriteInstance.x = x;
+    spriteInstance.y = y;
+    stage.addChild(spriteInstance);
+  }
+};
 
-	for (i=1; i< (SCREEN_HEIGHT / CELL_SIZE)-1; i++) {
-		stage.addChild(stoneWall.draw(0, i * CELL_SIZE));
-		stage.addChild(stoneWall.draw(SCREEN_WIDTH - CELL_SIZE, i * CELL_SIZE));
-	}
+Player.prototype = Object.create(BaseObject.prototype);
 
-	camera.addChild(stage);
+StoneWall.prototype = Object.create(BaseObject.prototype);
 
-	//main loop
-	gameLoop();
+player = new Player({});
 
-	function gameLoop() {
-		requestAnimationFrame(gameLoop);
+stage = new PIXI.Container;
 
-		// render the container
-		renderer.render(camera);
-	}
+camera = new PIXI.Container;
 
-
+$(document).ready(function() {
+  var gameLoop, i, renderer, stoneWall;
+  gameLoop = function() {
+    var stoneWall;
+    requestAnimationFrame(gameLoop);
+    renderer.render(camera);
+  };
+  $('h2').css('color', 'white').css('text-align', 'center');
+  renderer = PIXI.autoDetectRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, {
+    backgroundColor: 0x000000
+  });
+  document.body.appendChild(renderer.view);
+  player.sprite.x = 20;
+  player.sprite.y = 20;
+  setupKeybindings();
+  stage.addChild(player.sprite);
+  i = 0;
+  while (i < SCREEN_WIDTH / CELL_SIZE) {
+    stoneWall = new StoneWall({});
+    stoneWall.draw(i * CELL_SIZE, 0);
+    stoneWall.draw(i * CELL_SIZE, SCREEN_HEIGHT - CELL_SIZE);
+    i++;
+  }
+  i = 1;
+  while (i < SCREEN_HEIGHT / CELL_SIZE - 1) {
+    stoneWall = new StoneWall({});
+    stoneWall.draw(0, i * CELL_SIZE);
+    stoneWall.draw(SCREEN_WIDTH - CELL_SIZE, i * CELL_SIZE);
+    i++;
+  }
+  camera.addChild(stage);
+  gameLoop();
 });
-

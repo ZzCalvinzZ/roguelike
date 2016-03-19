@@ -24,10 +24,9 @@
 		<script src="static/js/libraries/pixi.js"></script>
 		<script src="static/js/libraries/howler.min.js"></script>
 		<script src="static/js/libraries/underscore.min.js"></script>
-		<script src="static/js/globals.js"></script>
-		<script src="static/js/objects.js"></script>
-		<script src="static/js/controls.js"></script>
-		<script src="static/js/game.js"></script>
+		{% assets "game" %}
+            <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+        {% endassets %}
 	</head>
 	<body>
 	</body>
