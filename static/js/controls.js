@@ -44,8 +44,8 @@ function setupKeybindings() {
 		down = keyboard([40, 74]);
 
 	left.press = function() {
-		characters.player.x -= CELL_SIZE;
-		if (characters.player.x < (SCREEN_WIDTH/3)- camera.x) {
+		player.sprite.x -= CELL_SIZE;
+		if (player.sprite.x < (SCREEN_WIDTH/3)- camera.x) {
 			camera.x += 25;
 		}
 
@@ -55,8 +55,8 @@ function setupKeybindings() {
 	};
 
 	right.press = function() {
-		characters.player.x += CELL_SIZE;
-		if (characters.player.x > (2*SCREEN_WIDTH/3)- camera.x) {
+		player.sprite.x += CELL_SIZE;
+		if (player.sprite.x > (2*SCREEN_WIDTH/3)- camera.x) {
 			camera.x -= 25;
 		}
 	};
@@ -65,8 +65,8 @@ function setupKeybindings() {
 	};
 
 	up.press = function() {
-		characters.player.y -= CELL_SIZE;
-		if (characters.player.y < (SCREEN_HEIGHT/3)- camera.y) {
+		player.sprite.y -= CELL_SIZE;
+		if (player.sprite.y < (SCREEN_HEIGHT/3)- camera.y) {
 			camera.y += 25;
 		}
 	};
@@ -75,8 +75,8 @@ function setupKeybindings() {
 	};
 
 	down.press = function() {
-		characters.player.y += CELL_SIZE;
-		if (characters.player.y > (2*SCREEN_HEIGHT/3)- camera.y) {
+		player.sprite.y += CELL_SIZE;
+		if (player.sprite.y > (2*SCREEN_HEIGHT/3)- camera.y) {
 			camera.y -= 25;
 		}
 	};

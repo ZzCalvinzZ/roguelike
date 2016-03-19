@@ -15,9 +15,8 @@ $( document ).ready(function() {
 	//example creating an animation
 	//var walk = new PIXI.extras.MovieClip([walkText1, walkText2, walkText3])
 
-	characters.player.x = 25;
-	characters.player.y = 25;
-	characters.player.height = 115;
+	player.sprite.x = 20;
+	player.sprite.y = 20;
 
 	setupKeybindings();
 
@@ -29,13 +28,10 @@ $( document ).ready(function() {
 		//volume: 0.3,
 	//});
 
-	//add sprites to stage
-	for (key in characters) {
-		stage.addChild(characters[key]);
-	}
+	stage.addChild(player.sprite);
 
 	function addWall (x, y) {
-		var wall = new PIXI.Sprite(textures.stoneWall);
+		var wall = new PIXI.Sprite(stoneWall.sprite);
 		wall.x = x;
 		wall.y = y;
 		stage.addChild(wall);
