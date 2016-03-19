@@ -8,6 +8,13 @@ function BaseObject(info) {
 BaseObject.prototype = {
 	constructor: BaseObject,
 
+	create: function (x, y) {
+		var spriteInstance = new PIXI.Sprite(stoneWall.sprite);
+		spriteInstance.x = x;
+		spriteInstance.y = y;
+		return spriteInstance;
+	},
+
 	draw: function () {
 
 	},
