@@ -1,4 +1,5 @@
-var BaseObject, CELL_SIZE, Player, SCREEN_HEIGHT, SCREEN_WIDTH, StoneWall, camera, keyboard, player, setupKeybindings, stage;
+var BaseObject, CELL_SIZE, Player, SCREEN_HEIGHT, SCREEN_WIDTH, StoneWall, camera, keyboard, player, setupKeybindings, stage,
+  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 CELL_SIZE = 20;
 
@@ -15,7 +16,8 @@ keyboard = function(keyCodes) {
   key.press = void 0;
   key.release = void 0;
   key.downHandler = function(event) {
-    if ($.inArray(event.keyCode, key.codes) >= 0) {
+    var ref;
+    if (ref = event.keyCode, indexOf.call(key.codes, ref) >= 0) {
       if (key.isUp && key.press) {
         key.press();
         key.isDown = true;
@@ -25,7 +27,8 @@ keyboard = function(keyCodes) {
     }
   };
   key.upHandler = function(event) {
-    if ($.inArray(event.keyCode, key.codes) >= 0) {
+    var ref;
+    if (ref = event.keyCode, indexOf.call(key.codes, ref) >= 0) {
       if (key.isDown && key.release) {
         key.release();
         key.isDown = false;
