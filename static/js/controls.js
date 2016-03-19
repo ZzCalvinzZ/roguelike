@@ -66,6 +66,9 @@ function setupKeybindings() {
 
 	up.press = function() {
 		characters.player.y -= CELL_SIZE;
+		if (characters.player.y < (SCREEN_HEIGHT/3)- camera.y) {
+			camera.y += 25;
+		}
 	};
 
 	up.release = function() {
@@ -73,6 +76,9 @@ function setupKeybindings() {
 
 	down.press = function() {
 		characters.player.y += CELL_SIZE;
+		if (characters.player.y > (2*SCREEN_HEIGHT/3)- camera.y) {
+			camera.y -= 25;
+		}
 	};
 
 	down.release = function() {
