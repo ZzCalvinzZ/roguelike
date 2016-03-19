@@ -1,18 +1,17 @@
 player = new Player({})
 stage = new (PIXI.Container)
 camera = new (PIXI.Container)
+
 $(document).ready ->
 
 	gameLoop = ->
-		`var stoneWall`
-		requestAnimationFrame gameLoop
+		requestAnimationFrame(gameLoop)
 		# render the container
-		renderer.render camera
+		renderer.render(camera)
 		return
 
-	$('h2').css('color', 'white').css 'text-align', 'center'
 	renderer = PIXI.autoDetectRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, backgroundColor: 0x000000)
-	document.body.appendChild renderer.view
+	document.body.appendChild(renderer.view)
 
 	player.sprite.x = 20
 	player.sprite.y = 20
@@ -43,4 +42,5 @@ $(document).ready ->
 	camera.addChild stage
 	#main loop
 	gameLoop()
+
 	return

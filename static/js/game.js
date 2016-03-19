@@ -122,11 +122,9 @@ camera = new PIXI.Container;
 $(document).ready(function() {
   var gameLoop, i, renderer, stoneWall;
   gameLoop = function() {
-    var stoneWall;
     requestAnimationFrame(gameLoop);
     renderer.render(camera);
   };
-  $('h2').css('color', 'white').css('text-align', 'center');
   renderer = PIXI.autoDetectRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, {
     backgroundColor: 0x000000
   });
