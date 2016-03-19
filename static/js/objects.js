@@ -4,26 +4,24 @@ function BaseObject(info) {
 		solid: info.solid || true,
 
 	};
-};
+}
 BaseObject.prototype = {
 	constructor: BaseObject,
 
-	create: function (x, y) {
+	draw: function (x, y) {
 		var spriteInstance = new PIXI.Sprite(stoneWall.sprite);
 		spriteInstance.x = x;
 		spriteInstance.y = y;
 		return spriteInstance;
 	},
 
-	draw: function () {
+};
 
-	},
-
+function Player(info){
+	info.sprite = new PIXI.Text('@', {'fill':'white', 'font':'17px Arial'}),
+	BaseObject.call(this, info);
 }
 
-var player = new BaseObject({
-	sprite: new PIXI.Text('@', {'fill':'white', 'font':'17px Arial'}),
-});
 
 var stoneWall = new BaseObject({
 	sprite: PIXI.Texture.fromImage('static/img/wall20.png'),

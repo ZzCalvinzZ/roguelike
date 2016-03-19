@@ -1,3 +1,4 @@
+var player = new Player({});
 var stage = new PIXI.Container();
 var camera = new PIXI.Container();
 
@@ -38,13 +39,13 @@ $( document ).ready(function() {
 	}
 
 	for (i=0;i < SCREEN_WIDTH / CELL_SIZE;i++) {
-		stage.addChild(stoneWall.create(i * CELL_SIZE, 0));
-		stage.addChild(stoneWall.create(i * CELL_SIZE, SCREEN_HEIGHT - CELL_SIZE));
+		stage.addChild(stoneWall.draw(i * CELL_SIZE, 0));
+		stage.addChild(stoneWall.draw(i * CELL_SIZE, SCREEN_HEIGHT - CELL_SIZE));
 	}
 
 	for (i=1; i< (SCREEN_HEIGHT / CELL_SIZE)-1; i++) {
-		stage.addChild(stoneWall.create(0, i * CELL_SIZE));
-		stage.addChild(stoneWall.create(SCREEN_WIDTH - CELL_SIZE, i * CELL_SIZE));
+		stage.addChild(stoneWall.draw(0, i * CELL_SIZE));
+		stage.addChild(stoneWall.draw(SCREEN_WIDTH - CELL_SIZE, i * CELL_SIZE));
 	}
 
 	camera.addChild(stage);
