@@ -1,5 +1,7 @@
 var BaseObject, CELL_SIZE, Player, SCREEN_HEIGHT, SCREEN_WIDTH, StoneWall, camera, keyboard, player, setupKeybindings, stage,
-  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
 
 CELL_SIZE = 20;
 
@@ -78,40 +80,49 @@ setupKeybindings = function() {
   return down.release = function() {};
 };
 
-BaseObject = function(info) {
-  this.sprite = info.sprite;
-  this.info = {
-    solid: info.solid || true
-  };
-};
+BaseObject = (function() {
+  BaseObject.prototype.sprite = null;
 
-Player = function(info) {
-  info.sprite = new PIXI.Text('@', {
-    'fill': 'white',
-    'font': '17px Arial'
-  });
-  BaseObject.call(this, info);
-};
+  BaseObject.prototype.solid = true;
 
-StoneWall = function(info) {
-  info.sprite = PIXI.Texture.fromImage('static/img/wall20.png');
-  BaseObject.call(this, info);
-};
+  function BaseObject() {}
 
-BaseObject.prototype = {
-  constructor: BaseObject,
-  draw: function(x, y) {
+  BaseObject.prototype.draw = function(x, y) {
     var spriteInstance;
     spriteInstance = new PIXI.Sprite(this.sprite);
     spriteInstance.x = x;
     spriteInstance.y = y;
-    stage.addChild(spriteInstance);
-  }
-};
+    return stage.addChild(spriteInstance);
+  };
 
-Player.prototype = Object.create(BaseObject.prototype);
+  return BaseObject;
 
-StoneWall.prototype = Object.create(BaseObject.prototype);
+})();
+
+Player = (function(superClass) {
+  extend(Player, superClass);
+
+  Player.prototype.sprite = new PIXI.Text('@', {
+    'fill': 'white',
+    'font': '17px Arial'
+  });
+
+  function Player() {}
+
+  return Player;
+
+})(BaseObject);
+
+StoneWall = (function(superClass) {
+  extend(StoneWall, superClass);
+
+  StoneWall.prototype.sprite = PIXI.Texture.fromImage('static/img/wall20.png');
+
+  function StoneWall() {}
+
+  return StoneWall;
+
+})(BaseObject);
 
 player = new Player({});
 

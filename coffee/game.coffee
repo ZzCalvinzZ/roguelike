@@ -1,6 +1,6 @@
 player = new Player({})
-stage = new (PIXI.Container)
-camera = new (PIXI.Container)
+stage = new(PIXI.Container)
+camera = new(PIXI.Container)
 
 $(document).ready ->
 
