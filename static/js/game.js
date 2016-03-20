@@ -1,13 +1,60 @@
-var BaseObject, CELL_SIZE, Player, SCREEN_HEIGHT, SCREEN_WIDTH, StoneWall, camera, keyboard, player, setupKeybindings, stage,
-  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
+var BaseObject, CELL_SIZE, Player, SCREEN_HEIGHT, SCREEN_WIDTH, StoneWall, camera, createMap, keyboard, map, player, setupKeybindings, stage,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
+  hasProp = {}.hasOwnProperty,
+  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-CELL_SIZE = 20;
+BaseObject = (function() {
+  BaseObject.prototype.sprite = null;
 
-SCREEN_WIDTH = 800;
+  BaseObject.prototype.solid = false;
 
-SCREEN_HEIGHT = 400;
+  function BaseObject(x1, y1) {
+    this.x = x1;
+    this.y = y1;
+  }
+
+  BaseObject.prototype.draw = function(x, y) {
+    var spriteInstance;
+    spriteInstance = new PIXI.Sprite(this.sprite);
+    spriteInstance.x = this.x * CELL_SIZE;
+    spriteInstance.y = this.y * CELL_SIZE;
+    return stage.addChild(spriteInstance);
+  };
+
+  return BaseObject;
+
+})();
+
+Player = (function(superClass) {
+  extend(Player, superClass);
+
+  function Player() {
+    return Player.__super__.constructor.apply(this, arguments);
+  }
+
+  Player.prototype.sprite = new PIXI.Text('@', {
+    'fill': 'white',
+    'font': '17px Arial'
+  });
+
+  Player.prototype.solid = true;
+
+  return Player;
+
+})(BaseObject);
+
+StoneWall = (function(superClass) {
+  extend(StoneWall, superClass);
+
+  function StoneWall() {
+    return StoneWall.__super__.constructor.apply(this, arguments);
+  }
+
+  StoneWall.prototype.sprite = PIXI.Texture.fromImage('static/img/wall20.png');
+
+  return StoneWall;
+
+})(BaseObject);
 
 keyboard = function(keyCodes) {
   var key;
@@ -80,49 +127,32 @@ setupKeybindings = function() {
   return down.release = function() {};
 };
 
-BaseObject = (function() {
-  BaseObject.prototype.sprite = null;
+createMap = function(map_size) {
+  var map, x, y;
+  return map = (function() {
+    var j, ref, results;
+    results = [];
+    for (x = j = 0, ref = map_size; 0 <= ref ? j < ref : j > ref; x = 0 <= ref ? ++j : --j) {
+      results.push((function() {
+        var k, ref1, results1;
+        results1 = [];
+        for (y = k = 0, ref1 = map_size; 0 <= ref1 ? k < ref1 : k > ref1; y = 0 <= ref1 ? ++k : --k) {
+          results1.push(new BaseObject(x, y));
+        }
+        return results1;
+      })());
+    }
+    return results;
+  })();
+};
 
-  BaseObject.prototype.solid = true;
+CELL_SIZE = 20;
 
-  function BaseObject() {}
+SCREEN_WIDTH = 800;
 
-  BaseObject.prototype.draw = function(x, y) {
-    var spriteInstance;
-    spriteInstance = new PIXI.Sprite(this.sprite);
-    spriteInstance.x = x;
-    spriteInstance.y = y;
-    return stage.addChild(spriteInstance);
-  };
+SCREEN_HEIGHT = 400;
 
-  return BaseObject;
-
-})();
-
-Player = (function(superClass) {
-  extend(Player, superClass);
-
-  Player.prototype.sprite = new PIXI.Text('@', {
-    'fill': 'white',
-    'font': '17px Arial'
-  });
-
-  function Player() {}
-
-  return Player;
-
-})(BaseObject);
-
-StoneWall = (function(superClass) {
-  extend(StoneWall, superClass);
-
-  StoneWall.prototype.sprite = PIXI.Texture.fromImage('static/img/wall20.png');
-
-  function StoneWall() {}
-
-  return StoneWall;
-
-})(BaseObject);
+map = createMap(30);
 
 player = new Player({});
 

@@ -24,8 +24,9 @@ $(document).ready ->
 	#loop: true,
 	#volume: 0.3,
 	#});
+	
+	stage.addChild(player.sprite)
 
-	stage.addChild player.sprite
 	i = 0
 	while i < SCREEN_WIDTH / CELL_SIZE
 		stoneWall = new StoneWall({})
@@ -39,7 +40,7 @@ $(document).ready ->
 		stoneWall.draw 0, i * CELL_SIZE
 		stoneWall.draw SCREEN_WIDTH - CELL_SIZE, i * CELL_SIZE
 		i++
-	camera.addChild stage
+	camera.addChild(stage)
 	#main loop
 	gameLoop()
 

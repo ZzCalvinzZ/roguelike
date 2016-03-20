@@ -1,3 +1,5 @@
 CELL_SIZE = 20
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 400
+
+map = createMap(30);

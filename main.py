@@ -13,9 +13,10 @@ env.load_path = [
 env.register(
     'game',
 	assets.Bundle(
-		'globals.coffee',
-		'controls.coffee',
 		'objects.coffee',
+		'controls.coffee',
+		'map.coffee',
+		'globals.coffee',
 		'game.coffee',
 		filters='coffeescript',
         output='js/game.js',
