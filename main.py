@@ -5,7 +5,8 @@ from flask.ext import assets
 
 app = Flask(__name__)
 
-app.debug = True
+app.config.from_object('settings.default')
+app.config.from_object('settings.local')
 
 env = assets.Environment(app)
 
