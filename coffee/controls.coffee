@@ -36,34 +36,22 @@ setupKeybindings = ->
 	down = keyboard([40, 74])
 
 	left.press = ->
-		player.sprite.x -= CELL_SIZE
-		if player.sprite.x < SCREEN_WIDTH / 3 - camera.x
-			camera.x += 25
-		return
+		player.move('left')
 
 	left.release = ->
 
 	right.press = ->
-		player.sprite.x += CELL_SIZE
-		if player.sprite.x > 2 * SCREEN_WIDTH / 3 - camera.x
-			camera.x -= 25
-		return
+		player.move('right')
 
 	right.release = ->
 
 	up.press = ->
-		player.sprite.y -= CELL_SIZE
-		if player.sprite.y < SCREEN_HEIGHT / 3 - camera.y
-			camera.y += 25
-		return
+		player.move('up')
 
 	up.release = ->
 
 	down.press = ->
-		player.sprite.y += CELL_SIZE
-		if player.sprite.y > 2 * SCREEN_HEIGHT / 3 - camera.y
-			camera.y -= 25
-		return
+		player.move('down')
 
 	down.release = ->
 

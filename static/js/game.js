@@ -1,4 +1,4 @@
-var BaseObject, CELL_SIZE, DEFAULT_MAP_SIZE, Player, SCREEN_HEIGHT, SCREEN_WIDTH, StoneWall, camera, createMap, createSprite, keyboard, map, player, setupKeybindings, stage,
+var BaseObject, CELL_SIZE, DEFAULT_MAP_SIZE, MovableObject, Player, SCREEN_HEIGHT, SCREEN_WIDTH, StoneWall, camera, createMap, createSprite, keyboard, map, player, setupKeybindings, stage,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
@@ -29,6 +29,71 @@ BaseObject = (function() {
 
 })();
 
+MovableObject = (function(superClass) {
+  extend(MovableObject, superClass);
+
+  function MovableObject() {
+    return MovableObject.__super__.constructor.apply(this, arguments);
+  }
+
+  MovableObject.prototype.move = function(direction) {
+    var none_are_solid, targets;
+    none_are_solid = function(targets) {
+      var k, len, target;
+      for (k = 0, len = targets.length; k < len; k++) {
+        target = targets[k];
+        if (target.solid) {
+          return false;
+        }
+      }
+      return true;
+    };
+    if (direction === 'left') {
+      targets = map[this.x - 1][this.y];
+      if (none_are_solid(targets)) {
+        this.x -= 1;
+        this.sprite.x -= CELL_SIZE;
+        if (this.sprite.x < SCREEN_WIDTH / 3 - camera.x) {
+          camera.x += 25;
+        }
+      }
+    }
+    if (direction === 'right') {
+      targets = map[this.x + 1][this.y];
+      if (none_are_solid(targets)) {
+        this.x += 1;
+        this.sprite.x += CELL_SIZE;
+        if (this.sprite.x > SCREEN_WIDTH / 3 - camera.x) {
+          camera.x -= 25;
+        }
+      }
+    }
+    if (direction === 'up') {
+      targets = map[this.x][this.y - 1];
+      if (none_are_solid(targets)) {
+        this.y -= 1;
+        this.sprite.y -= CELL_SIZE;
+        if (this.sprite.y < SCREEN_HEIGHT / 3 - camera.y) {
+          camera.y += 25;
+        }
+      }
+    }
+    if (direction === 'down') {
+      targets = map[this.x][this.y + 1];
+      if (none_are_solid(targets)) {
+        this.y += 1;
+        this.sprite.y += CELL_SIZE;
+        if (this.sprite.y > 2 * SCREEN_HEIGHT / 3 - camera.y) {
+          return camera.y -= 25;
+        }
+      }
+    }
+  };
+
+  return MovableObject;
+
+})(BaseObject);
+
 Player = (function(superClass) {
   extend(Player, superClass);
 
@@ -45,7 +110,7 @@ Player = (function(superClass) {
 
   return Player;
 
-})(BaseObject);
+})(MovableObject);
 
 StoneWall = (function(superClass) {
   extend(StoneWall, superClass);
@@ -103,31 +168,19 @@ setupKeybindings = function() {
   right = keyboard([39, 76]);
   down = keyboard([40, 74]);
   left.press = function() {
-    player.sprite.x -= CELL_SIZE;
-    if (player.sprite.x < SCREEN_WIDTH / 3 - camera.x) {
-      camera.x += 25;
-    }
+    return player.move('left');
   };
   left.release = function() {};
   right.press = function() {
-    player.sprite.x += CELL_SIZE;
-    if (player.sprite.x > 2 * SCREEN_WIDTH / 3 - camera.x) {
-      camera.x -= 25;
-    }
+    return player.move('right');
   };
   right.release = function() {};
   up.press = function() {
-    player.sprite.y -= CELL_SIZE;
-    if (player.sprite.y < SCREEN_HEIGHT / 3 - camera.y) {
-      camera.y += 25;
-    }
+    return player.move('up');
   };
   up.release = function() {};
   down.press = function() {
-    player.sprite.y += CELL_SIZE;
-    if (player.sprite.y > 2 * SCREEN_HEIGHT / 3 - camera.y) {
-      camera.y -= 25;
-    }
+    return player.move('down');
   };
   return down.release = function() {};
 };
