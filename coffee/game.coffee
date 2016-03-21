@@ -1,4 +1,4 @@
-player = new Player({})
+player = new Player(2, 2)
 stage = new(PIXI.Container)
 camera = new(PIXI.Container)
 
@@ -13,8 +13,6 @@ $(document).ready ->
 	renderer = PIXI.autoDetectRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, backgroundColor: 0x000000)
 	document.body.appendChild(renderer.view)
 
-	player.sprite.x = 20
-	player.sprite.y = 20
 	setupKeybindings()
 
 	# setup sounds
@@ -25,21 +23,24 @@ $(document).ready ->
 	#volume: 0.3,
 	#});
 	
-	stage.addChild(player.sprite)
+	player.draw()
 
 	i = 0
-	while i < SCREEN_WIDTH / CELL_SIZE
-		stoneWall = new StoneWall({})
-		stoneWall.draw i * CELL_SIZE, 0
-		stoneWall.draw i * CELL_SIZE, SCREEN_HEIGHT - CELL_SIZE
+	while i < DEFAULT_MAP_SIZE
+		for j in [1..2]
+			stoneWall = if j is 1 then new StoneWall(i, 0) else new StoneWall(i, DEFAULT_MAP_SIZE - 1)
+			map[stoneWall.x][stoneWall.y].push(stoneWall)
+			stoneWall.draw()
 		i++
-	i = 1
 
-	while i < SCREEN_HEIGHT / CELL_SIZE - 1
-		stoneWall = new StoneWall({})
-		stoneWall.draw 0, i * CELL_SIZE
-		stoneWall.draw SCREEN_WIDTH - CELL_SIZE, i * CELL_SIZE
+	i = 1
+	while i < DEFAULT_MAP_SIZE
+		for j in [1..2]
+			stoneWall = if j is 1 then new StoneWall(0, i) else new StoneWall(DEFAULT_MAP_SIZE - 1, i)
+			map[stoneWall.x][stoneWall.y].push(stoneWall)
+			stoneWall.draw()
 		i++
+
 	camera.addChild(stage)
 	#main loop
 	gameLoop()

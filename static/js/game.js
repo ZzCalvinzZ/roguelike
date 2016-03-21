@@ -1,7 +1,13 @@
-var BaseObject, CELL_SIZE, Player, SCREEN_HEIGHT, SCREEN_WIDTH, StoneWall, camera, createMap, keyboard, map, player, setupKeybindings, stage,
+var BaseObject, CELL_SIZE, DEFAULT_MAP_SIZE, Player, SCREEN_HEIGHT, SCREEN_WIDTH, StoneWall, camera, createMap, createSprite, keyboard, map, player, setupKeybindings, stage,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+createSprite = function(file) {
+  var texture;
+  texture = PIXI.Texture.fromImage(file);
+  return new PIXI.Sprite(texture);
+};
 
 BaseObject = (function() {
   BaseObject.prototype.sprite = null;
@@ -13,12 +19,10 @@ BaseObject = (function() {
     this.y = y1;
   }
 
-  BaseObject.prototype.draw = function(x, y) {
-    var spriteInstance;
-    spriteInstance = new PIXI.Sprite(this.sprite);
-    spriteInstance.x = this.x * CELL_SIZE;
-    spriteInstance.y = this.y * CELL_SIZE;
-    return stage.addChild(spriteInstance);
+  BaseObject.prototype.draw = function() {
+    this.sprite.x = this.x * CELL_SIZE;
+    this.sprite.y = this.y * CELL_SIZE;
+    stage.addChild(this.sprite);
   };
 
   return BaseObject;
@@ -46,11 +50,12 @@ Player = (function(superClass) {
 StoneWall = (function(superClass) {
   extend(StoneWall, superClass);
 
-  function StoneWall() {
-    return StoneWall.__super__.constructor.apply(this, arguments);
-  }
+  StoneWall.prototype.solid = true;
 
-  StoneWall.prototype.sprite = PIXI.Texture.fromImage('static/img/wall20.png');
+  function StoneWall(x, y) {
+    StoneWall.__super__.constructor.call(this, x, y);
+    this.sprite = createSprite('static/img/wall20.png');
+  }
 
   return StoneWall;
 
@@ -130,14 +135,14 @@ setupKeybindings = function() {
 createMap = function(map_size) {
   var map, x, y;
   return map = (function() {
-    var j, ref, results;
+    var k, ref, results;
     results = [];
-    for (x = j = 0, ref = map_size; 0 <= ref ? j < ref : j > ref; x = 0 <= ref ? ++j : --j) {
+    for (x = k = 0, ref = map_size; 0 <= ref ? k < ref : k > ref; x = 0 <= ref ? ++k : --k) {
       results.push((function() {
-        var k, ref1, results1;
+        var l, ref1, results1;
         results1 = [];
-        for (y = k = 0, ref1 = map_size; 0 <= ref1 ? k < ref1 : k > ref1; y = 0 <= ref1 ? ++k : --k) {
-          results1.push(new BaseObject(x, y));
+        for (y = l = 0, ref1 = map_size; 0 <= ref1 ? l < ref1 : l > ref1; y = 0 <= ref1 ? ++l : --l) {
+          results1.push([]);
         }
         return results1;
       })());
@@ -152,16 +157,18 @@ SCREEN_WIDTH = 800;
 
 SCREEN_HEIGHT = 400;
 
-map = createMap(30);
+DEFAULT_MAP_SIZE = 15;
 
-player = new Player({});
+map = createMap(DEFAULT_MAP_SIZE);
+
+player = new Player(2, 2);
 
 stage = new PIXI.Container;
 
 camera = new PIXI.Container;
 
 $(document).ready(function() {
-  var gameLoop, i, renderer, stoneWall;
+  var gameLoop, i, j, k, l, renderer, stoneWall;
   gameLoop = function() {
     requestAnimationFrame(gameLoop);
     renderer.render(camera);
@@ -170,22 +177,24 @@ $(document).ready(function() {
     backgroundColor: 0x000000
   });
   document.body.appendChild(renderer.view);
-  player.sprite.x = 20;
-  player.sprite.y = 20;
   setupKeybindings();
-  stage.addChild(player.sprite);
+  player.draw();
   i = 0;
-  while (i < SCREEN_WIDTH / CELL_SIZE) {
-    stoneWall = new StoneWall({});
-    stoneWall.draw(i * CELL_SIZE, 0);
-    stoneWall.draw(i * CELL_SIZE, SCREEN_HEIGHT - CELL_SIZE);
+  while (i < DEFAULT_MAP_SIZE) {
+    for (j = k = 1; k <= 2; j = ++k) {
+      stoneWall = j === 1 ? new StoneWall(i, 0) : new StoneWall(i, DEFAULT_MAP_SIZE - 1);
+      map[stoneWall.x][stoneWall.y].push(stoneWall);
+      stoneWall.draw();
+    }
     i++;
   }
   i = 1;
-  while (i < SCREEN_HEIGHT / CELL_SIZE - 1) {
-    stoneWall = new StoneWall({});
-    stoneWall.draw(0, i * CELL_SIZE);
-    stoneWall.draw(SCREEN_WIDTH - CELL_SIZE, i * CELL_SIZE);
+  while (i < DEFAULT_MAP_SIZE) {
+    for (j = l = 1; l <= 2; j = ++l) {
+      stoneWall = j === 1 ? new StoneWall(0, i) : new StoneWall(DEFAULT_MAP_SIZE - 1, i);
+      map[stoneWall.x][stoneWall.y].push(stoneWall);
+      stoneWall.draw();
+    }
     i++;
   }
   camera.addChild(stage);
