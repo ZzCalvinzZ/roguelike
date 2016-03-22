@@ -80,4 +80,11 @@ class StoneWall extends BaseObject
 class Door extends BaseObject
 	constructor: (options) ->
 		super(options)
-		@sprite = createSprite('static/img/wall20.png')
+		@open = options.open or false
+
+		if @open
+			@sprite = createSprite('static/img/door_open.png')
+			@solid = false
+		else
+			@sprite = createSprite('static/img/door_closed.png')
+			@solid = true

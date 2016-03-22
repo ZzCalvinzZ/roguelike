@@ -36,7 +36,10 @@ $(document).ready ->
 	i = 1
 	while i < DEFAULT_MAP_SIZE
 		for j in [1..2]
-			stoneWall = if j is 1 then new StoneWall({x:0, y:i}) else new StoneWall({x:DEFAULT_MAP_SIZE - 1, y:i})
+			if i is 4
+				stoneWall = if j is 1 then new Door({x:0, y:i}) else new Door({x:DEFAULT_MAP_SIZE - 1, y:i})
+			else
+				stoneWall = if j is 1 then new StoneWall({x:0, y:i}) else new StoneWall({x:DEFAULT_MAP_SIZE - 1, y:i})
 			map[stoneWall.x][stoneWall.y].push(stoneWall)
 			stoneWall.draw()
 		i++
