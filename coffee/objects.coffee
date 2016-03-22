@@ -10,6 +10,11 @@ get_targets = (direction, x, y) ->
 
 		return targets
 
+destroy_sprite = (sprite) ->
+	if sprite
+		stage.removeChild(sprite)
+		sprite.destroy()
+
 class BaseObject
 	sprite: null
 	solid: false
@@ -24,7 +29,7 @@ class BaseObject
 		return
 
 class Openable extends BaseObject
-	@openable = true
+	openable: true
 
 class MovableObject extends BaseObject
 	move: (direction) ->
@@ -68,6 +73,13 @@ class Player extends MovableObject
 	opening: false
 	sprite: new PIXI.Text('@', {'fill': 'white', 'font': '17px Arial'})
 
+	open: (direction) ->
+		targets = get_targets(direction, @x, @y)
+
+		for target in targets
+			if target.openable
+				if target.is_open then target.close() else target.open()
+
 class StoneWall extends BaseObject
 	solid: true
 
@@ -78,11 +90,21 @@ class StoneWall extends BaseObject
 class Door extends Openable
 	constructor: (options) ->
 		super(options)
-		@open = options.open or false
+		@is_open = options.is_open or false
 
-		if @open
-			@sprite = createSprite('static/img/door_open.png')
-			@solid = false
-		else
-			@sprite = createSprite('static/img/door_closed.png')
-			@solid = true
+		if @is_open then @open() else @close()
+
+	open: () ->
+		destroy_sprite(@sprite)
+		@sprite = createSprite('static/img/door_open.png')
+		@solid = false
+		@is_open = true
+		@draw()
+
+	close: () ->
+		destroy_sprite(@sprite)
+		@sprite = createSprite('static/img/door_closed.png')
+		@solid = true
+		@is_open = false
+		@draw()
+

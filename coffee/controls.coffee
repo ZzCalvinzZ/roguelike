@@ -39,7 +39,9 @@ setupKeybindings = ->
 	do_direction = (direction) ->
 		if player.opening is true
 			player.open(direction)
-		player.move(direction)
+			player.opening = false
+		else
+			player.move(direction)
 
 
 	left.press = ->
