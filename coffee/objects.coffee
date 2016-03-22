@@ -29,7 +29,7 @@ class MovableObject extends BaseObject
 				@x -= 1
 				@sprite.x -= CELL_SIZE
 
-				if @sprite.x < SCREEN_WIDTH / 3 - camera.x
+				if @player and @sprite.x < SCREEN_WIDTH / 3 - camera.x
 					camera.x += 25
 
 		if direction is 'right'
@@ -39,7 +39,7 @@ class MovableObject extends BaseObject
 				@x += 1
 				@sprite.x += CELL_SIZE
 
-				if @sprite.x > SCREEN_WIDTH / 3 - camera.x
+				if @player and @sprite.x > SCREEN_WIDTH / 3 - camera.x
 					camera.x -= 25
 
 		if direction is 'up'
@@ -49,7 +49,7 @@ class MovableObject extends BaseObject
 				@y -= 1
 				@sprite.y -= CELL_SIZE
 
-				if @sprite.y < SCREEN_HEIGHT / 3 - camera.y
+				if @player and @sprite.y < SCREEN_HEIGHT / 3 - camera.y
 					camera.y += 25
 
 		if direction is 'down'
@@ -59,12 +59,13 @@ class MovableObject extends BaseObject
 				@y += 1
 				@sprite.y += CELL_SIZE
 
-				if @sprite.y > 2 * SCREEN_HEIGHT / 3 - camera.y
+				if @player and @sprite.y > 2 * SCREEN_HEIGHT / 3 - camera.y
 					camera.y -= 25
 
 
 
 class Player extends MovableObject
+	player: true
 	sprite: new PIXI.Text('@', {'fill': 'white', 'font': '17px Arial'})
 	solid: true
 
