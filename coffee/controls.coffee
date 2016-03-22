@@ -34,6 +34,7 @@ setupKeybindings = ->
 	up = keyboard([38, 75])
 	right = keyboard([39, 76])
 	down = keyboard([40, 74])
+	open = keyboard([79])
 
 	left.press = ->
 		player.move('left')
@@ -55,3 +56,7 @@ setupKeybindings = ->
 
 	down.release = ->
 
+	open.press = ->
+		player.opening = true
+
+	open.release = ->
