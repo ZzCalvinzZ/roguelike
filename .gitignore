@@ -2,4 +2,3 @@
 *.webassets-cache/
 local.py
 .DS_Store
-game.js
