@@ -36,23 +36,29 @@ setupKeybindings = ->
 	down = keyboard([40, 74])
 	open = keyboard([79])
 
+	do_direction = (direction) ->
+		if player.opening is true
+			player.open(direction)
+		player.move(direction)
+
+
 	left.press = ->
-		player.move('left')
+		do_direction('left')
 
 	left.release = ->
 
 	right.press = ->
-		player.move('right')
+		do_direction('right')
 
 	right.release = ->
 
 	up.press = ->
-		player.move('up')
+		do_direction('up')
 
 	up.release = ->
 
 	down.press = ->
-		player.move('down')
+		do_direction('down')
 
 	down.release = ->
 
