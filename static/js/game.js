@@ -175,9 +175,14 @@ StoneWall = (function(superClass) {
 Door = (function(superClass) {
   extend(Door, superClass);
 
+  Door.prototype.open_texture = PIXI.Texture.fromImage('static/img/door_open.png');
+
+  Door.prototype.closed_texture = PIXI.Texture.fromImage('static/img/door_closed.png');
+
   function Door(options) {
     Door.__super__.constructor.call(this, options);
     this.is_open = options.is_open || false;
+    this.sprite = createSprite('static/img/door_closed.png');
     if (this.is_open) {
       this.open();
     } else {
@@ -186,16 +191,14 @@ Door = (function(superClass) {
   }
 
   Door.prototype.open = function() {
-    destroy_sprite(this.sprite);
-    this.sprite = createSprite('static/img/door_open.png');
+    this.sprite.setTexture(this.open_texture);
     this.solid = false;
     this.is_open = true;
     return this.draw();
   };
 
   Door.prototype.close = function() {
-    destroy_sprite(this.sprite);
-    this.sprite = createSprite('static/img/door_closed.png');
+    this.sprite.setTexture(this.closed_texture);
     this.solid = true;
     this.is_open = false;
     return this.draw();

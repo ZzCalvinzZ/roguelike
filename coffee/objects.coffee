@@ -88,22 +88,29 @@ class StoneWall extends BaseObject
 		@sprite = createSprite('static/img/wall20.png')
 
 class Door extends Openable
+	open_texture: PIXI.Texture.fromImage('static/img/door_open.png')
+	closed_texture: PIXI.Texture.fromImage('static/img/door_closed.png')
+
 	constructor: (options) ->
 		super(options)
 		@is_open = options.is_open or false
 
+		@sprite = createSprite('static/img/door_closed.png')
+
 		if @is_open then @open() else @close()
 
 	open: () ->
-		destroy_sprite(@sprite)
-		@sprite = createSprite('static/img/door_open.png')
+		#destroy_sprite(@sprite)
+		#@sprite = createSprite('static/img/door_open.png')
+		@sprite.setTexture(@open_texture)
 		@solid = false
 		@is_open = true
 		@draw()
 
 	close: () ->
-		destroy_sprite(@sprite)
-		@sprite = createSprite('static/img/door_closed.png')
+		#destroy_sprite(@sprite)
+		#@sprite = createSprite('static/img/door_closed.png')
+		@sprite.setTexture(@closed_texture)
 		@solid = true
 		@is_open = false
 		@draw()
