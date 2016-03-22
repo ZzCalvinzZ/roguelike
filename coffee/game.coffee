@@ -1,6 +1,7 @@
-player = new Player({x:2,y:2})
+player = new Player({x:20,y:20})
 stage = new(PIXI.Container)
 camera = new(PIXI.Container)
+[camera.x, camera.y] = [player.sprite.x, player.sprite.y - SCREEN_HEIGHT/2]
 
 $(document).ready ->
 
@@ -25,21 +26,21 @@ $(document).ready ->
 	
 	player.draw()
 
-	i = 0
-	while i < DEFAULT_MAP_SIZE
+	i = 15
+	while i < 30
 		for j in [1..2]
-			stoneWall = if j is 1 then new StoneWall({x:i, y:0}) else new StoneWall({x:i, y:DEFAULT_MAP_SIZE - 1})
+			stoneWall = if j is 1 then new StoneWall({x:i, y:15}) else new StoneWall({x:i, y:29})
 			map[stoneWall.x][stoneWall.y].push(stoneWall)
 			stoneWall.draw()
 		i++
 
-	i = 1
-	while i < DEFAULT_MAP_SIZE
+	i = 16
+	while i < 30
 		for j in [1..2]
-			if i is 4
-				stoneWall = if j is 1 then new Door({x:0, y:i}) else new Door({x:DEFAULT_MAP_SIZE - 1, y:i})
+			if i is 23
+				stoneWall = if j is 1 then new Door({x:15, y:i}) else new Door({x: 29, y:i})
 			else
-				stoneWall = if j is 1 then new StoneWall({x:0, y:i}) else new StoneWall({x:DEFAULT_MAP_SIZE - 1, y:i})
+				stoneWall = if j is 1 then new StoneWall({x:15, y:i}) else new StoneWall({x: 29, y:i})
 			map[stoneWall.x][stoneWall.y].push(stoneWall)
 			stoneWall.draw()
 		i++
