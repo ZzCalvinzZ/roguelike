@@ -6,7 +6,8 @@ class BaseObject
 	sprite: null
 	solid: false
 
-	constructor: (@x, @y) ->
+	constructor: (options) ->
+		{@x, @y} = options
 
 	draw: () ->
 		@sprite.x = @x * CELL_SIZE
@@ -72,7 +73,11 @@ class Player extends MovableObject
 class StoneWall extends BaseObject
 	solid: true
 
-	constructor: (x, y) ->
-		super(x, y)
+	constructor: (options) ->
+		super(options)
 		@sprite = createSprite('static/img/wall20.png')
 
+class Door extends BaseObject
+	constructor: (options) ->
+		super(options)
+		@sprite = createSprite('static/img/wall20.png')
