@@ -9,20 +9,27 @@ draw_box = (map, size, x_left, y_top, sprite) ->
 	x_right = x_left + size - 1
 	y_bottom = y_top + size - 1
 
-	for x in [x_left..size - 1]
-		map[x][y_top].push(new sprite({x:x,y:y_top}).draw())
-		map[x][y_bottom].push(new sprite({x:x,y:y_bottom}).draw())
+	for x in [x_left..x_right]
+		map[x][y_top].push(new sprite({x:x,y:y_top}))
+		map[x][y_bottom].push(new sprite({x:x,y:y_bottom}))
 
-	for y in [y_top + 1..size - 2]
-		map[x_left][y].push(new sprite({x:x_left,y:y}).draw())
-		map[x_right][y].push(new sprite({x:x_right,y:y}).draw())
+	for y in [y_top..y_bottom]
+		map[x_left][y].push(new sprite({x:x_left,y:y}))
+		map[x_right][y].push(new sprite({x:x_right,y:y}))
 	return
 
 create_town_map = () ->
-	size = 10
+	size = 50
 	center = size // 2
 
 	map = create_map(size)
-	draw_box(map, size, 0, 0, Wall)
+
+	store_size = 5
+
+	#i=3
+	#while i<23
+	draw_box(map, store_size, 3, 3, Wall)
+
+		#i += 7
 
 	return map

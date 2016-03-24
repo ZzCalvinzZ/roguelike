@@ -86,6 +86,7 @@ class Wall extends BaseObject
 	constructor: (options) ->
 		super(options)
 		@sprite = createSprite('static/img/wall20.png')
+		@draw(@x, @y)
 
 class Door extends Openable
 	open_texture: PIXI.Texture.fromImage('static/img/door_open.png')

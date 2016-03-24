@@ -166,6 +166,7 @@ Wall = (function(superClass) {
   function Wall(options) {
     Wall.__super__.constructor.call(this, options);
     this.sprite = createSprite('static/img/wall20.png');
+    this.draw(this.x, this.y);
   }
 
   return Wall;
@@ -322,34 +323,35 @@ draw_box = function(map, size, x_left, y_top, sprite) {
   var i, j, ref, ref1, ref2, ref3, x, x_right, y, y_bottom;
   x_right = x_left + size - 1;
   y_bottom = y_top + size - 1;
-  for (x = i = ref = x_left, ref1 = size - 1; ref <= ref1 ? i <= ref1 : i >= ref1; x = ref <= ref1 ? ++i : --i) {
+  for (x = i = ref = x_left, ref1 = x_right; ref <= ref1 ? i <= ref1 : i >= ref1; x = ref <= ref1 ? ++i : --i) {
     map[x][y_top].push(new sprite({
       x: x,
       y: y_top
-    }).draw());
+    }));
     map[x][y_bottom].push(new sprite({
       x: x,
       y: y_bottom
-    }).draw());
+    }));
   }
-  for (y = j = ref2 = y_top + 1, ref3 = size - 2; ref2 <= ref3 ? j <= ref3 : j >= ref3; y = ref2 <= ref3 ? ++j : --j) {
+  for (y = j = ref2 = y_top, ref3 = y_bottom; ref2 <= ref3 ? j <= ref3 : j >= ref3; y = ref2 <= ref3 ? ++j : --j) {
     map[x_left][y].push(new sprite({
       x: x_left,
       y: y
-    }).draw());
+    }));
     map[x_right][y].push(new sprite({
       x: x_right,
       y: y
-    }).draw());
+    }));
   }
 };
 
 create_town_map = function() {
-  var center, size;
-  size = 10;
+  var center, size, store_size;
+  size = 50;
   center = Math.floor(size / 2);
   map = create_map(size);
-  draw_box(map, size, 0, 0, Wall);
+  store_size = 5;
+  draw_box(map, store_size, 3, 3, Wall);
   return map;
 };
 
