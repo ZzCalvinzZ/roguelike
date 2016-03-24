@@ -294,7 +294,7 @@ stage = new PIXI.Container;
 camera = new PIXI.Container;
 
 player = new Player({
-  x: 5,
+  x: 1,
   y: 5
 });
 
@@ -350,6 +350,7 @@ create_town_map = function() {
   size = 50;
   center = Math.floor(size / 2);
   map = create_map(size);
+  draw_box(map, size, 0, 0, Wall);
   store_size = 5;
   i = 3;
   while (i < 23) {
