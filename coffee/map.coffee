@@ -26,10 +26,10 @@ create_town_map = () ->
 
 	store_size = 5
 
-	#i=3
-	#while i<23
-	draw_box(map, store_size, 3, 3, Wall)
+	i=3
+	while i<23
+		draw_box(map, store_size, i, 3, Wall)
 
-		#i += 7
+		i += 7
 
 	return map

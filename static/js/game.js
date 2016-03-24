@@ -76,9 +76,9 @@ MovableObject = (function(superClass) {
     var none_are_solid, targets;
     targets = get_targets(direction, this.x, this.y);
     none_are_solid = function(targets) {
-      var i, len, target;
-      for (i = 0, len = targets.length; i < len; i++) {
-        target = targets[i];
+      var j, len, target;
+      for (j = 0, len = targets.length; j < len; j++) {
+        target = targets[j];
         if (target.solid) {
           return false;
         }
@@ -136,11 +136,11 @@ Player = (function(superClass) {
   });
 
   Player.prototype.open = function(direction) {
-    var i, len, results, target, targets;
+    var j, len, results, target, targets;
     targets = get_targets(direction, this.x, this.y);
     results = [];
-    for (i = 0, len = targets.length; i < len; i++) {
-      target = targets[i];
+    for (j = 0, len = targets.length; j < len; j++) {
+      target = targets[j];
       if (target.openable) {
         if (target.is_open) {
           results.push(target.close());
@@ -303,13 +303,13 @@ map = [];
 create_map = function(map_size) {
   var x, y;
   return map = (function() {
-    var i, ref, results;
+    var j, ref, results;
     results = [];
-    for (x = i = 0, ref = map_size; 0 <= ref ? i < ref : i > ref; x = 0 <= ref ? ++i : --i) {
+    for (x = j = 0, ref = map_size; 0 <= ref ? j < ref : j > ref; x = 0 <= ref ? ++j : --j) {
       results.push((function() {
-        var j, ref1, results1;
+        var k, ref1, results1;
         results1 = [];
-        for (y = j = 0, ref1 = map_size; 0 <= ref1 ? j < ref1 : j > ref1; y = 0 <= ref1 ? ++j : --j) {
+        for (y = k = 0, ref1 = map_size; 0 <= ref1 ? k < ref1 : k > ref1; y = 0 <= ref1 ? ++k : --k) {
           results1.push([]);
         }
         return results1;
@@ -320,10 +320,10 @@ create_map = function(map_size) {
 };
 
 draw_box = function(map, size, x_left, y_top, sprite) {
-  var i, j, ref, ref1, ref2, ref3, x, x_right, y, y_bottom;
+  var j, k, ref, ref1, ref2, ref3, x, x_right, y, y_bottom;
   x_right = x_left + size - 1;
   y_bottom = y_top + size - 1;
-  for (x = i = ref = x_left, ref1 = x_right; ref <= ref1 ? i <= ref1 : i >= ref1; x = ref <= ref1 ? ++i : --i) {
+  for (x = j = ref = x_left, ref1 = x_right; ref <= ref1 ? j <= ref1 : j >= ref1; x = ref <= ref1 ? ++j : --j) {
     map[x][y_top].push(new sprite({
       x: x,
       y: y_top
@@ -333,7 +333,7 @@ draw_box = function(map, size, x_left, y_top, sprite) {
       y: y_bottom
     }));
   }
-  for (y = j = ref2 = y_top, ref3 = y_bottom; ref2 <= ref3 ? j <= ref3 : j >= ref3; y = ref2 <= ref3 ? ++j : --j) {
+  for (y = k = ref2 = y_top, ref3 = y_bottom; ref2 <= ref3 ? k <= ref3 : k >= ref3; y = ref2 <= ref3 ? ++k : --k) {
     map[x_left][y].push(new sprite({
       x: x_left,
       y: y
@@ -346,12 +346,16 @@ draw_box = function(map, size, x_left, y_top, sprite) {
 };
 
 create_town_map = function() {
-  var center, size, store_size;
+  var center, i, size, store_size;
   size = 50;
   center = Math.floor(size / 2);
   map = create_map(size);
   store_size = 5;
-  draw_box(map, store_size, 3, 3, Wall);
+  i = 3;
+  while (i < 23) {
+    draw_box(map, store_size, i, 3, Wall);
+    i += 7;
+  }
   return map;
 };
 
