@@ -1,4 +1,4 @@
-var BaseObject, CELL_SIZE, DEFAULT_MAP_SIZE, Door, MovableObject, Openable, Player, SCREEN_HEIGHT, SCREEN_WIDTH, StoneWall, camera, createMap, createSprite, destroy_sprite, get_targets, keyboard, map, player, ref, setupKeybindings, stage,
+var BaseObject, CELL_SIZE, DEFAULT_MAP_SIZE, Door, MovableObject, Openable, Player, SCREEN_HEIGHT, SCREEN_WIDTH, Wall, camera, createSprite, create_map, create_town_map, destroy_sprite, draw_box, get_targets, keyboard, map, player, setupKeybindings, stage,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
@@ -76,9 +76,9 @@ MovableObject = (function(superClass) {
     var none_are_solid, targets;
     targets = get_targets(direction, this.x, this.y);
     none_are_solid = function(targets) {
-      var k, len, target;
-      for (k = 0, len = targets.length; k < len; k++) {
-        target = targets[k];
+      var i, len, target;
+      for (i = 0, len = targets.length; i < len; i++) {
+        target = targets[i];
         if (target.solid) {
           return false;
         }
@@ -136,11 +136,11 @@ Player = (function(superClass) {
   });
 
   Player.prototype.open = function(direction) {
-    var k, len, results, target, targets;
+    var i, len, results, target, targets;
     targets = get_targets(direction, this.x, this.y);
     results = [];
-    for (k = 0, len = targets.length; k < len; k++) {
-      target = targets[k];
+    for (i = 0, len = targets.length; i < len; i++) {
+      target = targets[i];
       if (target.openable) {
         if (target.is_open) {
           results.push(target.close());
@@ -158,17 +158,17 @@ Player = (function(superClass) {
 
 })(MovableObject);
 
-StoneWall = (function(superClass) {
-  extend(StoneWall, superClass);
+Wall = (function(superClass) {
+  extend(Wall, superClass);
 
-  StoneWall.prototype.solid = true;
+  Wall.prototype.solid = true;
 
-  function StoneWall(options) {
-    StoneWall.__super__.constructor.call(this, options);
+  function Wall(options) {
+    Wall.__super__.constructor.call(this, options);
     this.sprite = createSprite('static/img/wall20.png');
   }
 
-  return StoneWall;
+  return Wall;
 
 })(BaseObject);
 
@@ -280,16 +280,35 @@ setupKeybindings = function() {
   return open.release = function() {};
 };
 
-createMap = function(map_size) {
-  var map, x, y;
+CELL_SIZE = 20;
+
+SCREEN_WIDTH = 800;
+
+SCREEN_HEIGHT = 400;
+
+DEFAULT_MAP_SIZE = 50;
+
+stage = new PIXI.Container;
+
+camera = new PIXI.Container;
+
+player = new Player({
+  x: 5,
+  y: 5
+});
+
+map = [];
+
+create_map = function(map_size) {
+  var x, y;
   return map = (function() {
-    var k, ref, results;
+    var i, ref, results;
     results = [];
-    for (x = k = 0, ref = map_size; 0 <= ref ? k < ref : k > ref; x = 0 <= ref ? ++k : --k) {
+    for (x = i = 0, ref = map_size; 0 <= ref ? i < ref : i > ref; x = 0 <= ref ? ++i : --i) {
       results.push((function() {
-        var l, ref1, results1;
+        var j, ref1, results1;
         results1 = [];
-        for (y = l = 0, ref1 = map_size; 0 <= ref1 ? l < ref1 : l > ref1; y = 0 <= ref1 ? ++l : --l) {
+        for (y = j = 0, ref1 = map_size; 0 <= ref1 ? j < ref1 : j > ref1; y = 0 <= ref1 ? ++j : --j) {
           results1.push([]);
         }
         return results1;
@@ -299,29 +318,43 @@ createMap = function(map_size) {
   })();
 };
 
-CELL_SIZE = 20;
+draw_box = function(map, size, x_left, y_top, sprite) {
+  var i, j, ref, ref1, ref2, ref3, x, x_right, y, y_bottom;
+  x_right = x_left + size - 1;
+  y_bottom = y_top + size - 1;
+  for (x = i = ref = x_left, ref1 = size - 1; ref <= ref1 ? i <= ref1 : i >= ref1; x = ref <= ref1 ? ++i : --i) {
+    map[x][y_top].push(new sprite({
+      x: x,
+      y: y_top
+    }).draw());
+    map[x][y_bottom].push(new sprite({
+      x: x,
+      y: y_bottom
+    }).draw());
+  }
+  for (y = j = ref2 = y_top + 1, ref3 = size - 2; ref2 <= ref3 ? j <= ref3 : j >= ref3; y = ref2 <= ref3 ? ++j : --j) {
+    map[x_left][y].push(new sprite({
+      x: x_left,
+      y: y
+    }).draw());
+    map[x_right][y].push(new sprite({
+      x: x_right,
+      y: y
+    }).draw());
+  }
+};
 
-SCREEN_WIDTH = 800;
-
-SCREEN_HEIGHT = 400;
-
-DEFAULT_MAP_SIZE = 50;
-
-map = createMap(DEFAULT_MAP_SIZE);
-
-player = new Player({
-  x: 20,
-  y: 20
-});
-
-stage = new PIXI.Container;
-
-camera = new PIXI.Container;
-
-ref = [player.sprite.x, player.sprite.y - SCREEN_HEIGHT / 2], camera.x = ref[0], camera.y = ref[1];
+create_town_map = function() {
+  var center, size;
+  size = 10;
+  center = Math.floor(size / 2);
+  map = create_map(size);
+  draw_box(map, size, 0, 0, Wall);
+  return map;
+};
 
 $(document).ready(function() {
-  var gameLoop, i, j, k, l, renderer, stoneWall;
+  var gameLoop, renderer;
   gameLoop = function() {
     requestAnimationFrame(gameLoop);
     renderer.render(camera);
@@ -331,47 +364,8 @@ $(document).ready(function() {
   });
   document.body.appendChild(renderer.view);
   setupKeybindings();
+  map = create_town_map();
   player.draw();
-  i = 15;
-  while (i < 30) {
-    for (j = k = 1; k <= 2; j = ++k) {
-      stoneWall = j === 1 ? new StoneWall({
-        x: i,
-        y: 15
-      }) : new StoneWall({
-        x: i,
-        y: 29
-      });
-      map[stoneWall.x][stoneWall.y].push(stoneWall);
-      stoneWall.draw();
-    }
-    i++;
-  }
-  i = 16;
-  while (i < 30) {
-    for (j = l = 1; l <= 2; j = ++l) {
-      if (i === 23) {
-        stoneWall = j === 1 ? new Door({
-          x: 15,
-          y: i
-        }) : new Door({
-          x: 29,
-          y: i
-        });
-      } else {
-        stoneWall = j === 1 ? new StoneWall({
-          x: 15,
-          y: i
-        }) : new StoneWall({
-          x: 29,
-          y: i
-        });
-      }
-      map[stoneWall.x][stoneWall.y].push(stoneWall);
-      stoneWall.draw();
-    }
-    i++;
-  }
   camera.addChild(stage);
   gameLoop();
 });

@@ -19,8 +19,8 @@ env.register(
 	assets.Bundle(
 		'objects.coffee',
 		'controls.coffee',
-		'map.coffee',
 		'globals.coffee',
+		'map.coffee',
 		'game.coffee',
 		filters='coffeescript',
         output='js/game.js',

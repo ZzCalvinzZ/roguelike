@@ -80,7 +80,7 @@ class Player extends MovableObject
 			if target.openable
 				if target.is_open then target.close() else target.open()
 
-class StoneWall extends BaseObject
+class Wall extends BaseObject
 	solid: true
 
 	constructor: (options) ->
@@ -100,16 +100,12 @@ class Door extends Openable
 		if @is_open then @open() else @close()
 
 	open: () ->
-		#destroy_sprite(@sprite)
-		#@sprite = createSprite('static/img/door_open.png')
 		@sprite.setTexture(@open_texture)
 		@solid = false
 		@is_open = true
 		@draw()
 
 	close: () ->
-		#destroy_sprite(@sprite)
-		#@sprite = createSprite('static/img/door_closed.png')
 		@sprite.setTexture(@closed_texture)
 		@solid = true
 		@is_open = false
