@@ -223,17 +223,30 @@ keyboard = function(keyCodes) {
   var key;
   key = {};
   key.codes = keyCodes;
+  key.first = true;
   key.isDown = false;
   key.isUp = true;
   key.press = void 0;
   key.release = void 0;
   key.downHandler = function(event) {
-    var ref;
+    var press, ref;
     if (ref = event.keyCode, indexOf.call(key.codes, ref) >= 0) {
       if (key.isUp && key.press) {
-        key.press();
         key.isDown = true;
         key.isUp = false;
+        press = function() {
+          var timeOut;
+          if (key.isDown) {
+            key.press();
+            if (key.first) {
+              timeOut = setTimeout(press, 175);
+              return key.first = false;
+            } else {
+              return timeOut = setTimeout(press, 75);
+            }
+          }
+        };
+        press();
         event.preventDefault();
       }
     }
@@ -245,6 +258,7 @@ keyboard = function(keyCodes) {
         key.release();
         key.isDown = false;
         key.isUp = true;
+        key.first = true;
         event.preventDefault();
       }
     }
