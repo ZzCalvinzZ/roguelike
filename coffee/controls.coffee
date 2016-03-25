@@ -1,28 +1,30 @@
 keyboard = (keyCodes) ->
 	key = {}
 	key.codes = keyCodes
+	key.started = 0
 	key.first = true
 	key.isDown = false
 	key.isUp = true
 	key.press = undefined
 	key.release = undefined
+	timeOut = null
 
 	key.downHandler = (event) ->
 		if event.keyCode in key.codes
 			if key.isUp and key.press
-
-				key.isDown = true
-				key.isUp = false
-
+				clearTimeout(timeOut)
+				
 				press = () ->
-					if key.isDown
+					if key.isDown 
 						key.press() 
-
 						if key.first
-							timeOut = setTimeout(press, 175)
+							timeOut = setTimeout(press, 200)
 							key.first = false
 						else
 							timeOut = setTimeout(press, 75)
+
+				key.isDown = true
+				key.isUp = false
 
 				press()
 

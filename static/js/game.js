@@ -220,32 +220,34 @@ Door = (function(superClass) {
 })(Openable);
 
 keyboard = function(keyCodes) {
-  var key;
+  var key, timeOut;
   key = {};
   key.codes = keyCodes;
+  key.started = 0;
   key.first = true;
   key.isDown = false;
   key.isUp = true;
   key.press = void 0;
   key.release = void 0;
+  timeOut = null;
   key.downHandler = function(event) {
     var press, ref;
     if (ref = event.keyCode, indexOf.call(key.codes, ref) >= 0) {
       if (key.isUp && key.press) {
-        key.isDown = true;
-        key.isUp = false;
+        clearTimeout(timeOut);
         press = function() {
-          var timeOut;
           if (key.isDown) {
             key.press();
             if (key.first) {
-              timeOut = setTimeout(press, 175);
+              timeOut = setTimeout(press, 200);
               return key.first = false;
             } else {
               return timeOut = setTimeout(press, 75);
             }
           }
         };
+        key.isDown = true;
+        key.isUp = false;
         press();
         event.preventDefault();
       }
