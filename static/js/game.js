@@ -1,7 +1,17 @@
-var BaseObject, CELL_SIZE, DEFAULT_MAP_SIZE, Door, MovableObject, Openable, Player, SCREEN_HEIGHT, SCREEN_WIDTH, Wall, camera, createSprite, create_map, create_town_map, destroy_sprite, draw_box, get_targets, keyboard, map, player, setupKeybindings, stage,
+var BaseObject, CELL_SIZE, DEFAULT_MAP_SIZE, Door, MovableObject, Openable, Player, SCREEN_HEIGHT, SCREEN_WIDTH, Wall, camera, createSprite, create_map, create_town_map, destroy_sprite, draw_box, get_targets, keyboard, map, player, setupKeybindings, sleep, stage,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+sleep = function(ms) {
+  var results, start;
+  start = new Date().getTime();
+  results = [];
+  while (new Date().getTime() - start < ms) {
+    continue;
+  }
+  return results;
+};
 
 createSprite = function(file) {
   var texture;
@@ -95,7 +105,7 @@ MovableObject = (function(superClass) {
     if (direction === 'right' && none_are_solid(targets)) {
       this.x += 1;
       this.sprite.x += CELL_SIZE;
-      if (this.player && this.sprite.x > SCREEN_WIDTH / 3 - camera.x) {
+      if (this.player && this.sprite.x > 2 * SCREEN_WIDTH / 3 - camera.x) {
         camera.x -= 25;
       }
     }

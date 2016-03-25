@@ -1,20 +1,3 @@
-createSprite = (file) ->
-	texture = PIXI.Texture.fromImage(file)
-	new PIXI.Sprite(texture)
-
-get_targets = (direction, x, y) ->
-		targets = map[x - 1][y] if direction is 'left'
-		targets = map[x + 1][y] if direction is 'right'
-		targets = map[x][y - 1] if direction is 'up'
-		targets = map[x][y + 1] if direction is 'down'
-
-		return targets
-
-destroy_sprite = (sprite) ->
-	if sprite
-		stage.removeChild(sprite)
-		sprite.destroy()
-
 class BaseObject
 	sprite: null
 	solid: false
@@ -51,7 +34,7 @@ class MovableObject extends BaseObject
 			@x += 1
 			@sprite.x += CELL_SIZE
 
-			if @player and @sprite.x > SCREEN_WIDTH / 3 - camera.x
+			if @player and @sprite.x > 2 * SCREEN_WIDTH / 3 - camera.x
 				camera.x -= 25
 
 		if direction is 'up' and none_are_solid(targets)
