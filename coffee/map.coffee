@@ -19,7 +19,7 @@ draw_box = (map, size, x_left, y_top, sprite) ->
 	return
 
 create_town_map = () ->
-	size = 50
+	size = 39
 	center = size // 2
 
 	map = create_map(size)
@@ -28,10 +28,15 @@ create_town_map = () ->
 
 	#create stores
 	store_size = 5
+	y=5
 	i=3
 
-	while i<23
-		draw_box(map, store_size, i, 3, Wall)
+	while i<37
+		draw_box(map, store_size, i, y, Wall)
+		door_x = i + store_size // 2
+		door_y = y + store_size - 1
+		destroy_sprite(map[door_x][door_y].pop().sprite)
+		map[door_x][door_y] = [new Door({x:door_x,y:door_y})]
 
 		i += 7
 

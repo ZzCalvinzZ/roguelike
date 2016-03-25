@@ -192,14 +192,14 @@ Door = (function(superClass) {
   }
 
   Door.prototype.open = function() {
-    this.sprite.setTexture(this.open_texture);
+    this.sprite.texture = this.open_texture;
     this.solid = false;
     this.is_open = true;
     return this.draw();
   };
 
   Door.prototype.close = function() {
-    this.sprite.setTexture(this.closed_texture);
+    this.sprite.texture = this.closed_texture;
     this.solid = true;
     this.is_open = false;
     return this.draw();
@@ -346,15 +346,25 @@ draw_box = function(map, size, x_left, y_top, sprite) {
 };
 
 create_town_map = function() {
-  var center, i, size, store_size;
-  size = 50;
+  var center, door_x, door_y, i, size, store_size, y;
+  size = 39;
   center = Math.floor(size / 2);
   map = create_map(size);
   draw_box(map, size, 0, 0, Wall);
   store_size = 5;
+  y = 5;
   i = 3;
-  while (i < 23) {
-    draw_box(map, store_size, i, 3, Wall);
+  while (i < 37) {
+    draw_box(map, store_size, i, y, Wall);
+    door_x = i + Math.floor(store_size / 2);
+    door_y = y + store_size - 1;
+    destroy_sprite(map[door_x][door_y].pop().sprite);
+    map[door_x][door_y] = [
+      new Door({
+        x: door_x,
+        y: door_y
+      })
+    ];
     i += 7;
   }
   return map;

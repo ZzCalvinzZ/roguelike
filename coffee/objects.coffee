@@ -101,13 +101,13 @@ class Door extends Openable
 		if @is_open then @open() else @close()
 
 	open: () ->
-		@sprite.setTexture(@open_texture)
+		@sprite.texture = @open_texture
 		@solid = false
 		@is_open = true
 		@draw()
 
 	close: () ->
-		@sprite.setTexture(@closed_texture)
+		@sprite.texture = @closed_texture 
 		@solid = true
 		@is_open = false
 		@draw()
