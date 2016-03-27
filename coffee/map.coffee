@@ -39,5 +39,7 @@ create_town_map = () ->
 		map[door_x][door_y] = [new Door({x:door_x,y:door_y})]
 
 		i += 7
+	
+	map[15][20].push(new Stairs({x:15,y:20}))
 
 	return map

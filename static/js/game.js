@@ -1,4 +1,4 @@
-var BaseObject, CELL_SIZE, DEFAULT_MAP_SIZE, Door, MovableObject, Openable, Player, SCREEN_HEIGHT, SCREEN_WIDTH, Wall, camera, createSprite, create_map, create_town_map, destroy_sprite, draw_box, get_targets, keyboard, map, player, setupKeybindings, sleep, stage,
+var BaseObject, CELL_SIZE, DEFAULT_MAP_SIZE, Door, MovableObject, Openable, Player, SCREEN_HEIGHT, SCREEN_WIDTH, Stairs, Wall, camera, createSprite, create_map, create_town_map, destroy_sprite, draw_box, get_targets, keyboard, map, player, setupKeybindings, sleep, stage,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
@@ -219,6 +219,23 @@ Door = (function(superClass) {
 
 })(Openable);
 
+Stairs = (function(superClass) {
+  extend(Stairs, superClass);
+
+  function Stairs(options) {
+    Stairs.__super__.constructor.call(this, options);
+    if (options.up) {
+      this.sprite = createSprite('static/img/stairs_up.png');
+    } else {
+      this.sprite = createSprite('static/img/stairs_down.png');
+    }
+    this.draw(this.x, this.y);
+  }
+
+  return Stairs;
+
+})(BaseObject);
+
 keyboard = function(keyCodes) {
   var key, timeOut;
   key = {};
@@ -393,6 +410,10 @@ create_town_map = function() {
     ];
     i += 7;
   }
+  map[15][20].push(new Stairs({
+    x: 15,
+    y: 20
+  }));
   return map;
 };
 
