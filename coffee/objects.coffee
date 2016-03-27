@@ -95,3 +95,12 @@ class Door extends Openable
 		@is_open = false
 		@draw()
 
+class Stairs extends BaseObject
+
+	constructor: (options) ->
+		super(options)
+		if options.up
+			@sprite = createSprite('static/img/stairs_up.png')
+		else
+			@sprite = createSprite('static/img/stairs_down.png')
+		@draw(@x, @y)
