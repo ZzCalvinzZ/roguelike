@@ -28,28 +28,28 @@ class MovableObject extends BaseObject
 			@sprite.x -= CELL_SIZE
 
 			if @player and @sprite.x < SCREEN_WIDTH / 3 - camera.x
-				camera.x += 25
+				camera.x += 20
 
 		if direction is 'right' and none_are_solid(targets)
 			@x += 1
 			@sprite.x += CELL_SIZE
 
 			if @player and @sprite.x > 2 * SCREEN_WIDTH / 3 - camera.x
-				camera.x -= 25
+				camera.x -= 20
 
 		if direction is 'up' and none_are_solid(targets)
 			@y -= 1
 			@sprite.y -= CELL_SIZE
 
 			if @player and @sprite.y < SCREEN_HEIGHT / 3 - camera.y
-				camera.y += 25
+				camera.y += 20
 
 		if direction is 'down' and none_are_solid(targets)
 			@y += 1
 			@sprite.y += CELL_SIZE
 
 			if @player and @sprite.y > 2 * SCREEN_HEIGHT / 3 - camera.y
-				camera.y -= 25
+				camera.y -= 20
 
 class Player extends MovableObject
 	player: true
