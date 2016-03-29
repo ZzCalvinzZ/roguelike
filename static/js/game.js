@@ -421,6 +421,11 @@ create_town_map = function() {
 
 $(document).ready(function() {
   var gameLoop, renderer;
+  window.onresize = function(event) {
+    SCREEN_WIDTH = window.innerWidth;
+    SCREEN_HEIGHT = window.innerHeight;
+    return renderer.resize(SCREEN_WIDTH, SCREEN_HEIGHT);
+  };
   SCREEN_HEIGHT = $(window).height();
   SCREEN_WIDTH = $(window).width();
   gameLoop = function() {

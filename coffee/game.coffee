@@ -1,4 +1,11 @@
 $(document).ready ->
+
+	#readjust canvas when adjusting window
+	window.onresize = (event) ->
+		SCREEN_WIDTH = window.innerWidth
+		SCREEN_HEIGHT = window.innerHeight
+		renderer.resize(SCREEN_WIDTH, SCREEN_HEIGHT)
+
 	SCREEN_HEIGHT = $(window).height()
 	SCREEN_WIDTH = $(window).width()
 
