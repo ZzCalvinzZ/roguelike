@@ -99,28 +99,28 @@ MovableObject = (function(superClass) {
       this.x -= 1;
       this.sprite.x -= CELL_SIZE;
       if (this.player && this.sprite.x < SCREEN_WIDTH / 3 - camera.x) {
-        camera.x += 20;
+        camera.x += CELL_SIZE;
       }
     }
     if (direction === 'right' && none_are_solid(targets)) {
       this.x += 1;
       this.sprite.x += CELL_SIZE;
       if (this.player && this.sprite.x > 2 * SCREEN_WIDTH / 3 - camera.x) {
-        camera.x -= 20;
+        camera.x -= CELL_SIZE;
       }
     }
     if (direction === 'up' && none_are_solid(targets)) {
       this.y -= 1;
       this.sprite.y -= CELL_SIZE;
       if (this.player && this.sprite.y < SCREEN_HEIGHT / 3 - camera.y) {
-        camera.y += 20;
+        camera.y += CELL_SIZE;
       }
     }
     if (direction === 'down' && none_are_solid(targets)) {
       this.y += 1;
       this.sprite.y += CELL_SIZE;
       if (this.player && this.sprite.y > 2 * SCREEN_HEIGHT / 3 - camera.y) {
-        return camera.y -= 20;
+        return camera.y -= CELL_SIZE;
       }
     }
   };
