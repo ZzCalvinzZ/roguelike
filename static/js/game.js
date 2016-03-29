@@ -1,4 +1,4 @@
-var BaseObject, CELL_SIZE, DEFAULT_MAP_SIZE, Door, MovableObject, Openable, Player, SCREEN_HEIGHT, SCREEN_WIDTH, Stairs, Wall, camera, createSprite, create_map, create_town_map, destroy_sprite, draw_box, get_targets, keyboard, map, player, setupKeybindings, sleep, stage,
+var BaseObject, CELL_SIZE, DEFAULT_MAP_SIZE, Door, MovableObject, Openable, Player, SCREEN_HEIGHT, SCREEN_WIDTH, Stairs, Wall, camera, center_camera_on, createSprite, create_map, create_town_map, destroy_sprite, draw_box, get_camera_center, get_targets, keyboard, map, player, setupKeybindings, sleep, stage,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
@@ -41,6 +41,21 @@ destroy_sprite = function(sprite) {
     stage.removeChild(sprite);
     return sprite.destroy();
   }
+};
+
+get_camera_center = function() {
+  var x, y;
+  x = camera.x + SCREEN_WIDTH / 2;
+  y = camera.y + SCREEN_HEIGHT / 2;
+  return {
+    x: x,
+    y: y
+  };
+};
+
+center_camera_on = function(object) {
+  camera.x = Math.floor(SCREEN_WIDTH / 2) - object.sprite.x;
+  camera.y = Math.floor(SCREEN_HEIGHT / 2) - object.sprite.y;
 };
 
 BaseObject = (function() {
@@ -337,8 +352,8 @@ stage = new PIXI.Container;
 camera = new PIXI.Container;
 
 player = new Player({
-  x: 1,
-  y: 5
+  x: 25,
+  y: 25
 });
 
 map = null;
@@ -439,6 +454,7 @@ $(document).ready(function() {
   setupKeybindings();
   map = create_town_map();
   player.draw();
+  center_camera_on(player);
   camera.addChild(stage);
   gameLoop();
 });

@@ -19,3 +19,16 @@ destroy_sprite = (sprite) ->
 		stage.removeChild(sprite)
 		sprite.destroy()
 
+get_camera_center = () ->
+	x =  camera.x + SCREEN_WIDTH  / 2
+	y =  camera.y + SCREEN_HEIGHT  / 2
+
+	return {
+		x: x,
+		y: y,
+	}
+
+center_camera_on = (object) ->
+	camera.x = SCREEN_WIDTH / 2 - object.sprite.x
+	camera.y = SCREEN_HEIGHT / 2 - object.sprite.y 
+	return

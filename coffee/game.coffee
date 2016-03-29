@@ -31,6 +31,7 @@ $(document).ready ->
 	#});
 	
 	player.draw()
+	center_camera_on(player)
 
 	camera.addChild(stage)
 	#main loop
