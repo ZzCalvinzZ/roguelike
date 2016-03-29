@@ -7,4 +7,6 @@ stage = new(PIXI.Container)
 camera = new(PIXI.Container)
 
 player = new Player({x:1,y:5})
+map = null
+
 #[camera.x, camera.y] = [player.sprite.x, player.sprite.y - SCREEN_HEIGHT/2]

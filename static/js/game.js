@@ -341,6 +341,8 @@ player = new Player({
   y: 5
 });
 
+map = null;
+
 map = [];
 
 create_map = function(map_size) {
@@ -419,6 +421,8 @@ create_town_map = function() {
 
 $(document).ready(function() {
   var gameLoop, renderer;
+  SCREEN_HEIGHT = $(window).height();
+  SCREEN_WIDTH = $(window).width();
   gameLoop = function() {
     requestAnimationFrame(gameLoop);
     renderer.render(camera);
