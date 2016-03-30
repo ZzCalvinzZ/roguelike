@@ -66,6 +66,13 @@ class Player extends MovableObject
 			if target.openable
 				if target.is_open then target.close() else target.open()
 
+	use_stairs: () ->
+		targets = get_targets('here', @x, @y)
+
+		for target in targets
+			if target.stairs
+				target.use()
+
 class Wall extends BaseObject
 	solid: true
 
@@ -99,6 +106,7 @@ class Door extends Openable
 		@draw()
 
 class Stairs extends BaseObject
+	stairs: true
 
 	constructor: (options) ->
 		super(options)
@@ -111,8 +119,9 @@ class Stairs extends BaseObject
 		@draw(@x, @y)
 
 	use: () ->
-		if @up
-			gamestate.go_up_a_level()
-		if @down
-			gamestate.go_down_a_level()
+		console.log('booya')
+		#if @up
+			#gamestate.go_up_a_level()
+		#if @down
+			#gamestate.go_down_a_level()
 

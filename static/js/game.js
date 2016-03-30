@@ -33,6 +33,9 @@ get_targets = function(direction, x, y) {
   if (direction === 'down') {
     targets = gamestate.map[x][y + 1];
   }
+  if (direction === 'here') {
+    targets = gamestate.map[x][y];
+  }
   return targets;
 };
 
@@ -183,6 +186,21 @@ Player = (function(superClass) {
     return results;
   };
 
+  Player.prototype.use_stairs = function() {
+    var j, len, results, target, targets;
+    targets = get_targets('here', this.x, this.y);
+    results = [];
+    for (j = 0, len = targets.length; j < len; j++) {
+      target = targets[j];
+      if (target.stairs) {
+        results.push(target.use());
+      } else {
+        results.push(void 0);
+      }
+    }
+    return results;
+  };
+
   return Player;
 
 })(MovableObject);
@@ -241,6 +259,8 @@ Door = (function(superClass) {
 Stairs = (function(superClass) {
   extend(Stairs, superClass);
 
+  Stairs.prototype.stairs = true;
+
   function Stairs(options) {
     Stairs.__super__.constructor.call(this, options);
     if (options.up) {
@@ -254,12 +274,7 @@ Stairs = (function(superClass) {
   }
 
   Stairs.prototype.use = function() {
-    if (this.up) {
-      gamestate.go_up_a_level();
-    }
-    if (this.down) {
-      return gamestate.go_down_a_level();
-    }
+    return console.log('booya');
   };
 
   return Stairs;
@@ -312,18 +327,27 @@ keyboard = function(keyCodes) {
       }
     }
   };
+  key.pressHandler = function(event) {
+    var charStr;
+    charStr = String.fromCharCode(event.keyCode);
+    if (indexOf.call(key.codes, charStr) >= 0) {
+      return key.press();
+    }
+  };
   window.addEventListener('keydown', key.downHandler.bind(key), false);
   window.addEventListener('keyup', key.upHandler.bind(key), false);
+  window.addEventListener('keypress', key.pressHandler.bind(key), false);
   return key;
 };
 
 setupKeybindings = function() {
-  var do_direction, down, left, open, right, up;
+  var descend, do_direction, down, left, open, right, up;
   left = keyboard([37, 72]);
   up = keyboard([38, 75]);
   right = keyboard([39, 76]);
   down = keyboard([40, 74]);
   open = keyboard([79]);
+  descend = keyboard(['>']);
   do_direction = function(direction) {
     if (player.opening === true) {
       player.open(direction);
@@ -351,7 +375,11 @@ setupKeybindings = function() {
   open.press = function() {
     return player.opening = true;
   };
-  return open.release = function() {};
+  open.release = function() {};
+  descend.press = function() {
+    return player.use_stairs();
+  };
+  return descend.release = function() {};
 };
 
 CELL_SIZE = 20;

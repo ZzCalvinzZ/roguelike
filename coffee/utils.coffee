@@ -11,6 +11,7 @@ get_targets = (direction, x, y) ->
 		targets = gamestate.map[x + 1][y] if direction is 'right'
 		targets = gamestate.map[x][y - 1] if direction is 'up'
 		targets = gamestate.map[x][y + 1] if direction is 'down'
+		targets = gamestate.map[x][y] if direction is 'here'
 
 		return targets
 

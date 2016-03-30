@@ -41,9 +41,17 @@ keyboard = (keyCodes) ->
 				event.preventDefault()
 		return
 
+	key.pressHandler = (event) ->
+		charStr = String.fromCharCode(event.keyCode);
+
+		if charStr in key.codes
+			key.press()
+	
 	#Attach event listeners
 	window.addEventListener 'keydown', key.downHandler.bind(key), false
 	window.addEventListener 'keyup', key.upHandler.bind(key), false
+	window.addEventListener 'keypress', key.pressHandler.bind(key), false
+
 	return key
 
 setupKeybindings = ->
@@ -52,6 +60,7 @@ setupKeybindings = ->
 	right = keyboard([39, 76])
 	down = keyboard([40, 74])
 	open = keyboard([79])
+	descend = keyboard(['>'])
 
 	do_direction = (direction) ->
 		if player.opening is true
@@ -85,3 +94,8 @@ setupKeybindings = ->
 		player.opening = true
 
 	open.release = ->
+
+	descend.press = ->
+		player.use_stairs()
+
+	descend.release = ->
