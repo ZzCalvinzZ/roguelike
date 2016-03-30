@@ -1,4 +1,4 @@
-map = []
+gamestate.map = []
 
 create_map = (map_size) ->
 	map = for x in [0...map_size]

@@ -20,7 +20,7 @@ $(document).ready ->
 
 	setupKeybindings()
 
-	map = create_town_map()
+	gamestate.map = create_town_map()
 
 	# setup sounds
 	#var mainTrack = new Howl({

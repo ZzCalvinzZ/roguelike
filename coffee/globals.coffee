@@ -7,6 +7,22 @@ stage = new(PIXI.Container)
 camera = new(PIXI.Container)
 
 player = new Player({x:25,y:25})
-map = null
 
-#[camera.x, camera.y] = [player.sprite.x, player.sprite.y - SCREEN_HEIGHT/2]
+map_data = {
+	level_0: null
+	level_1: null
+}
+
+gamestate = {
+	level: 0
+	map: null
+
+	go_up_a_level: () ->
+		level -= 1
+		@map = create_map_from_data('level_' + level)
+
+	go_down_a_level: () ->
+		level += 1
+		@map = create_map_from_data('level_' + level)
+		
+}

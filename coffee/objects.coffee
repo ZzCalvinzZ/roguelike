@@ -11,6 +11,9 @@ class BaseObject
 		stage.addChild(@sprite)
 		return
 
+	save: () ->
+		return JSON.stringify(this)
+
 class Openable extends BaseObject
 	openable: true
 
@@ -101,6 +104,15 @@ class Stairs extends BaseObject
 		super(options)
 		if options.up
 			@sprite = createSprite('static/img/stairs_up.png')
+			@up = true
 		else
 			@sprite = createSprite('static/img/stairs_down.png')
+			@down = true
 		@draw(@x, @y)
+
+	use: () ->
+		if @up
+			gamestate.go_up_a_level()
+		if @down
+			gamestate.go_down_a_level()
+

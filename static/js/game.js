@@ -1,4 +1,4 @@
-var BaseObject, CELL_SIZE, DEFAULT_MAP_SIZE, Door, MovableObject, Openable, Player, SCREEN_HEIGHT, SCREEN_WIDTH, Stairs, Wall, camera, center_camera_on, createSprite, create_map, create_town_map, destroy_sprite, draw_box, get_camera_center, get_targets, keyboard, map, player, setupKeybindings, sleep, stage,
+var BaseObject, CELL_SIZE, DEFAULT_MAP_SIZE, Door, MovableObject, Openable, Player, SCREEN_HEIGHT, SCREEN_WIDTH, Stairs, Wall, camera, center_camera_on, createSprite, create_map, create_town_map, destroy_sprite, draw_box, gamestate, get_camera_center, get_targets, keyboard, map_data, player, setupKeybindings, sleep, stage,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
@@ -22,16 +22,16 @@ createSprite = function(file) {
 get_targets = function(direction, x, y) {
   var targets;
   if (direction === 'left') {
-    targets = map[x - 1][y];
+    targets = gamestate.map[x - 1][y];
   }
   if (direction === 'right') {
-    targets = map[x + 1][y];
+    targets = gamestate.map[x + 1][y];
   }
   if (direction === 'up') {
-    targets = map[x][y - 1];
+    targets = gamestate.map[x][y - 1];
   }
   if (direction === 'down') {
-    targets = map[x][y + 1];
+    targets = gamestate.map[x][y + 1];
   }
   return targets;
 };
@@ -54,8 +54,8 @@ get_camera_center = function() {
 };
 
 center_camera_on = function(object) {
-  camera.x = Math.floor(SCREEN_WIDTH / 2) - object.sprite.x;
-  camera.y = Math.floor(SCREEN_HEIGHT / 2) - object.sprite.y;
+  camera.x = SCREEN_WIDTH / 2 - object.sprite.x;
+  camera.y = SCREEN_HEIGHT / 2 - object.sprite.y;
 };
 
 BaseObject = (function() {
@@ -71,6 +71,10 @@ BaseObject = (function() {
     this.sprite.x = this.x * CELL_SIZE;
     this.sprite.y = this.y * CELL_SIZE;
     stage.addChild(this.sprite);
+  };
+
+  BaseObject.prototype.save = function() {
+    return JSON.stringify(this);
   };
 
   return BaseObject;
@@ -241,11 +245,22 @@ Stairs = (function(superClass) {
     Stairs.__super__.constructor.call(this, options);
     if (options.up) {
       this.sprite = createSprite('static/img/stairs_up.png');
+      this.up = true;
     } else {
       this.sprite = createSprite('static/img/stairs_down.png');
+      this.down = true;
     }
     this.draw(this.x, this.y);
   }
+
+  Stairs.prototype.use = function() {
+    if (this.up) {
+      gamestate.go_up_a_level();
+    }
+    if (this.down) {
+      return gamestate.go_down_a_level();
+    }
+  };
 
   return Stairs;
 
@@ -356,12 +371,28 @@ player = new Player({
   y: 25
 });
 
-map = null;
+map_data = {
+  level_0: null,
+  level_1: null
+};
 
-map = [];
+gamestate = {
+  level: 0,
+  map: null,
+  go_up_a_level: function() {
+    level -= 1;
+    return this.map = create_map_from_data('level_' + level);
+  },
+  go_down_a_level: function() {
+    level += 1;
+    return this.map = create_map_from_data('level_' + level);
+  }
+};
+
+gamestate.map = [];
 
 create_map = function(map_size) {
-  var x, y;
+  var map, x, y;
   return map = (function() {
     var j, ref, results;
     results = [];
@@ -406,7 +437,7 @@ draw_box = function(map, size, x_left, y_top, sprite) {
 };
 
 create_town_map = function() {
-  var center, door_x, door_y, i, size, store_size, y;
+  var center, door_x, door_y, i, map, size, store_size, y;
   size = 39;
   center = Math.floor(size / 2);
   map = create_map(size);
@@ -452,7 +483,7 @@ $(document).ready(function() {
   });
   document.body.appendChild(renderer.view);
   setupKeybindings();
-  map = create_town_map();
+  gamestate.map = create_town_map();
   player.draw();
   center_camera_on(player);
   camera.addChild(stage);
