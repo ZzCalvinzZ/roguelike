@@ -16,6 +16,7 @@ map_data = {
 gamestate = {
 	level: 0
 	map: null
+	ready: false
 
 	go_up_a_level: () ->
 		level -= 1

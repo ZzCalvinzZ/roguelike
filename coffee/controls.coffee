@@ -10,7 +10,7 @@ keyboard = (keyCodes) ->
 	timeOut = null
 
 	key.downHandler = (event) ->
-		if event.keyCode in key.codes
+		if event.keyCode in key.codes and gamestate.ready
 			if key.isUp and key.press
 				clearTimeout(timeOut)
 				
@@ -32,7 +32,7 @@ keyboard = (keyCodes) ->
 		return
 
 	key.upHandler = (event) ->
-		if event.keyCode in key.codes
+		if event.keyCode in key.codes and gamestate.ready
 			if key.isDown and key.release
 				key.release()
 				key.isDown = false
@@ -44,7 +44,7 @@ keyboard = (keyCodes) ->
 	key.pressHandler = (event) ->
 		charStr = String.fromCharCode(event.keyCode);
 
-		if charStr in key.codes
+		if charStr in key.codes and gamestate.ready
 			key.press()
 	
 	#Attach event listeners

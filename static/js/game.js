@@ -294,7 +294,7 @@ keyboard = function(keyCodes) {
   timeOut = null;
   key.downHandler = function(event) {
     var press, ref;
-    if (ref = event.keyCode, indexOf.call(key.codes, ref) >= 0) {
+    if ((ref = event.keyCode, indexOf.call(key.codes, ref) >= 0) && gamestate.ready) {
       if (key.isUp && key.press) {
         clearTimeout(timeOut);
         press = function() {
@@ -317,7 +317,7 @@ keyboard = function(keyCodes) {
   };
   key.upHandler = function(event) {
     var ref;
-    if (ref = event.keyCode, indexOf.call(key.codes, ref) >= 0) {
+    if ((ref = event.keyCode, indexOf.call(key.codes, ref) >= 0) && gamestate.ready) {
       if (key.isDown && key.release) {
         key.release();
         key.isDown = false;
@@ -330,7 +330,7 @@ keyboard = function(keyCodes) {
   key.pressHandler = function(event) {
     var charStr;
     charStr = String.fromCharCode(event.keyCode);
-    if (indexOf.call(key.codes, charStr) >= 0) {
+    if (indexOf.call(key.codes, charStr) >= 0 && gamestate.ready) {
       return key.press();
     }
   };
@@ -407,6 +407,7 @@ map_data = {
 gamestate = {
   level: 0,
   map: null,
+  ready: false,
   go_up_a_level: function() {
     level -= 1;
     return this.map = create_map_from_data('level_' + level);
@@ -416,8 +417,6 @@ gamestate = {
     return this.map = create_map_from_data('level_' + level);
   }
 };
-
-gamestate.map = [];
 
 create_map = function(map_size) {
   var map, x, y;
@@ -512,6 +511,7 @@ $(document).ready(function() {
   document.body.appendChild(renderer.view);
   setupKeybindings();
   gamestate.map = create_town_map();
+  gamestate.ready = true;
   player.draw();
   center_camera_on(player);
   camera.addChild(stage);
