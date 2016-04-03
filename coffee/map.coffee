@@ -41,3 +41,15 @@ create_town_map = () ->
 	map[15][20].push(new Stairs({x:15,y:20}))
 
 	return map
+
+create_map_from_data = () ->
+	null
+
+create_map = (level) ->
+	size = 100
+	start = {
+		x: Math.random(0, size)
+		y: Math.random(0, size)
+	}
+
+	map = create_map(size)

@@ -119,9 +119,7 @@ class Stairs extends BaseObject
 		@draw(@x, @y)
 
 	use: () ->
-		console.log('booya')
-		#if @up
-			#gamestate.go_up_a_level()
-		#if @down
-			#gamestate.go_down_a_level()
-
+		if @up
+			gamestate.go_up_a_level()
+		if @down
+			gamestate.go_down_a_level()
