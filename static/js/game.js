@@ -1,4 +1,4 @@
-var BaseObject, CELL_SIZE, DEFAULT_MAP_SIZE, Door, MovableObject, Openable, Player, SCREEN_HEIGHT, SCREEN_WIDTH, Stairs, Wall, camera, center_camera_on, createSprite, create_map, create_town_map, destroy_sprite, draw_box, gamestate, get_camera_center, get_targets, keyboard, map_data, player, setupKeybindings, sleep, stage,
+var BaseObject, CELL_SIZE, DEFAULT_MAP_SIZE, Door, MovableObject, Openable, Player, SCREEN_HEIGHT, SCREEN_WIDTH, Stairs, Wall, camera, center_camera_on, createSprite, create_map, create_map_from_data, create_town_map, destroy_sprite, draw_box, gamestate, get_camera_center, get_targets, keyboard, map_data, player, setupKeybindings, sleep, stage,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
@@ -274,7 +274,12 @@ Stairs = (function(superClass) {
   }
 
   Stairs.prototype.use = function() {
-    return console.log('booya');
+    if (this.up) {
+      gamestate.go_up_a_level();
+    }
+    if (this.down) {
+      return gamestate.go_down_a_level();
+    }
   };
 
   return Stairs;
@@ -406,15 +411,15 @@ map_data = {
 
 gamestate = {
   level: 0,
-  map: null,
+  map: [],
   ready: false,
   go_up_a_level: function() {
-    level -= 1;
-    return this.map = create_map_from_data('level_' + level);
+    this.level += 1;
+    return this.map = create_map_from_data('level_' + this.level);
   },
   go_down_a_level: function() {
-    level += 1;
-    return this.map = create_map_from_data('level_' + level);
+    this.level -= 1;
+    return this.map = create_map_from_data('level_' + this.level);
   }
 };
 
@@ -490,6 +495,16 @@ create_town_map = function() {
     y: 20
   }));
   return map;
+};
+
+create_map_from_data = function() {
+  var map, size, start;
+  size = 100;
+  start = {
+    x: Math.random(0, size),
+    y: Math.random(0, size)
+  };
+  return map = create_map(size);
 };
 
 $(document).ready(function() {

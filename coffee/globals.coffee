@@ -19,11 +19,11 @@ gamestate = {
 	ready: false
 
 	go_up_a_level: () ->
-		level -= 1
-		@map = create_map_from_data('level_' + level)
+		@level += 1
+		@map = create_map_from_data('level_' + @level)
 
 	go_down_a_level: () ->
-		level += 1
-		@map = create_map_from_data('level_' + level)
+		@level -= 1
+		@map = create_map_from_data('level_' + @level)
 		
 }

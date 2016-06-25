@@ -43,9 +43,6 @@ create_town_map = () ->
 	return map
 
 create_map_from_data = () ->
-	null
-
-create_map = (level) ->
 	size = 100
 	start = {
 		x: Math.random(0, size)

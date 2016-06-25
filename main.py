@@ -1,14 +1,14 @@
 import os
 from flask import Flask
 from flask import render_template
-from flask.ext import assets
+from flask_assets import Environment, Bundle
 
 app = Flask(__name__)
 
 app.config.from_object('settings.default')
 app.config.from_object('settings.local')
 
-env = assets.Environment(app)
+env = Environment(app)
 
 env.load_path = [
     os.path.join(os.path.dirname(__file__), 'coffee'),
@@ -16,7 +16,7 @@ env.load_path = [
 
 env.register(
     'game',
-	assets.Bundle(
+	Bundle(
 		'utils.coffee',
 		'objects.coffee',
 		'controls.coffee',
