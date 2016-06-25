@@ -33,3 +33,6 @@ center_camera_on = (object) ->
 	camera.x = SCREEN_WIDTH / 2 - object.sprite.x
 	camera.y = SCREEN_HEIGHT / 2 - object.sprite.y 
 	return
+
+randomNum = (max,min=0) ->
+	return Math.floor(Math.random() * (max - min) + min)

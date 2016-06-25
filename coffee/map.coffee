@@ -43,11 +43,11 @@ create_town_map = () ->
 	return map
 
 create_map_from_data = () ->
-	x_size = Math.random(100, 200)
-	y_size = Math.random(100, 200)
+	x_size = randomNum(100, 200)
+	y_size = randomNum(100, 200)
 	start = {
-		x: Math.random(0, size)
-		y: Math.random(0, size)
+		x: randomNum(0, x_size)
+		y: randomNum(0, y_size)
 	}
 
 	map = create_map(x_size, y_size)
