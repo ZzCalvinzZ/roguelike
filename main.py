@@ -5,6 +5,8 @@ from flask_assets import Environment, Bundle
 
 app = Flask(__name__)
 
+app.config['ASSETS_DEBUG'] = True
+
 app.config.from_object('settings.default')
 app.config.from_object('settings.local')
 
@@ -12,19 +14,24 @@ env = Environment(app)
 
 env.load_path = [
     os.path.join(os.path.dirname(__file__), 'coffee'),
+    os.path.join(os.path.dirname(__file__), 'static', 'js', 'lib'),
 ]
 
+env.register('utils', Bundle('utils.coffee', filters='coffeescript', output='c/js/utils.js'))
+env.register('objects', Bundle('objects.coffee', filters='coffeescript', output='c/js/objects.js'))
+env.register('controls', Bundle('controls.coffee', filters='coffeescript', output='c/js/controls.js'))
+env.register('globals', Bundle('globals.coffee', filters='coffeescript', output='c/js/globals.js'))
+env.register('map', Bundle('map.coffee', filters='coffeescript', output='c/js/map.js'))
+env.register('game', Bundle('game.coffee', filters='coffeescript', output='c/js/game.js'))
+
 env.register(
-    'game',
+    'libs',
 	Bundle(
-		'utils.coffee',
-		'objects.coffee',
-		'controls.coffee',
-		'globals.coffee',
-		'map.coffee',
-		'game.coffee',
-		filters='coffeescript',
-        output='js/game.js',
+		'pixi.js',
+		'pixi.js.map',
+		'jquery.min.js',
+		'howler.min.js',
+        output='c/js/libs.js',
     )
 )
 

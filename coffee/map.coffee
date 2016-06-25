@@ -1,6 +1,6 @@
-create_map = (map_size) ->
-	map = for x in [0...map_size]
-		for y in [0...map_size]
+create_map = (x_size, y_size) ->
+	map = for x in [0...x_size]
+		for y in [0...y_size]
 			[]
 
 draw_box = (map, size, x_left, y_top, sprite) ->
@@ -20,7 +20,7 @@ create_town_map = () ->
 	size = 39
 	center = size // 2
 
-	map = create_map(size)
+	map = create_map(size, size)
 
 	draw_box(map, size, 0, 0, Wall)
 
@@ -43,10 +43,11 @@ create_town_map = () ->
 	return map
 
 create_map_from_data = () ->
-	size = 100
+	x_size = Math.random(100, 200)
+	y_size = Math.random(100, 200)
 	start = {
 		x: Math.random(0, size)
 		y: Math.random(0, size)
 	}
 
-	map = create_map(size)
+	map = create_map(x_size, y_size)
