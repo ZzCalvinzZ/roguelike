@@ -8,36 +8,23 @@ camera = new(PIXI.Container)
 
 player = new Player({x:25,y:25})
 
-map_data = {
-	level_0: null
-	level_1: null
-	level_2: null
-	level_3: null
-	level_4: null
-	level_5: null
-	level_6: null
-	level_7: null
-	level_8: null
-	level_9: null
-	level_10: null
-	level_11: null
-	level_12: null
-	level_13: null
-	level_14: null
-	level_15: null
-}
 
 gamestate = {
+	map_data: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null]
 	level: 0
 	map: []
 	ready: false
 
 	go_up_a_level: () ->
-		@level += 1
-		@map = create_map_from_data('level_' + @level)
+		@level -= 1
+		@map = get_or_create_map(@level, @map_data)
 
 	go_down_a_level: () ->
-		@level -= 1
-		@map = create_map_from_data('level_' + @level)
+		@level += 1
+		@map = get_or_create_map(@level, @map_data)
 		
 }
+
+get_or_create_map = (level, map_data) ->
+	map_data[level] = if map_data[level] is null then create_map_from_data() else map_data[level]
+	return map_data[level]

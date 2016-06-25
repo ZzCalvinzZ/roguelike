@@ -20,7 +20,7 @@ $(document).ready ->
 
 	setupKeybindings()
 
-	gamestate.map = create_town_map()
+	gamestate.map_data[0] = gamestate.map = create_town_map()
 	gamestate.ready = true
 
 	# setup sounds
