@@ -28,7 +28,6 @@ env.register(
     'libs',
 	Bundle(
 		'pixi.js',
-		'pixi.js.map',
 		'jquery.min.js',
 		'howler.min.js',
         output='c/js/libs.js',

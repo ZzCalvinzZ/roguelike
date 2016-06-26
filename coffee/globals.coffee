@@ -15,16 +15,14 @@ gamestate = {
 	map: []
 	ready: false
 
+	reset_map_to_entrance: () ->
+
 	go_up_a_level: () ->
 		@level -= 1
-		@map = get_or_create_map(@level, @map_data)
+		@map = map_utils.get_or_create_map(@level, @map_data)
 
 	go_down_a_level: () ->
 		@level += 1
-		@map = get_or_create_map(@level, @map_data)
+		@map = map_utils.get_or_create_map(@level, @map_data)
 		
 }
-
-get_or_create_map = (level, map_data) ->
-	map_data[level] = if map_data[level] is null then create_map_from_data() else map_data[level]
-	return map_data[level]
