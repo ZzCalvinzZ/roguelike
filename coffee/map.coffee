@@ -43,7 +43,9 @@ map_utils = {
 
 		return map
 
-	create_map_from_data: (x_size, y_size) ->
+	create_map_from_data: (min, max) ->
+		x_size = randomNum(min, max)
+		y_size = randomNum(min, max)
 		start = {
 			x: randomNum(0, x_size)
 			y: randomNum(0, y_size)
