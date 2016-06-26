@@ -66,17 +66,17 @@ map_utils = {
 
 		return [map, start]
 
-	create_starting_room: (map, start) ->
+	create_starting_room: (map, start, level) ->
 
 		stairs = new Stairs({x:start.x, y:start.y, up:true})
 		map[start.x][start.y].things.push(stairs)
 
-		new Room({map:map, start: start, stairs:stairs})
+		new Room({map:map, start: start, stairs:stairs, level:level})
 
 	generate_map: (map, start, level) ->
 		#a list of doors that still need stuff attached to them
 		doors_to_attach = []
-		@create_starting_room(map, start)
+		@create_starting_room(map, start, level)
 		#@create_room(map, )
 		#@create_hall(map)
 
@@ -92,10 +92,14 @@ class Room
 	y_len: null
 
 	map: null
+	level: null
 	stairs: []
 
 	constructor: (options) ->
 		@map = options.map
+		@level = gamestate.level
+		@level.rooms.push(@)
+
 		@x_len = randomNum(MIN_ROOM_SIZE, MAX_ROOM_SIZE)
 		@y_len = randomNum(MIN_ROOM_SIZE, MAX_ROOM_SIZE)
 

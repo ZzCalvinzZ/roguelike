@@ -17,6 +17,7 @@ class Level
 		x: null
 		y: null
 	}
+	rooms: []
 
 	constructor: (options) ->
 		if options.level?
