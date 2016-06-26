@@ -4,9 +4,9 @@ map_utils = {
 			for y in [0...y_size]
 				[]
 
-	draw_box: (map, size, x_left, y_top, sprite) ->
-		x_right = x_left + size - 1
-		y_bottom = y_top + size - 1
+	draw_box: (map, x_size, y_size, x_left, y_top, sprite) ->
+		x_right = x_left + x_size - 1
+		y_bottom = y_top + y_size - 1
 
 		for x in [x_left..x_right]
 			map[x][y_top].push(new sprite({x:x,y:y_top}))
@@ -23,7 +23,7 @@ map_utils = {
 
 		map = @create_map(size, size)
 
-		@draw_box(map, size, 0, 0, Wall)
+		@draw_box(map, size, size, 0, 0, Wall)
 
 		#create stores
 		store_size = 5
@@ -31,7 +31,7 @@ map_utils = {
 		i=3
 
 		while i<37
-			@draw_box(map, store_size, i, y, Wall)
+			@draw_box(map, store_size, store_size, i, y, Wall)
 			door_x = i + store_size // 2
 			door_y = y + store_size - 1
 			destroy_sprite(map[door_x][door_y].pop().sprite)
@@ -52,4 +52,7 @@ map_utils = {
 		}
 
 		map = @create_map(x_size, y_size)
+		@draw_box(map, x_size, y_size, 0, 0, Wall)
+
+		return map
 }
