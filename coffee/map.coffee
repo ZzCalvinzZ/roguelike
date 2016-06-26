@@ -2,19 +2,19 @@ map_utils = {
 	create_map: (x_size, y_size) ->
 		map = for x in [0...x_size]
 			for y in [0...y_size]
-				[]
+				{things: []}
 
 	draw_box: (map, x_size, y_size, x_left, y_top, sprite) ->
 		x_right = x_left + x_size - 1
 		y_bottom = y_top + y_size - 1
 
 		for x in [x_left..x_right]
-			map[x][y_top].push(new sprite({x:x,y:y_top}))
-			map[x][y_bottom].push(new sprite({x:x,y:y_bottom}))
+			map[x][y_top].things.push(new sprite({x:x,y:y_top}))
+			map[x][y_bottom].things.push(new sprite({x:x,y:y_bottom}))
 
 		for y in [y_top..y_bottom]
-			map[x_left][y].push(new sprite({x:x_left,y:y}))
-			map[x_right][y].push(new sprite({x:x_right,y:y}))
+			map[x_left][y].things.push(new sprite({x:x_left,y:y}))
+			map[x_right][y].things.push(new sprite({x:x_right,y:y}))
 		return
 
 	create_town_map: () ->
@@ -34,8 +34,8 @@ map_utils = {
 			@draw_box(map, store_size, store_size, i, y, Wall)
 			door_x = i + store_size // 2
 			door_y = y + store_size - 1
-			destroy_sprite(map[door_x][door_y].pop().sprite)
-			map[door_x][door_y] = [new Door({x:door_x,y:door_y})]
+			destroy_sprite(map[door_x][door_y].things.pop().sprite)
+			map[door_x][door_y].things = [new Door({x:door_x,y:door_y})]
 
 			i += 7
 		
@@ -44,7 +44,7 @@ map_utils = {
 			y: 20
 		}
 
-		map[15][20].push(new Stairs({x:start.x, y:start.y}))
+		map[15][20].things.push(new Stairs({x:start.x, y:start.y}))
 
 		return [map, start]
 
@@ -69,7 +69,7 @@ map_utils = {
 	create_starting_room: (map, start) ->
 
 		stairs = new Stairs({x:start.x, y:start.y, up:true})
-		map[start.x][start.y].push(stairs)
+		map[start.x][start.y].things.push(stairs)
 
 		new Room({map:map, start: start, stairs:stairs})
 
@@ -114,7 +114,7 @@ class Room
 	put_room_on_map: () ->
 		for x in [@origin.x...@origin.x + @x_len]
 			for y in [@origin.y...@origin.y + @y_len]
-				@map[x][y].push(@)
+				@map[x][y].room = @
 
 	move_room_in_bounds: () ->
 		if @origin.x < 0

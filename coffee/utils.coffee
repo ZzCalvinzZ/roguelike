@@ -7,11 +7,11 @@ createSprite = (file) ->
 	new PIXI.Sprite(texture)
 
 get_targets = (direction, x, y) ->
-		targets = gamestate.level.map_data[x - 1][y] if direction is 'left'
-		targets = gamestate.level.map_data[x + 1][y] if direction is 'right'
-		targets = gamestate.level.map_data[x][y - 1] if direction is 'up'
-		targets = gamestate.level.map_data[x][y + 1] if direction is 'down'
-		targets = gamestate.level.map_data[x][y] if direction is 'here'
+		targets = gamestate.level.map_data[x - 1][y].things if direction is 'left'
+		targets = gamestate.level.map_data[x + 1][y].things if direction is 'right'
+		targets = gamestate.level.map_data[x][y - 1].things if direction is 'up'
+		targets = gamestate.level.map_data[x][y + 1].things if direction is 'down'
+		targets = gamestate.level.map_data[x][y].things if direction is 'here'
 
 		return targets
 

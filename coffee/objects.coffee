@@ -53,7 +53,6 @@ class MovableObject extends BaseObject
 
 			if @player and @sprite.y > 2 * SCREEN_HEIGHT / 3 - camera.y
 				camera.y -= CELL_SIZE
-		console.log(gamestate.level.map_data[@x][@y])
 
 class Player extends MovableObject
 	player: true
