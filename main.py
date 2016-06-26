@@ -5,8 +5,6 @@ from flask_assets import Environment, Bundle
 
 app = Flask(__name__)
 
-app.config['ASSETS_DEBUG'] = True
-
 app.config.from_object('settings.default')
 app.config.from_object('settings.local')
 
