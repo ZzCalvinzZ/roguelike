@@ -17,11 +17,6 @@ map_utils = {
 			map[x_right][y].push(new sprite({x:x_right,y:y}))
 		return
 
-
-	get_or_create_map: (level, map_data) ->
-		map_data[level] = if map_data[level] is null then @create_map_from_data() else map_data[level]
-		return map_data[level]
-
 	create_town_map: () ->
 		size = 39
 		center = size // 2
@@ -48,9 +43,7 @@ map_utils = {
 
 		return map
 
-	create_map_from_data: () ->
-		x_size = randomNum(100, 200)
-		y_size = randomNum(100, 200)
+	create_map_from_data: (x_size, y_size) ->
 		start = {
 			x: randomNum(0, x_size)
 			y: randomNum(0, y_size)

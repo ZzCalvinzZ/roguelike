@@ -7,17 +7,17 @@ createSprite = (file) ->
 	new PIXI.Sprite(texture)
 
 get_targets = (direction, x, y) ->
-		targets = gamestate.map[x - 1][y] if direction is 'left'
-		targets = gamestate.map[x + 1][y] if direction is 'right'
-		targets = gamestate.map[x][y - 1] if direction is 'up'
-		targets = gamestate.map[x][y + 1] if direction is 'down'
-		targets = gamestate.map[x][y] if direction is 'here'
+		targets = gamestate.level.map_data[x - 1][y] if direction is 'left'
+		targets = gamestate.level.map_data[x + 1][y] if direction is 'right'
+		targets = gamestate.level.map_data[x][y - 1] if direction is 'up'
+		targets = gamestate.level.map_data[x][y + 1] if direction is 'down'
+		targets = gamestate.level.map_data[x][y] if direction is 'here'
 
 		return targets
 
 destroy_sprite = (sprite) ->
 	if sprite
-		stage.removeChild(sprite)
+		gamestate.level.stage.removeChild(sprite)
 		sprite.destroy()
 
 get_camera_center = () ->

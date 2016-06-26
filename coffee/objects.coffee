@@ -8,7 +8,7 @@ class BaseObject
 	draw: () ->
 		@sprite.x = @x * CELL_SIZE
 		@sprite.y = @y * CELL_SIZE
-		stage.addChild(@sprite)
+		gamestate.level.stage.addChild(@sprite)
 		return
 
 	save: () ->

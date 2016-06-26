@@ -19,8 +19,7 @@ $(document).ready ->
 	document.body.appendChild(renderer.view)
 
 	setupKeybindings()
-
-	gamestate.map_data[0] = gamestate.map = map_utils.create_town_map()
+	gamestate.move_level(0)
 	gamestate.ready = true
 
 	# setup sounds
@@ -34,7 +33,7 @@ $(document).ready ->
 	player.draw()
 	center_camera_on(player)
 
-	camera.addChild(stage)
+	camera.addChild(gamestate.level.stage)
 	#main loop
 	gameLoop()
 
