@@ -30,10 +30,6 @@ $(document).ready ->
 	#volume: 0.3,
 	#});
 	
-	player.draw()
-	center_camera_on(player)
-
-	camera.addChild(gamestate.level.stage)
 	#main loop
 	gameLoop()
 

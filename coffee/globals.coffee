@@ -31,7 +31,8 @@ class Level
 		@stage = new(PIXI.Container)
 
 	reset_map_to_entrance: () ->
-		pass
+		player.draw()
+		center_camera_on(player)
 
 gamestate = {
 	levels: {}
@@ -49,6 +50,7 @@ gamestate = {
 
 	move_level: (next_level) ->
 		if @level isnt null
+			@level.stage.removeChild(player)
 			@level.stage.visible = false
 
 		if next_level of @levels
@@ -58,4 +60,7 @@ gamestate = {
 			@level = new Level({level:next_level})
 			@level.create_map()
 			@levels[next_level] = @level
+		
+		camera.addChild(gamestate.level.stage)
+		@level.reset_map_to_entrance()
 }
