@@ -11,6 +11,10 @@ class Level
 	map_data: []
 	level: null
 	stage: null
+	start: {
+		x: null
+		y: null
+	}
 
 	constructor: (options) ->
 		if options.level?
@@ -20,17 +24,18 @@ class Level
 		else
 			console.log('need to pass in level')
 
-	create_map: () ->
+	create_map: (options) ->
 
 		if @level is 0
-			@map_data = map_utils.create_town_map()
+			[@map_data, @start] = map_utils.create_town_map()
 		else
-			@map_data = map_utils.create_map_from_data(@level*10 + 100, @level*10 + 200)
+			[@map_data, @start] = map_utils.create_map_from_data(@level)
 
 	create_stage: () ->
 		@stage = new(PIXI.Container)
 
 	reset_map_to_entrance: () ->
+		[player.x, player.y] = [@start.x, @start.y]
 		player.draw()
 		center_camera_on(player)
 

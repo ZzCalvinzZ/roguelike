@@ -39,20 +39,40 @@ map_utils = {
 
 			i += 7
 		
-		map[15][20].push(new Stairs({x:15,y:20}))
-
-		return map
-
-	create_map_from_data: (min, max) ->
-		x_size = randomNum(min, max)
-		y_size = randomNum(min, max)
 		start = {
-			x: randomNum(0, x_size)
-			y: randomNum(0, y_size)
+			x: 15
+			y: 20
 		}
 
-		map = @create_map(x_size, y_size)
-		@draw_box(map, x_size, y_size, 0, 0, Wall)
+		map[15][20].push(new Stairs({x:start.x, y:start.y}))
 
-		return map
+		return [map, start]
+
+	create_map_from_data: (level) ->
+		min = level *10 + 100
+		max = level *10 + 200
+
+		x_size = randomNum(min, max)
+		y_size = randomNum(min, max)
+
+		map = @create_map(x_size, y_size)
+		start = {
+			x: randomNum(1, map.length - 1)
+			y: randomNum(1, map[0].length - 1)
+		}
+
+		@generate_map(map, start)
+
+		#@draw_box(map, x_size, y_size, 0, 0, Wall)
+
+		return [map, start]
+
+	create_stairs: (map, start) ->
+
+		map[start.x][start.y].push(new Stairs({x:start.x, y:start.y, up:true}))
+
+	generate_map: (map, start) ->
+		@create_stairs(map, start)
+		#@create_room(map)
+
 }
