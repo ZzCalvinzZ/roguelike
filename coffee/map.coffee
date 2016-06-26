@@ -61,36 +61,68 @@ map_utils = {
 			y: randomNum(1, map[0].length - 1)
 		}
 
-		@generate_map(map, start)
+		@generate_map(map, start, level)
 
 
 		return [map, start]
 
 	create_starting_room: (map, start) ->
 
-		map[start.x][start.y].push(new Stairs({x:start.x, y:start.y, up:true}))
+		stairs = new Stairs({x:start.x, y:start.y, up:true})
+		map[start.x][start.y].push(stairs)
 
-		x = randomNum(MIN_ROOM_SIZE, 20)
-		y = randomNum(MIN_ROOM_SIZE, 20)
+		new Room({map:map, start: start, stairs:stairs})
 
-		x_left = start.x - randomNum(1, x-1)
-		y_top = start.y - randomNum(1, y-1)
-
-		if x_left < 0
-			x_left = 0
-		else if x_left + x > map.length - 1
-			x_left = map.length - x
-
-		if y_top < 0
-			y_top = 0
-		else if y_top + y > map[0].length - 1
-			y_top = map[0].length - y
-
-		@draw_box(map, x, y, x_left, y_top, Wall)
-
-	generate_map: (map, start) ->
+	generate_map: (map, start, level) ->
+		#a list of doors that still need stuff attached to them
+		doors_to_attach = []
 		@create_starting_room(map, start)
 		#@create_room(map, )
 		#@create_hall(map)
 
 }
+
+class Room
+	origin: {
+		x: null
+		y: null
+	}
+
+	x_len: null
+	y_len: null
+
+	map: null
+	stairs: []
+
+	constructor: (options) ->
+		@map = options.map
+		@x_len = randomNum(MIN_ROOM_SIZE, MAX_ROOM_SIZE)
+		@y_len = randomNum(MIN_ROOM_SIZE, MAX_ROOM_SIZE)
+
+		if options.start?
+			@stairs.push(options.stairs)
+			@move_room_in_bounds
+
+			@origin = {
+				x: options.start.x - randomNum(1, @x_len-1)
+				y: options.start.y - randomNum(1, @y_len-1)
+			}
+
+		@put_room_on_map()
+		map_utils.draw_box(@map, @x_len, @y_len, @origin.x, @origin.y, Wall)
+
+	put_room_on_map: () ->
+		for x in [@origin.x...@origin.x + @x_len]
+			for y in [@origin.y...@origin.y + @y_len]
+				@map[x][y].push(@)
+
+	move_room_in_bounds: () ->
+		if @origin.x < 0
+			@origin.x = 0
+		else if @origin.x + x > @map.len - 1
+			@origin.x = @map.len - @x_len
+
+		if @origin.y < 0
+			@origin.y = 0
+		else if @origin.y + y > @map[0].len - 1
+			@origin.y = @map[0].len - @y_len
