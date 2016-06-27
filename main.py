@@ -28,7 +28,6 @@ env.register(
 		'pixi.js',
 		'jquery.min.js',
 		'howler.min.js',
-		filters='jsmin'
         output='c/js/libs.js',
     )
 )
