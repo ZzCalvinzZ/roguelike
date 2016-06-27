@@ -19,9 +19,15 @@
 		</style>
 		<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
+		{# 
 		{% assets "libs" %}
 			<script type="text/javascript" src="{{ ASSET_URL }}"></script>
         {% endassets %}
+		#}
+		<script src="static/js/lib/jquery.min.js"></script>
+		<script src="static/js/lib/pixi.js"></script>
+		<script src="static/js/lib/howler.min.js"></script>
+		<script src="static/js/lib/underscore.min.js"></script>
 		{% assets "utils" %}<script type="text/javascript" src="{{ ASSET_URL }}"></script>{% endassets %}
 		{% assets "objects" %}<script type="text/javascript" src="{{ ASSET_URL }}"></script>{% endassets %}
 		{% assets "controls" %}<script type="text/javascript" src="{{ ASSET_URL }}"></script>{% endassets %}

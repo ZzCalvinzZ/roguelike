@@ -22,15 +22,15 @@ env.register('globals', Bundle('globals.coffee', filters='coffeescript', output=
 env.register('map', Bundle('map.coffee', filters='coffeescript', output='c/js/map.js'))
 env.register('game', Bundle('game.coffee', filters='coffeescript', output='c/js/game.js'))
 
-env.register(
-    'libs',
-	Bundle(
-		'pixi.js',
-		'jquery.min.js',
-		'howler.min.js',
-        output='c/js/libs.js',
-    )
-)
+# env.register(
+    # 'libs',
+	# Bundle(
+		# 'pixi.js',
+		# 'jquery.min.js',
+		# 'howler.min.js',
+        # output='c/js/libs.js',
+    # )
+# )
 
 @app.route('/')
 def main():

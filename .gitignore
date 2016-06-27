@@ -2,5 +2,4 @@
 *.webassets-cache/
 local.py
 .DS_Store
-static/c/*
 static/webassets-external/
