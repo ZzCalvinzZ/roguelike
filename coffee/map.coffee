@@ -105,12 +105,13 @@ class Room
 
 		if options.start?
 			@stairs.push(options.stairs)
-			@move_room_in_bounds
 
 			@origin = {
 				x: options.start.x - randomNum(1, @x_len-1)
 				y: options.start.y - randomNum(1, @y_len-1)
 			}
+
+			@move_room_in_bounds()
 
 		@put_room_on_map()
 		map_utils.draw_box(@map, @x_len, @y_len, @origin.x, @origin.y, Wall)
@@ -123,10 +124,10 @@ class Room
 	move_room_in_bounds: () ->
 		if @origin.x < 0
 			@origin.x = 0
-		else if @origin.x + x > @map.len - 1
-			@origin.x = @map.len - @x_len
+		else if @origin.x + @x_len > @map.length - 1
+			@origin.x = @map.length - @x_len
 
 		if @origin.y < 0
 			@origin.y = 0
-		else if @origin.y + y > @map[0].len - 1
-			@origin.y = @map[0].len - @y_len
+		else if @origin.y + @y_len > @map[0].length - 1
+			@origin.y = @map[0].length - @y_len

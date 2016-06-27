@@ -138,11 +138,11 @@ Room = (function() {
     this.y_len = randomNum(MIN_ROOM_SIZE, MAX_ROOM_SIZE);
     if (options.start != null) {
       this.stairs.push(options.stairs);
-      this.move_room_in_bounds;
       this.origin = {
         x: options.start.x - randomNum(1, this.x_len - 1),
         y: options.start.y - randomNum(1, this.y_len - 1)
       };
+      this.move_room_in_bounds();
     }
     this.put_room_on_map();
     map_utils.draw_box(this.map, this.x_len, this.y_len, this.origin.x, this.origin.y, Wall);
@@ -167,13 +167,13 @@ Room = (function() {
   Room.prototype.move_room_in_bounds = function() {
     if (this.origin.x < 0) {
       this.origin.x = 0;
-    } else if (this.origin.x + x > this.map.len - 1) {
-      this.origin.x = this.map.len - this.x_len;
+    } else if (this.origin.x + this.x_len > this.map.length - 1) {
+      this.origin.x = this.map.length - this.x_len;
     }
     if (this.origin.y < 0) {
       return this.origin.y = 0;
-    } else if (this.origin.y + y > this.map[0].len - 1) {
-      return this.origin.y = this.map[0].len - this.y_len;
+    } else if (this.origin.y + this.y_len > this.map[0].length - 1) {
+      return this.origin.y = this.map[0].length - this.y_len;
     }
   };
 

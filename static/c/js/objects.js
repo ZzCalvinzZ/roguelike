@@ -83,9 +83,12 @@ MovableObject = (function(superClass) {
       this.y += 1;
       this.sprite.y += CELL_SIZE;
       if (this.player && this.sprite.y > 2 * SCREEN_HEIGHT / 3 - camera.y) {
-        return camera.y -= CELL_SIZE;
+        camera.y -= CELL_SIZE;
       }
     }
+    console.log(this.x);
+    console.log(this.y);
+    return console.log(gamestate.level.map_data[this.x][this.y]);
   };
 
   return MovableObject;
