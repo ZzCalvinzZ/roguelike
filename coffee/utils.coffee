@@ -20,6 +20,12 @@ destroy_sprite = (sprite) ->
 		gamestate.level.stage.removeChild(sprite)
 		sprite.destroy()
 
+destroy_all_things_in_cell = (cell) ->
+	sprites = cell.things.length
+	if sprites > 0
+		for sprite in sprites
+			destroy_sprite(sprite)
+
 get_camera_center = () ->
 	x =  camera.x + SCREEN_WIDTH  / 2
 	y =  camera.y + SCREEN_HEIGHT  / 2
@@ -36,3 +42,6 @@ center_camera_on = (object) ->
 
 randomNum = (max,min=0) ->
 	return Math.floor(Math.random() * (max - min) + min)
+
+random_choice = (list) ->
+	return list[Math.floor(Math.random() * list.length)]

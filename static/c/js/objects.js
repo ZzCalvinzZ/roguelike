@@ -83,12 +83,9 @@ MovableObject = (function(superClass) {
       this.y += 1;
       this.sprite.y += CELL_SIZE;
       if (this.player && this.sprite.y > 2 * SCREEN_HEIGHT / 3 - camera.y) {
-        camera.y -= CELL_SIZE;
+        return camera.y -= CELL_SIZE;
       }
     }
-    console.log(this.x);
-    console.log(this.y);
-    return console.log(gamestate.level.map_data[this.x][this.y]);
   };
 
   return MovableObject;
@@ -171,6 +168,8 @@ Door = (function(superClass) {
 
   Door.prototype.closed_texture = PIXI.Texture.fromImage('static/img/door_closed.png');
 
+  Door.prototype.rooms = [];
+
   function Door(options) {
     Door.__super__.constructor.call(this, options);
     this.is_open = options.is_open || false;
@@ -180,6 +179,7 @@ Door = (function(superClass) {
     } else {
       this.close();
     }
+    this.rooms = options.rooms || [];
   }
 
   Door.prototype.open = function() {

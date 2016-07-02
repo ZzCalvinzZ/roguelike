@@ -2,19 +2,23 @@ map_utils = {
 	create_map: (x_size, y_size) ->
 		map = for x in [0...x_size]
 			for y in [0...y_size]
-				{things: []}
+				{things: [], room: null}
 
 	draw_box: (map, x_size, y_size, x_left, y_top, sprite) ->
 		x_right = x_left + x_size - 1
 		y_bottom = y_top + y_size - 1
 
 		for x in [x_left..x_right]
-			map[x][y_top].things.push(new sprite({x:x,y:y_top}))
-			map[x][y_bottom].things.push(new sprite({x:x,y:y_bottom}))
+			if map[x][y_top].things.length < 1
+				map[x][y_top].things.push(new sprite({x:x,y:y_top}))
+			if map[x][y_bottom].things.length < 1
+				map[x][y_bottom].things.push(new sprite({x:x,y:y_bottom}))
 
 		for y in [y_top..y_bottom]
-			map[x_left][y].things.push(new sprite({x:x_left,y:y}))
-			map[x_right][y].things.push(new sprite({x:x_right,y:y}))
+			if map[x_left][y].things.length < 1
+				map[x_left][y].things.push(new sprite({x:x_left,y:y}))
+			if map[x_right][y].things.length < 1
+				map[x_right][y].things.push(new sprite({x:x_right,y:y}))
 		return
 
 	create_town_map: () ->
@@ -73,12 +77,33 @@ map_utils = {
 
 		new Room({map:map, start: start, stairs:stairs, level:level})
 
+	create_ajoining_room: (map, room) ->
+		#recursively create ajoining rooms until none can be made
+		direction = random_choice(['left', 'right', 'top', 'bottom'])
+
+		if direction is 'left' or 'right'
+			door_cell = {
+				x: room[direction]
+				y: randomNum(room.top + 1, room.bottom - 1)
+			}
+		else if direction is 'top' or 'bottom'
+			door_cell = {
+				x: randomNum(room.left + 1, room.right - 1)
+				y: room[direction]
+			}
+		
+		new_room = new Room({map: map, level: room.level, door_cell: door_cell, direction: direction})
+		if new_room.created
+			@create_ajoining_room(map, new_room)
+		else
+			new_room = null
+
 	generate_map: (map, start, level) ->
 		#a list of doors that still need stuff attached to them
 		doors_to_attach = []
-		@create_starting_room(map, start, level)
-		#@create_room(map, )
-		#@create_hall(map)
+		starting_room = @create_starting_room(map, start, level)
+
+		@create_ajoining_room(map, starting_room)
 
 }
 
@@ -88,12 +113,20 @@ class Room
 		y: null
 	}
 
+	left: null
+	right: null
+	top: null
+	bottom: null
+
 	x_len: null
 	y_len: null
+
+	out_of_bounds: false
 
 	map: null
 	level: null
 	stairs: []
+	doors: []
 
 	constructor: (options) ->
 		@map = options.map
@@ -103,6 +136,8 @@ class Room
 		@x_len = randomNum(MIN_ROOM_SIZE, MAX_ROOM_SIZE)
 		@y_len = randomNum(MIN_ROOM_SIZE, MAX_ROOM_SIZE)
 
+
+		#set the origin (top leftmost point)
 		if options.start?
 			@stairs.push(options.stairs)
 
@@ -111,23 +146,78 @@ class Room
 				y: options.start.y - randomNum(1, @y_len-1)
 			}
 
+		else
+			if options.direction is 'left' or 'top'
+				@origin = {
+					x: options.door_cell.x - @x_len-1
+					y: options.door_cell.y - @y_len-1
+				}
+
+			else if options.direction is 'right' or 'bottom'
+				@origin = {
+					x: options.door_cell.x + @x_len+1
+					y: options.door_cell.y + @y_len+1
+				}
+
+		@out_of_bounds = @check_out_of_bounds()
+		@set_bounds()
+
+		if options.start?
 			@move_room_in_bounds()
 
-		@put_room_on_map()
-		map_utils.draw_box(@map, @x_len, @y_len, @origin.x, @origin.y, Wall)
+		if @can_create() or options.start?
+			@put_room_on_map()
+			map_utils.draw_box(@map, @x_len, @y_len, @origin.x, @origin.y, Wall)
+
+			if options.door_cell?
+				destroy_all_things_in_cell(@map[options.door_cell.x][options.door_cell.y])
+				@doors.push(new Door({x:options.door_cell.x, y:options.door_cell.y}))
+
+	can_create:() ->
+		if typeof(@out_of_bounds) == 'string'
+			return false
+
+		for x in [@left..@right]
+			for y in [@top..@bottom]
+				if @map[x][y].room?
+					return false
+
+		return true
+
+	set_bounds: () ->
+		# bounds are first INSIDE the room
+		@left = @origin.x
+		@top = @origin.y
+		@right = @origin.x + @x_len - 1
+		@bottom = @origin.y + @y_len - 1
+
+	check_out_of_bounds: () ->
+		if @origin.x < 0
+			return 'left'
+		else if @origin.x + @x_len > @map.length - 1
+			return 'right'
+		else if @origin.y < 0
+			return 'top'
+		else if @origin.y + @y_len > @map[0].length - 1
+			return 'bottom'
+
+		else
+			return false
 
 	put_room_on_map: () ->
-		for x in [@origin.x...@origin.x + @x_len]
-			for y in [@origin.y...@origin.y + @y_len]
+		#add room object to each cell INSIDE the walls
+		for x in [@origin.x + 1...@origin.x + @x_len - 1]
+			for y in [@origin.y + 1...@origin.y + @y_len - 1]
 				@map[x][y].room = @
+		return
 
 	move_room_in_bounds: () ->
-		if @origin.x < 0
+		if @out_of_bounds == 'left'
 			@origin.x = 0
-		else if @origin.x + @x_len > @map.length - 1
+		else if @out_of_bounds == 'right'
 			@origin.x = @map.length - @x_len
 
-		if @origin.y < 0
+		if @out_of_bounds == 'top'
 			@origin.y = 0
-		else if @origin.y + @y_len > @map[0].length - 1
+		else if @out_of_bounds == 'bottom'
 			@origin.y = @map[0].length - @y_len

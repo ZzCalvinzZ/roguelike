@@ -1,4 +1,4 @@
-var center_camera_on, createSprite, destroy_sprite, get_camera_center, get_targets, randomNum, sleep;
+var center_camera_on, createSprite, destroy_all_things_in_cell, destroy_sprite, get_camera_center, get_targets, randomNum, random_choice, sleep;
 
 sleep = function(ms) {
   var results, start;
@@ -43,6 +43,19 @@ destroy_sprite = function(sprite) {
   }
 };
 
+destroy_all_things_in_cell = function(cell) {
+  var i, len, results, sprite, sprites;
+  sprites = cell.things.length;
+  if (sprites > 0) {
+    results = [];
+    for (i = 0, len = sprites.length; i < len; i++) {
+      sprite = sprites[i];
+      results.push(destroy_sprite(sprite));
+    }
+    return results;
+  }
+};
+
 get_camera_center = function() {
   var x, y;
   x = camera.x + SCREEN_WIDTH / 2;
@@ -63,4 +76,8 @@ randomNum = function(max, min) {
     min = 0;
   }
   return Math.floor(Math.random() * (max - min) + min);
+};
+
+random_choice = function(list) {
+  return list[Math.floor(Math.random() * list.length)];
 };

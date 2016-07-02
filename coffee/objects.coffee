@@ -53,9 +53,9 @@ class MovableObject extends BaseObject
 
 			if @player and @sprite.y > 2 * SCREEN_HEIGHT / 3 - camera.y
 				camera.y -= CELL_SIZE
-		console.log(@x)
-		console.log(@y)
-		console.log(gamestate.level.map_data[@x][@y])
+		#console.log(@x)
+		#console.log(@y)
+		#console.log(gamestate.level.map_data[@x][@y])
 
 class Player extends MovableObject
 	player: true
@@ -87,6 +87,7 @@ class Wall extends BaseObject
 class Door extends Openable
 	open_texture: PIXI.Texture.fromImage('static/img/door_open.png')
 	closed_texture: PIXI.Texture.fromImage('static/img/door_closed.png')
+	rooms: []
 
 	constructor: (options) ->
 		super(options)
@@ -95,6 +96,8 @@ class Door extends Openable
 		@sprite = createSprite('static/img/door_closed.png')
 
 		if @is_open then @open() else @close()
+
+		@rooms = options.rooms or []
 
 	open: () ->
 		@sprite.texture = @open_texture
