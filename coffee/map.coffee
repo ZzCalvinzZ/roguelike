@@ -80,17 +80,24 @@ map_utils = {
 	create_ajoining_room: (map, room) ->
 		#recursively create ajoining rooms until none can be made
 		direction = random_choice(['left', 'right', 'top', 'bottom'])
+		console.log direction
+		console.log room.left
+		console.log room.right
+		console.log room.top
+		console.log room.bottom
 
-		if direction is 'left' or 'right'
+		if direction in ['left', 'right']
 			door_cell = {
 				x: room[direction]
 				y: randomNum(room.top + 1, room.bottom - 1)
 			}
-		else if direction is 'top' or 'bottom'
+		else if direction in ['top', 'bottom']
 			door_cell = {
 				x: randomNum(room.left + 1, room.right - 1)
 				y: room[direction]
 			}
+
+		console.log door_cell
 		
 		new_room = new Room({map: map, level: room.level, door_cell: door_cell, direction: direction})
 		if new_room.created
@@ -136,7 +143,6 @@ class Room
 		@x_len = randomNum(MIN_ROOM_SIZE, MAX_ROOM_SIZE)
 		@y_len = randomNum(MIN_ROOM_SIZE, MAX_ROOM_SIZE)
 
-
 		#set the origin (top leftmost point)
 		if options.start?
 			@stairs.push(options.stairs)
@@ -147,16 +153,28 @@ class Room
 			}
 
 		else
-			if options.direction is 'left' or 'top'
+			if options.direction is 'left'
 				@origin = {
-					x: options.door_cell.x - @x_len-1
-					y: options.door_cell.y - @y_len-1
+					x: options.door_cell.x - @x_len + 1
+					y: options.door_cell.y - randomNum(1, @y_len - 1)
 				}
 
-			else if options.direction is 'right' or 'bottom'
+			else if options.direction is 'right'
 				@origin = {
-					x: options.door_cell.x + @x_len+1
-					y: options.door_cell.y + @y_len+1
+					x: options.door_cell.x
+					y: options.door_cell.y - randomNum(1, @y_len - 1)
+				}
+
+			else if options.direction is 'top'
+				@origin = {
+					x: options.door_cell.x - randomNum(1, @x_len - 1)
+					y: options.door_cell.y - @y_len + 1
+				}
+
+			else if options.direction is 'bottom'
+				@origin = {
+					x: options.door_cell.x - randomNum(1, @x_len - 1)
+					y: options.door_cell.y
 				}
 
 		@out_of_bounds = @check_out_of_bounds()
@@ -164,6 +182,7 @@ class Room
 
 		if options.start?
 			@move_room_in_bounds()
+			@set_bounds()
 
 		if @can_create() or options.start?
 			@put_room_on_map()
@@ -171,7 +190,12 @@ class Room
 
 			if options.door_cell?
 				destroy_all_things_in_cell(@map[options.door_cell.x][options.door_cell.y])
-				@doors.push(new Door({x:options.door_cell.x, y:options.door_cell.y}))
+				@add_door(options.door_cell.x, options.door_cell.y)
+
+	add_door: (x, y) ->
+		door = new Door({x:x, y:y})
+		@doors.push(door)
+		@map[x][y].things.push(door)
 
 	can_create:() ->
 		if typeof(@out_of_bounds) == 'string'
@@ -185,7 +209,6 @@ class Room
 		return true
 
 	set_bounds: () ->
-		# bounds are first INSIDE the room
 		@left = @origin.x
 		@top = @origin.y
 		@right = @origin.x + @x_len - 1

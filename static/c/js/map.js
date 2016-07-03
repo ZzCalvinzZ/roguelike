@@ -119,17 +119,23 @@ map_utils = {
   create_ajoining_room: function(map, room) {
     var direction, door_cell, new_room;
     direction = random_choice(['left', 'right', 'top', 'bottom']);
-    if (direction === 'left' || 'right') {
+    console.log(direction);
+    console.log(room.left);
+    console.log(room.right);
+    console.log(room.top);
+    console.log(room.bottom);
+    if (direction === 'left' || direction === 'right') {
       door_cell = {
         x: room[direction],
         y: randomNum(room.top + 1, room.bottom - 1)
       };
-    } else if (direction === 'top' || 'bottom') {
+    } else if (direction === 'top' || direction === 'bottom') {
       door_cell = {
         x: randomNum(room.left + 1, room.right - 1),
         y: room[direction]
       };
     }
+    console.log(door_cell);
     new_room = new Room({
       map: map,
       level: room.level,
@@ -191,15 +197,25 @@ Room = (function() {
         y: options.start.y - randomNum(1, this.y_len - 1)
       };
     } else {
-      if (options.direction === 'left' || 'top') {
+      if (options.direction === 'left') {
         this.origin = {
-          x: options.door_cell.x - this.x_len - 1,
-          y: options.door_cell.y - this.y_len - 1
+          x: options.door_cell.x - this.x_len + 1,
+          y: options.door_cell.y - randomNum(1, this.y_len - 1)
         };
-      } else if (options.direction === 'right' || 'bottom') {
+      } else if (options.direction === 'right') {
         this.origin = {
-          x: options.door_cell.x + this.x_len + 1,
-          y: options.door_cell.y + this.y_len + 1
+          x: options.door_cell.x,
+          y: options.door_cell.y - randomNum(1, this.y_len - 1)
+        };
+      } else if (options.direction === 'top') {
+        this.origin = {
+          x: options.door_cell.x - randomNum(1, this.x_len - 1),
+          y: options.door_cell.y - this.y_len + 1
+        };
+      } else if (options.direction === 'bottom') {
+        this.origin = {
+          x: options.door_cell.x - randomNum(1, this.x_len - 1),
+          y: options.door_cell.y
         };
       }
     }
@@ -207,19 +223,27 @@ Room = (function() {
     this.set_bounds();
     if (options.start != null) {
       this.move_room_in_bounds();
+      this.set_bounds();
     }
     if (this.can_create() || (options.start != null)) {
       this.put_room_on_map();
       map_utils.draw_box(this.map, this.x_len, this.y_len, this.origin.x, this.origin.y, Wall);
       if (options.door_cell != null) {
         destroy_all_things_in_cell(this.map[options.door_cell.x][options.door_cell.y]);
-        this.doors.push(new Door({
-          x: options.door_cell.x,
-          y: options.door_cell.y
-        }));
+        this.add_door(options.door_cell.x, options.door_cell.y);
       }
     }
   }
+
+  Room.prototype.add_door = function(x, y) {
+    var door;
+    door = new Door({
+      x: x,
+      y: y
+    });
+    this.doors.push(door);
+    return this.map[x][y].things.push(door);
+  };
 
   Room.prototype.can_create = function() {
     var j, k, ref, ref1, ref2, ref3, x, y;

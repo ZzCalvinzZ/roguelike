@@ -1,3 +1,11 @@
+Array.prototype.remove = (args...) ->
+  output = []
+  for arg in args
+    index = @indexOf arg
+    output.push @splice(index, 1) if index isnt -1
+  output = output[0] if args.length is 1
+  output
+
 sleep = (ms) ->
   start = new Date().getTime()
   continue while new Date().getTime() - start < ms
@@ -21,10 +29,12 @@ destroy_sprite = (sprite) ->
 		sprite.destroy()
 
 destroy_all_things_in_cell = (cell) ->
-	sprites = cell.things.length
-	if sprites > 0
-		for sprite in sprites
-			destroy_sprite(sprite)
+	things = cell.things
+	if things.length > 0
+		for thing in things
+			things.remove(thing)
+			destroy_sprite(thing.sprite)
+	return
 
 get_camera_center = () ->
 	x =  camera.x + SCREEN_WIDTH  / 2

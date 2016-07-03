@@ -1,4 +1,22 @@
-var center_camera_on, createSprite, destroy_all_things_in_cell, destroy_sprite, get_camera_center, get_targets, randomNum, random_choice, sleep;
+var center_camera_on, createSprite, destroy_all_things_in_cell, destroy_sprite, get_camera_center, get_targets, randomNum, random_choice, sleep,
+  slice = [].slice;
+
+Array.prototype.remove = function() {
+  var arg, args, i, index, len, output;
+  args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
+  output = [];
+  for (i = 0, len = args.length; i < len; i++) {
+    arg = args[i];
+    index = this.indexOf(arg);
+    if (index !== -1) {
+      output.push(this.splice(index, 1));
+    }
+  }
+  if (args.length === 1) {
+    output = output[0];
+  }
+  return output;
+};
 
 sleep = function(ms) {
   var results, start;
@@ -44,15 +62,14 @@ destroy_sprite = function(sprite) {
 };
 
 destroy_all_things_in_cell = function(cell) {
-  var i, len, results, sprite, sprites;
-  sprites = cell.things.length;
-  if (sprites > 0) {
-    results = [];
-    for (i = 0, len = sprites.length; i < len; i++) {
-      sprite = sprites[i];
-      results.push(destroy_sprite(sprite));
+  var i, len, thing, things;
+  things = cell.things;
+  if (things.length > 0) {
+    for (i = 0, len = things.length; i < len; i++) {
+      thing = things[i];
+      things.remove(thing);
+      destroy_sprite(thing.sprite);
     }
-    return results;
   }
 };
 

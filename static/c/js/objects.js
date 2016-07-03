@@ -83,9 +83,11 @@ MovableObject = (function(superClass) {
       this.y += 1;
       this.sprite.y += CELL_SIZE;
       if (this.player && this.sprite.y > 2 * SCREEN_HEIGHT / 3 - camera.y) {
-        return camera.y -= CELL_SIZE;
+        camera.y -= CELL_SIZE;
       }
     }
+    console.log("x: " + this.x);
+    return console.log("y: " + this.y);
   };
 
   return MovableObject;
