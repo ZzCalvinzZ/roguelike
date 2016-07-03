@@ -79,31 +79,40 @@ map_utils = {
 
 	create_ajoining_room: (map, room) ->
 		#recursively create ajoining rooms until none can be made
-		direction = random_choice(['left', 'right', 'top', 'bottom'])
-		console.log direction
-		console.log room.left
-		console.log room.right
-		console.log room.top
-		console.log room.bottom
-
-		if direction in ['left', 'right']
-			door_cell = {
-				x: room[direction]
-				y: randomNum(room.top + 1, room.bottom - 1)
-			}
-		else if direction in ['top', 'bottom']
-			door_cell = {
-				x: randomNum(room.left + 1, room.right - 1)
-				y: room[direction]
-			}
-
-		console.log door_cell
 		
-		new_room = new Room({map: map, level: room.level, door_cell: door_cell, direction: direction})
-		if new_room.created
-			@create_ajoining_room(map, new_room)
-		else
-			new_room = null
+		DIRECTIONS = ['left', 'right', 'top', 'bottom']
+		directions = []
+		for i in [0...DIRECTIONS.length]
+			direction = random_choice(DIRECTIONS)
+			DIRECTIONS.remove(direction)
+			directions.push(direction)
+
+		#console.log direction
+		#console.log room.left
+		#console.log room.right
+		#console.log room.top
+		#console.log room.bottom
+
+		for direction in directions
+			if direction in ['left', 'right']
+				door_cell = {
+					x: room[direction]
+					y: randomNum(room.top + 1, room.bottom - 1)
+				}
+
+			else if direction in ['top', 'bottom']
+				door_cell = {
+					x: randomNum(room.left + 1, room.right - 1)
+					y: room[direction]
+				}
+
+			#console.log door_cell
+			
+			new_room = new Room({map: map, level: room.level, door_cell: door_cell, direction: direction})
+			if new_room.created
+				@create_ajoining_room(map, new_room)
+			else
+				new_room = null
 
 	generate_map: (map, start, level) ->
 		#a list of doors that still need stuff attached to them
@@ -128,6 +137,7 @@ class Room
 	x_len: null
 	y_len: null
 
+	created: true
 	out_of_bounds: false
 
 	map: null
@@ -184,7 +194,9 @@ class Room
 			@move_room_in_bounds()
 			@set_bounds()
 
-		if @can_create() or options.start?
+		@created = @can_create()
+
+		if @created or options.start?
 			@put_room_on_map()
 			map_utils.draw_box(@map, @x_len, @y_len, @origin.x, @origin.y, Wall)
 

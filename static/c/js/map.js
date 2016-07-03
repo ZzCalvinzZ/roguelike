@@ -117,36 +117,41 @@ map_utils = {
     });
   },
   create_ajoining_room: function(map, room) {
-    var direction, door_cell, new_room;
-    direction = random_choice(['left', 'right', 'top', 'bottom']);
-    console.log(direction);
-    console.log(room.left);
-    console.log(room.right);
-    console.log(room.top);
-    console.log(room.bottom);
-    if (direction === 'left' || direction === 'right') {
-      door_cell = {
-        x: room[direction],
-        y: randomNum(room.top + 1, room.bottom - 1)
-      };
-    } else if (direction === 'top' || direction === 'bottom') {
-      door_cell = {
-        x: randomNum(room.left + 1, room.right - 1),
-        y: room[direction]
-      };
+    var DIRECTIONS, direction, directions, door_cell, i, j, k, len, new_room, ref, results;
+    DIRECTIONS = ['left', 'right', 'top', 'bottom'];
+    directions = [];
+    for (i = j = 0, ref = DIRECTIONS.length; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+      direction = random_choice(DIRECTIONS);
+      DIRECTIONS.remove(direction);
+      directions.push(direction);
     }
-    console.log(door_cell);
-    new_room = new Room({
-      map: map,
-      level: room.level,
-      door_cell: door_cell,
-      direction: direction
-    });
-    if (new_room.created) {
-      return this.create_ajoining_room(map, new_room);
-    } else {
-      return new_room = null;
+    results = [];
+    for (k = 0, len = directions.length; k < len; k++) {
+      direction = directions[k];
+      if (direction === 'left' || direction === 'right') {
+        door_cell = {
+          x: room[direction],
+          y: randomNum(room.top + 1, room.bottom - 1)
+        };
+      } else if (direction === 'top' || direction === 'bottom') {
+        door_cell = {
+          x: randomNum(room.left + 1, room.right - 1),
+          y: room[direction]
+        };
+      }
+      new_room = new Room({
+        map: map,
+        level: room.level,
+        door_cell: door_cell,
+        direction: direction
+      });
+      if (new_room.created) {
+        results.push(this.create_ajoining_room(map, new_room));
+      } else {
+        results.push(new_room = null);
+      }
     }
+    return results;
   },
   generate_map: function(map, start, level) {
     var doors_to_attach, starting_room;
@@ -173,6 +178,8 @@ Room = (function() {
   Room.prototype.x_len = null;
 
   Room.prototype.y_len = null;
+
+  Room.prototype.created = true;
 
   Room.prototype.out_of_bounds = false;
 
@@ -225,7 +232,8 @@ Room = (function() {
       this.move_room_in_bounds();
       this.set_bounds();
     }
-    if (this.can_create() || (options.start != null)) {
+    this.created = this.can_create();
+    if (this.created || (options.start != null)) {
       this.put_room_on_map();
       map_utils.draw_box(this.map, this.x_len, this.y_len, this.origin.x, this.origin.y, Wall);
       if (options.door_cell != null) {
