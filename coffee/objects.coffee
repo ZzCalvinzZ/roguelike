@@ -111,6 +111,9 @@ class Door extends Openable
 		@sprite.texture = @open_texture
 		@solid = false
 		@is_open = true
+		for room in @rooms
+			if not room.visible
+				room.show()
 		@draw()
 
 	close: () ->

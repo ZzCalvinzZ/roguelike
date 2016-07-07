@@ -271,6 +271,33 @@ Room = (function() {
     return this.map[x][y].things.push(door);
   };
 
+  Room.prototype.show = function() {
+    var j, ref, ref1, results, thing, x, y;
+    this.visible = true;
+    results = [];
+    for (x = j = ref = this.left, ref1 = this.right; ref <= ref1 ? j <= ref1 : j >= ref1; x = ref <= ref1 ? ++j : --j) {
+      results.push((function() {
+        var k, ref2, ref3, results1;
+        results1 = [];
+        for (y = k = ref2 = this.top, ref3 = this.bottom; ref2 <= ref3 ? k <= ref3 : k >= ref3; y = ref2 <= ref3 ? ++k : --k) {
+          results1.push((function() {
+            var l, len, ref4, results2;
+            ref4 = this.map[x][y].things;
+            results2 = [];
+            for (l = 0, len = ref4.length; l < len; l++) {
+              thing = ref4[l];
+              thing.visible = true;
+              results2.push(thing.draw());
+            }
+            return results2;
+          }).call(this));
+        }
+        return results1;
+      }).call(this));
+    }
+    return results;
+  };
+
   Room.prototype.can_create = function() {
     var j, k, ref, ref1, ref2, ref3, x, y;
     if (typeof this.out_of_bounds === 'string') {

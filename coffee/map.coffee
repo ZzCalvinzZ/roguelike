@@ -207,6 +207,14 @@ class Room
 		prev_room.doors.push(door)
 		@map[x][y].things.push(door)
 
+	show: () ->
+		@visible = true
+		for x in [@left..@right]
+			for y in [@top..@bottom]
+				for thing in @map[x][y].things
+					thing.visible = true
+					thing.draw()
+
 	can_create:() ->
 		if typeof(@out_of_bounds) == 'string'
 			return false

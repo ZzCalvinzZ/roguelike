@@ -195,9 +195,17 @@ Door = (function(superClass) {
   }
 
   Door.prototype.open = function() {
+    var i, len, ref, room;
     this.sprite.texture = this.open_texture;
     this.solid = false;
     this.is_open = true;
+    ref = this.rooms;
+    for (i = 0, len = ref.length; i < len; i++) {
+      room = ref[i];
+      if (!room.visible) {
+        room.show();
+      }
+    }
     return this.draw();
   };
 
