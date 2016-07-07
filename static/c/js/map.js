@@ -22,21 +22,26 @@ map_utils = {
       return results;
     })();
   },
-  draw_box: function(map, x_size, y_size, x_left, y_top, sprite) {
+  draw_box: function(map, x_size, y_size, x_left, y_top, sprite, visible) {
     var j, k, ref, ref1, ref2, ref3, x, x_right, y, y_bottom;
+    if (visible == null) {
+      visible = true;
+    }
     x_right = x_left + x_size - 1;
     y_bottom = y_top + y_size - 1;
     for (x = j = ref = x_left, ref1 = x_right; ref <= ref1 ? j <= ref1 : j >= ref1; x = ref <= ref1 ? ++j : --j) {
       if (map[x][y_top].things.length < 1) {
         map[x][y_top].things.push(new sprite({
           x: x,
-          y: y_top
+          y: y_top,
+          visible: visible
         }));
       }
       if (map[x][y_bottom].things.length < 1) {
         map[x][y_bottom].things.push(new sprite({
           x: x,
-          y: y_bottom
+          y: y_bottom,
+          visible: visible
         }));
       }
     }
@@ -44,35 +49,38 @@ map_utils = {
       if (map[x_left][y].things.length < 1) {
         map[x_left][y].things.push(new sprite({
           x: x_left,
-          y: y
+          y: y,
+          visible: visible
         }));
       }
       if (map[x_right][y].things.length < 1) {
         map[x_right][y].things.push(new sprite({
           x: x_right,
-          y: y
+          y: y,
+          visible: visible
         }));
       }
     }
   },
   create_town_map: function() {
-    var center, door_x, door_y, i, map, size, start, store_size, y;
+    var center, door_x, door_y, i, map, size, start, store_size, visible, y;
     size = 39;
     center = Math.floor(size / 2);
     map = this.create_map(size, size);
-    this.draw_box(map, size, size, 0, 0, Wall);
+    this.draw_box(map, size, size, 0, 0, Wall, visible = true);
     store_size = 5;
     y = 5;
     i = 3;
     while (i < 37) {
-      this.draw_box(map, store_size, store_size, i, y, Wall);
+      this.draw_box(map, store_size, store_size, i, y, Wall, visible = true);
       door_x = i + Math.floor(store_size / 2);
       door_y = y + store_size - 1;
       destroy_sprite(map[door_x][door_y].things.pop().sprite);
       map[door_x][door_y].things = [
         new Door({
           x: door_x,
-          y: door_y
+          y: door_y,
+          visible: true
         })
       ];
       i += 7;
@@ -83,7 +91,8 @@ map_utils = {
     };
     map[15][20].things.push(new Stairs({
       x: start.x,
-      y: start.y
+      y: start.y,
+      visible: true
     }));
     return [map, start];
   },
@@ -143,7 +152,8 @@ map_utils = {
         map: map,
         level: room.level,
         door_cell: door_cell,
-        direction: direction
+        direction: direction,
+        prev_room: room
       });
       if (new_room.created) {
         results.push(this.create_ajoining_room(map, new_room));
@@ -179,6 +189,8 @@ Room = (function() {
 
   Room.prototype.y_len = null;
 
+  Room.prototype.visible = false;
+
   Room.prototype.created = true;
 
   Room.prototype.out_of_bounds = false;
@@ -192,6 +204,7 @@ Room = (function() {
   Room.prototype.doors = [];
 
   function Room(options) {
+    var visible;
     this.map = options.map;
     this.level = gamestate.level;
     this.level.rooms.push(this);
@@ -233,23 +246,28 @@ Room = (function() {
       this.set_bounds();
     }
     this.created = this.can_create();
+    this.visible = options.start != null ? true : false;
     if (this.created || (options.start != null)) {
       this.put_room_on_map();
-      map_utils.draw_box(this.map, this.x_len, this.y_len, this.origin.x, this.origin.y, Wall);
+      map_utils.draw_box(this.map, this.x_len, this.y_len, this.origin.x, this.origin.y, Wall, visible = this.visible);
       if (options.door_cell != null) {
         destroy_all_things_in_cell(this.map[options.door_cell.x][options.door_cell.y]);
-        this.add_door(options.door_cell.x, options.door_cell.y);
+        this.add_door(options.door_cell.x, options.door_cell.y, options.prev_room);
       }
     }
   }
 
-  Room.prototype.add_door = function(x, y) {
-    var door;
+  Room.prototype.add_door = function(x, y, prev_room) {
+    var door, visible_door;
+    visible_door = this.visible || prev_room.visible;
     door = new Door({
       x: x,
-      y: y
+      y: y,
+      visible: visible_door,
+      rooms: [this, prev_room]
     });
     this.doors.push(door);
+    prev_room.doors.push(door);
     return this.map[x][y].things.push(door);
   };
 

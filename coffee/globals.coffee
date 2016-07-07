@@ -7,7 +7,7 @@ MAX_ROOM_SIZE = 20
 
 camera = new(PIXI.Container)
 
-player = new Player({x:25,y:25})
+player = new Player({x:25,y:25,visible:true})
 
 class Level
 	map_data: []

@@ -7,14 +7,26 @@ BaseObject = (function() {
 
   BaseObject.prototype.solid = false;
 
+  BaseObject.prototype.visible = false;
+
+  BaseObject.prototype.distant = false;
+
   function BaseObject(options) {
-    this.x = options.x, this.y = options.y;
+    this.x = options.x;
+    this.y = options.y;
+    this.visible = options.visible || false;
   }
+
+  BaseObject.prototype.remove_sprite = function() {
+    return gamestate.level.stage.addChild(this.sprite);
+  };
 
   BaseObject.prototype.draw = function() {
     this.sprite.x = this.x * CELL_SIZE;
     this.sprite.y = this.y * CELL_SIZE;
-    gamestate.level.stage.addChild(this.sprite);
+    if (this.visible) {
+      gamestate.level.stage.addChild(this.sprite);
+    }
   };
 
   BaseObject.prototype.save = function() {
@@ -83,11 +95,9 @@ MovableObject = (function(superClass) {
       this.y += 1;
       this.sprite.y += CELL_SIZE;
       if (this.player && this.sprite.y > 2 * SCREEN_HEIGHT / 3 - camera.y) {
-        camera.y -= CELL_SIZE;
+        return camera.y -= CELL_SIZE;
       }
     }
-    console.log("x: " + this.x);
-    return console.log("y: " + this.y);
   };
 
   return MovableObject;
@@ -156,7 +166,7 @@ Wall = (function(superClass) {
   function Wall(options) {
     Wall.__super__.constructor.call(this, options);
     this.sprite = createSprite('static/img/wall20.png');
-    this.draw(this.x, this.y);
+    this.draw();
   }
 
   return Wall;

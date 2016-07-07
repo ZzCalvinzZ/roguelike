@@ -4,21 +4,21 @@ map_utils = {
 			for y in [0...y_size]
 				{things: [], room: null}
 
-	draw_box: (map, x_size, y_size, x_left, y_top, sprite) ->
+	draw_box: (map, x_size, y_size, x_left, y_top, sprite, visible=true) ->
 		x_right = x_left + x_size - 1
 		y_bottom = y_top + y_size - 1
 
 		for x in [x_left..x_right]
 			if map[x][y_top].things.length < 1
-				map[x][y_top].things.push(new sprite({x:x,y:y_top}))
+				map[x][y_top].things.push(new sprite({x:x,y:y_top,visible:visible}))
 			if map[x][y_bottom].things.length < 1
-				map[x][y_bottom].things.push(new sprite({x:x,y:y_bottom}))
+				map[x][y_bottom].things.push(new sprite({x:x,y:y_bottom,visible:visible}))
 
 		for y in [y_top..y_bottom]
 			if map[x_left][y].things.length < 1
-				map[x_left][y].things.push(new sprite({x:x_left,y:y}))
+				map[x_left][y].things.push(new sprite({x:x_left,y:y,visible:visible}))
 			if map[x_right][y].things.length < 1
-				map[x_right][y].things.push(new sprite({x:x_right,y:y}))
+				map[x_right][y].things.push(new sprite({x:x_right,y:y,visible:visible}))
 		return
 
 	create_town_map: () ->
@@ -27,7 +27,7 @@ map_utils = {
 
 		map = @create_map(size, size)
 
-		@draw_box(map, size, size, 0, 0, Wall)
+		@draw_box(map, size, size, 0, 0, Wall, visible=true)
 
 		#create stores
 		store_size = 5
@@ -35,11 +35,11 @@ map_utils = {
 		i=3
 
 		while i<37
-			@draw_box(map, store_size, store_size, i, y, Wall)
+			@draw_box(map, store_size, store_size, i, y, Wall, visible=true)
 			door_x = i + store_size // 2
 			door_y = y + store_size - 1
 			destroy_sprite(map[door_x][door_y].things.pop().sprite)
-			map[door_x][door_y].things = [new Door({x:door_x,y:door_y})]
+			map[door_x][door_y].things = [new Door({x:door_x,y:door_y,visible:true})]
 
 			i += 7
 		
@@ -48,7 +48,7 @@ map_utils = {
 			y: 20
 		}
 
-		map[15][20].things.push(new Stairs({x:start.x, y:start.y}))
+		map[15][20].things.push(new Stairs({x:start.x, y:start.y,visible:true}))
 
 		return [map, start]
 
@@ -87,12 +87,6 @@ map_utils = {
 			DIRECTIONS.remove(direction)
 			directions.push(direction)
 
-		#console.log direction
-		#console.log room.left
-		#console.log room.right
-		#console.log room.top
-		#console.log room.bottom
-
 		for direction in directions
 			if direction in ['left', 'right']
 				door_cell = {
@@ -106,9 +100,7 @@ map_utils = {
 					y: room[direction]
 				}
 
-			#console.log door_cell
-			
-			new_room = new Room({map: map, level: room.level, door_cell: door_cell, direction: direction})
+			new_room = new Room({map: map, level: room.level, door_cell: door_cell, direction: direction, prev_room:room})
 			if new_room.created
 				@create_ajoining_room(map, new_room)
 			else
@@ -136,6 +128,8 @@ class Room
 
 	x_len: null
 	y_len: null
+
+	visible: false
 
 	created: true
 	out_of_bounds: false
@@ -196,17 +190,21 @@ class Room
 
 		@created = @can_create()
 
+		@visible = if options.start? then true else false
+
 		if @created or options.start?
 			@put_room_on_map()
-			map_utils.draw_box(@map, @x_len, @y_len, @origin.x, @origin.y, Wall)
+			map_utils.draw_box(@map, @x_len, @y_len, @origin.x, @origin.y, Wall, visible=@visible)
 
 			if options.door_cell?
 				destroy_all_things_in_cell(@map[options.door_cell.x][options.door_cell.y])
-				@add_door(options.door_cell.x, options.door_cell.y)
+				@add_door(options.door_cell.x, options.door_cell.y, options.prev_room)
 
-	add_door: (x, y) ->
-		door = new Door({x:x, y:y})
+	add_door: (x, y, prev_room) ->
+		visible_door = @visible or prev_room.visible
+		door = new Door({x:x, y:y, visible: visible_door, rooms: [@, prev_room]})
 		@doors.push(door)
+		prev_room.doors.push(door)
 		@map[x][y].things.push(door)
 
 	can_create:() ->

@@ -1,14 +1,22 @@
 class BaseObject
 	sprite: null
 	solid: false
+	visible: false
+	distant: false
 
 	constructor: (options) ->
-		{@x, @y} = options
+		@x = options.x
+		@y = options.y
+		@visible = options.visible or false
+
+	remove_sprite: () ->
+		gamestate.level.stage.addChild(@sprite)
 
 	draw: () ->
 		@sprite.x = @x * CELL_SIZE
 		@sprite.y = @y * CELL_SIZE
-		gamestate.level.stage.addChild(@sprite)
+		if @visible
+			gamestate.level.stage.addChild(@sprite)
 		return
 
 	save: () ->
@@ -53,8 +61,8 @@ class MovableObject extends BaseObject
 
 			if @player and @sprite.y > 2 * SCREEN_HEIGHT / 3 - camera.y
 				camera.y -= CELL_SIZE
-		console.log("x: " + @x)
-		console.log("y: " + @y)
+		#console.log("x: " + @x)
+		#console.log("y: " + @y)
 		#console.log(gamestate.level.map_data[@x][@y])
 
 class Player extends MovableObject
@@ -82,7 +90,7 @@ class Wall extends BaseObject
 	constructor: (options) ->
 		super(options)
 		@sprite = createSprite('static/img/wall20.png')
-		@draw(@x, @y)
+		@draw()
 
 class Door extends Openable
 	open_texture: PIXI.Texture.fromImage('static/img/door_open.png')
