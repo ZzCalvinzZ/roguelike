@@ -72,7 +72,7 @@ map_utils = {
 
 	create_starting_room: (map, start, level) ->
 
-		stairs = new Stairs({x:start.x, y:start.y, up:true})
+		stairs = new Stairs({x:start.x, y:start.y, up:true, visible: true})
 		map[start.x][start.y].things.push(stairs)
 
 		new Room({map:map, start: start, stairs:stairs, level:level})

@@ -115,7 +115,8 @@ map_utils = {
     stairs = new Stairs({
       x: start.x,
       y: start.y,
-      up: true
+      up: true,
+      visible: true
     });
     map[start.x][start.y].things.push(stairs);
     return new Room({
