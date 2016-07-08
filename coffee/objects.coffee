@@ -68,7 +68,11 @@ class MovableObject extends BaseObject
 class Player extends MovableObject
 	player: true
 	opening: false
-	sprite: new PIXI.Text('@', {'fill': 'white', 'font': '17px Arial'})
+	#sprite: new PIXI.Text('@', {'fill': 'white', 'font': '17px Arial'})
+
+	constructor: (options) ->
+		super(options)
+		@sprite = createSprite('static/img/player_female.png')
 
 	open: (direction) ->
 		targets = get_targets(direction, @x, @y)

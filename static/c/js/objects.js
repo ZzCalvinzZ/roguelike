@@ -107,18 +107,14 @@ MovableObject = (function(superClass) {
 Player = (function(superClass) {
   extend(Player, superClass);
 
-  function Player() {
-    return Player.__super__.constructor.apply(this, arguments);
-  }
-
   Player.prototype.player = true;
 
   Player.prototype.opening = false;
 
-  Player.prototype.sprite = new PIXI.Text('@', {
-    'fill': 'white',
-    'font': '17px Arial'
-  });
+  function Player(options) {
+    Player.__super__.constructor.call(this, options);
+    this.sprite = createSprite('static/img/player_female.png');
+  }
 
   Player.prototype.open = function(direction) {
     var i, len, results, target, targets;
