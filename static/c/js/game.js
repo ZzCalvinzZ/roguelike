@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(window).on("load", function() {
   var SCREEN_HEIGHT, SCREEN_WIDTH, gameLoop, renderer;
   window.onresize = function(event) {
     var SCREEN_HEIGHT, SCREEN_WIDTH;

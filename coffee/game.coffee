@@ -1,4 +1,4 @@
-$(document).ready ->
+$(window).on "load",  ->
 
 	#readjust canvas when adjusting window
 	window.onresize = (event) ->
