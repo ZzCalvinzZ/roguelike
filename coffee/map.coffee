@@ -53,8 +53,8 @@ map_utils = {
 		return [map, start]
 
 	create_map_from_data: (level) ->
-		min = level *10 + 100
-		max = level *10 + 200
+		min = level *10 + 70
+		max = level *10 + 140
 
 		x_size = randomNum(min, max)
 		y_size = randomNum(min, max)
@@ -152,32 +152,32 @@ class Room
 			@stairs.push(options.stairs)
 
 			@origin = {
-				x: options.start.x - randomNum(1, @x_len-1)
-				y: options.start.y - randomNum(1, @y_len-1)
+				x: options.start.x - randomNum(1, @x_len)
+				y: options.start.y - randomNum(1, @y_len)
 			}
 
 		else
 			if options.direction is 'left'
 				@origin = {
-					x: options.door_cell.x - @x_len + 1
-					y: options.door_cell.y - randomNum(1, @y_len - 1)
+					x: options.door_cell.x - @x_len + 2
+					y: options.door_cell.y - randomNum(1, @y_len)
 				}
 
 			else if options.direction is 'right'
 				@origin = {
 					x: options.door_cell.x
-					y: options.door_cell.y - randomNum(1, @y_len - 1)
+					y: options.door_cell.y - randomNum(1, @y_len)
 				}
 
 			else if options.direction is 'top'
 				@origin = {
-					x: options.door_cell.x - randomNum(1, @x_len - 1)
-					y: options.door_cell.y - @y_len + 1
+					x: options.door_cell.x - randomNum(1, @x_len)
+					y: options.door_cell.y - @y_len + 2
 				}
 
 			else if options.direction is 'bottom'
 				@origin = {
-					x: options.door_cell.x - randomNum(1, @x_len - 1)
+					x: options.door_cell.x - randomNum(1, @x_len)
 					y: options.door_cell.y
 				}
 
@@ -194,7 +194,7 @@ class Room
 
 		if @created or options.start?
 			@put_room_on_map()
-			map_utils.draw_box(@map, @x_len, @y_len, @origin.x, @origin.y, Wall, visible=@visible)
+			map_utils.draw_box(@map, @x_len + 1, @y_len + 1, @origin.x, @origin.y, Wall, visible=@visible)
 
 			if options.door_cell?
 				destroy_all_things_in_cell(@map[options.door_cell.x][options.door_cell.y])
@@ -229,17 +229,17 @@ class Room
 	set_bounds: () ->
 		@left = @origin.x
 		@top = @origin.y
-		@right = @origin.x + @x_len - 1
-		@bottom = @origin.y + @y_len - 1
+		@right = @origin.x + @x_len
+		@bottom = @origin.y + @y_len
 
 	check_out_of_bounds: () ->
 		if @origin.x < 0
 			return 'left'
-		else if @origin.x + @x_len > @map.length - 1
+		else if @origin.x + @x_len + 3 > @map.length
 			return 'right'
 		else if @origin.y < 0
 			return 'top'
-		else if @origin.y + @y_len > @map[0].length - 1
+		else if @origin.y + @y_len + 3 > @map[0].length
 			return 'bottom'
 
 		else
@@ -247,8 +247,8 @@ class Room
 
 	put_room_on_map: () ->
 		#add room object to each cell INSIDE the walls
-		for x in [@origin.x + 1...@origin.x + @x_len - 1]
-			for y in [@origin.y + 1...@origin.y + @y_len - 1]
+		for x in [@origin.x + 1...@origin.x + @x_len]
+			for y in [@origin.y + 1...@origin.y + @y_len]
 				@map[x][y].room = @
 		return
 
@@ -256,9 +256,12 @@ class Room
 		if @out_of_bounds == 'left'
 			@origin.x = 0
 		else if @out_of_bounds == 'right'
-			@origin.x = @map.length - @x_len
+			@origin.x = @map.length - @x_len + 1
 
 		if @out_of_bounds == 'top'
 			@origin.y = 0
 		else if @out_of_bounds == 'bottom'
-			@origin.y = @map[0].length - @y_len
+			@origin.y = @map[0].length - @y_len + 1
+
+	area:() ->
+		@x_len * @ylen

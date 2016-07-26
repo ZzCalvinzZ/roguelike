@@ -98,8 +98,8 @@ map_utils = {
   },
   create_map_from_data: function(level) {
     var map, max, min, start, x_size, y_size;
-    min = level * 10 + 100;
-    max = level * 10 + 200;
+    min = level * 10 + 70;
+    max = level * 10 + 140;
     x_size = randomNum(min, max);
     y_size = randomNum(min, max);
     map = this.create_map(x_size, y_size);
@@ -209,33 +209,33 @@ Room = (function() {
     this.map = options.map;
     this.level = gamestate.level;
     this.level.rooms.push(this);
-    this.x_len = randomNum(MIN_ROOM_SIZE, MAX_ROOM_SIZE);
-    this.y_len = randomNum(MIN_ROOM_SIZE, MAX_ROOM_SIZE);
+    this.x_len = randomNum(MIN_ROOM_SIZE, MAX_ROOM_SIZE) - 1;
+    this.y_len = randomNum(MIN_ROOM_SIZE, MAX_ROOM_SIZE) - 1;
     if (options.start != null) {
       this.stairs.push(options.stairs);
       this.origin = {
-        x: options.start.x - randomNum(1, this.x_len - 1),
-        y: options.start.y - randomNum(1, this.y_len - 1)
+        x: options.start.x - randomNum(1, this.x_len),
+        y: options.start.y - randomNum(1, this.y_len)
       };
     } else {
       if (options.direction === 'left') {
         this.origin = {
-          x: options.door_cell.x - this.x_len + 1,
-          y: options.door_cell.y - randomNum(1, this.y_len - 1)
+          x: options.door_cell.x - this.x_len + 2,
+          y: options.door_cell.y - randomNum(1, this.y_len)
         };
       } else if (options.direction === 'right') {
         this.origin = {
           x: options.door_cell.x,
-          y: options.door_cell.y - randomNum(1, this.y_len - 1)
+          y: options.door_cell.y - randomNum(1, this.y_len)
         };
       } else if (options.direction === 'top') {
         this.origin = {
-          x: options.door_cell.x - randomNum(1, this.x_len - 1),
-          y: options.door_cell.y - this.y_len + 1
+          x: options.door_cell.x - randomNum(1, this.x_len),
+          y: options.door_cell.y - this.y_len + 2
         };
       } else if (options.direction === 'bottom') {
         this.origin = {
-          x: options.door_cell.x - randomNum(1, this.x_len - 1),
+          x: options.door_cell.x - randomNum(1, this.x_len),
           y: options.door_cell.y
         };
       }
@@ -250,7 +250,7 @@ Room = (function() {
     this.visible = options.start != null ? true : false;
     if (this.created || (options.start != null)) {
       this.put_room_on_map();
-      map_utils.draw_box(this.map, this.x_len, this.y_len, this.origin.x, this.origin.y, Wall, visible = this.visible);
+      map_utils.draw_box(this.map, this.x_len + 1, this.y_len + 1, this.origin.x, this.origin.y, Wall, visible = this.visible);
       if (options.door_cell != null) {
         destroy_all_things_in_cell(this.map[options.door_cell.x][options.door_cell.y]);
         this.add_door(options.door_cell.x, options.door_cell.y, options.prev_room);
@@ -317,18 +317,18 @@ Room = (function() {
   Room.prototype.set_bounds = function() {
     this.left = this.origin.x;
     this.top = this.origin.y;
-    this.right = this.origin.x + this.x_len - 1;
-    return this.bottom = this.origin.y + this.y_len - 1;
+    this.right = this.origin.x + this.x_len;
+    return this.bottom = this.origin.y + this.y_len;
   };
 
   Room.prototype.check_out_of_bounds = function() {
     if (this.origin.x < 0) {
       return 'left';
-    } else if (this.origin.x + this.x_len > this.map.length - 1) {
+    } else if (this.origin.x + this.x_len + 3 > this.map.length) {
       return 'right';
     } else if (this.origin.y < 0) {
       return 'top';
-    } else if (this.origin.y + this.y_len > this.map[0].length - 1) {
+    } else if (this.origin.y + this.y_len + 3 > this.map[0].length) {
       return 'bottom';
     } else {
       return false;
@@ -337,8 +337,8 @@ Room = (function() {
 
   Room.prototype.put_room_on_map = function() {
     var j, k, ref, ref1, ref2, ref3, x, y;
-    for (x = j = ref = this.origin.x + 1, ref1 = this.origin.x + this.x_len - 1; ref <= ref1 ? j < ref1 : j > ref1; x = ref <= ref1 ? ++j : --j) {
-      for (y = k = ref2 = this.origin.y + 1, ref3 = this.origin.y + this.y_len - 1; ref2 <= ref3 ? k < ref3 : k > ref3; y = ref2 <= ref3 ? ++k : --k) {
+    for (x = j = ref = this.origin.x + 1, ref1 = this.origin.x + this.x_len; ref <= ref1 ? j < ref1 : j > ref1; x = ref <= ref1 ? ++j : --j) {
+      for (y = k = ref2 = this.origin.y + 1, ref3 = this.origin.y + this.y_len; ref2 <= ref3 ? k < ref3 : k > ref3; y = ref2 <= ref3 ? ++k : --k) {
         this.map[x][y].room = this;
       }
     }
@@ -348,13 +348,17 @@ Room = (function() {
     if (this.out_of_bounds === 'left') {
       this.origin.x = 0;
     } else if (this.out_of_bounds === 'right') {
-      this.origin.x = this.map.length - this.x_len;
+      this.origin.x = this.map.length - this.x_len + 1;
     }
     if (this.out_of_bounds === 'top') {
       return this.origin.y = 0;
     } else if (this.out_of_bounds === 'bottom') {
-      return this.origin.y = this.map[0].length - this.y_len;
+      return this.origin.y = this.map[0].length - this.y_len + 1;
     }
+  };
+
+  Room.prototype.area = function() {
+    return this.x_len * this.ylen;
   };
 
   return Room;
