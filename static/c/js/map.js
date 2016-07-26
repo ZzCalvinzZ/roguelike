@@ -209,8 +209,8 @@ Room = (function() {
     this.map = options.map;
     this.level = gamestate.level;
     this.level.rooms.push(this);
-    this.x_len = randomNum(MIN_ROOM_SIZE, MAX_ROOM_SIZE) - 1;
-    this.y_len = randomNum(MIN_ROOM_SIZE, MAX_ROOM_SIZE) - 1;
+    this.x_len = randomNum(MIN_ROOM_SIZE, MAX_ROOM_SIZE);
+    this.y_len = randomNum(MIN_ROOM_SIZE, MAX_ROOM_SIZE);
     if (options.start != null) {
       this.stairs.push(options.stairs);
       this.origin = {
@@ -358,7 +358,17 @@ Room = (function() {
   };
 
   Room.prototype.area = function() {
-    return this.x_len * this.ylen;
+    return this.x_len * this.y_len;
+  };
+
+  Room.prototype.draw_on_random_cell = function(sprite) {
+    var x, y;
+    x = randomNum(this.left, this.right);
+    y = randomNum(this.top, this.bottom);
+    return this.map[x][y].things.push(new sprite({
+      x: x,
+      y: y
+    }));
   };
 
   return Room;

@@ -264,4 +264,9 @@ class Room
 			@origin.y = @map[0].length - @y_len + 1
 
 	area:() ->
-		@x_len * @ylen
+		@x_len * @y_len
+
+	draw_on_random_cell: (sprite) ->
+		x = randomNum(@left, @right)
+		y = randomNum(@top, @bottom)
+		@map[x][y].things.push(new sprite ({x:x, y:y}))

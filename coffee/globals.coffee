@@ -34,6 +34,8 @@ class Level
 		else
 			[@map_data, @start] = map_utils.create_map_from_data(@level)
 
+		@add_monsters()
+
 	create_stage: () ->
 		@stage = new(PIXI.Container)
 
@@ -41,6 +43,12 @@ class Level
 		[player.x, player.y] = [@start.x, @start.y]
 		player.draw()
 		center_camera_on(player)
+
+	add_monsters: () ->
+		for room in @rooms
+			if room.area() > 20 and ROT.RNG.getPercentage() < 20
+				room.draw_on_random_cell(Snake)
+
 
 gamestate = {
 	levels: {}

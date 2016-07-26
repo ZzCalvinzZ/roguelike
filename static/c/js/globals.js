@@ -46,10 +46,11 @@ Level = (function() {
   Level.prototype.create_map = function(options) {
     var ref, ref1;
     if (this.level === 0) {
-      return ref = map_utils.create_town_map(), this.map_data = ref[0], this.start = ref[1], ref;
+      ref = map_utils.create_town_map(), this.map_data = ref[0], this.start = ref[1];
     } else {
-      return ref1 = map_utils.create_map_from_data(this.level), this.map_data = ref1[0], this.start = ref1[1], ref1;
+      ref1 = map_utils.create_map_from_data(this.level), this.map_data = ref1[0], this.start = ref1[1];
     }
+    return this.add_monsters();
   };
 
   Level.prototype.create_stage = function() {
@@ -61,6 +62,21 @@ Level = (function() {
     ref = [this.start.x, this.start.y], player.x = ref[0], player.y = ref[1];
     player.draw();
     return center_camera_on(player);
+  };
+
+  Level.prototype.add_monsters = function() {
+    var i, len, ref, results, room;
+    ref = this.rooms;
+    results = [];
+    for (i = 0, len = ref.length; i < len; i++) {
+      room = ref[i];
+      if (room.area() > 20 && ROT.RNG.getPercentage() < 20) {
+        results.push(room.draw_on_random_cell(Snake));
+      } else {
+        results.push(void 0);
+      }
+    }
+    return results;
   };
 
   return Level;
