@@ -5,8 +5,9 @@ var Enemy, Snake,
 Enemy = (function(superClass) {
   extend(Enemy, superClass);
 
-  function Enemy() {
-    return Enemy.__super__.constructor.apply(this, arguments);
+  function Enemy(options) {
+    Enemy.__super__.constructor.call(this, options);
+    this.solid = true;
   }
 
   return Enemy;
@@ -19,6 +20,7 @@ Snake = (function(superClass) {
   function Snake(options) {
     Snake.__super__.constructor.call(this, options);
     this.sprite = createSprite('static/img/snake.png');
+    this.draw();
   }
 
   return Snake;

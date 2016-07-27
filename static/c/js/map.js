@@ -98,8 +98,8 @@ map_utils = {
   },
   create_map_from_data: function(level) {
     var map, max, min, start, x_size, y_size;
-    min = level * 10 + 70;
-    max = level * 10 + 140;
+    min = level * 10 + 400;
+    max = level * 10 + 700;
     x_size = randomNum(min, max);
     y_size = randomNum(min, max);
     map = this.create_map(x_size, y_size);
@@ -173,42 +173,10 @@ map_utils = {
 };
 
 Room = (function() {
-  Room.prototype.origin = {
-    x: null,
-    y: null
-  };
-
-  Room.prototype.left = null;
-
-  Room.prototype.right = null;
-
-  Room.prototype.top = null;
-
-  Room.prototype.bottom = null;
-
-  Room.prototype.x_len = null;
-
-  Room.prototype.y_len = null;
-
-  Room.prototype.visible = false;
-
-  Room.prototype.created = true;
-
-  Room.prototype.out_of_bounds = false;
-
-  Room.prototype.map = null;
-
-  Room.prototype.level = null;
-
-  Room.prototype.stairs = [];
-
-  Room.prototype.doors = [];
-
   function Room(options) {
-    var visible;
+    var ref, visible;
+    ref = [[], []], this.stairs = ref[0], this.doors = ref[1];
     this.map = options.map;
-    this.level = gamestate.level;
-    this.level.rooms.push(this);
     this.x_len = randomNum(MIN_ROOM_SIZE, MAX_ROOM_SIZE);
     this.y_len = randomNum(MIN_ROOM_SIZE, MAX_ROOM_SIZE);
     if (options.start != null) {
@@ -249,6 +217,10 @@ Room = (function() {
     this.created = this.can_create();
     this.visible = options.start != null ? true : false;
     if (this.created || (options.start != null)) {
+      this.level = gamestate.level;
+      this.level.rooms.push(this);
+      console.log(this.level);
+      this.level.cell_count += this.area();
       this.put_room_on_map();
       map_utils.draw_box(this.map, this.x_len + 1, this.y_len + 1, this.origin.x, this.origin.y, Wall, visible = this.visible);
       if (options.door_cell != null) {
@@ -358,17 +330,20 @@ Room = (function() {
   };
 
   Room.prototype.area = function() {
-    return this.x_len * this.y_len;
+    return (this.x_len - 1) * (this.y_len - 1);
   };
 
   Room.prototype.draw_on_random_cell = function(sprite) {
     var x, y;
-    x = randomNum(this.left, this.right);
-    y = randomNum(this.top, this.bottom);
-    return this.map[x][y].things.push(new sprite({
-      x: x,
-      y: y
-    }));
+    x = randomNum(this.left + 1, this.right);
+    y = randomNum(this.top + 1, this.bottom);
+    if (this.map[x][y].things.length === 0) {
+      return this.map[x][y].things.push(new sprite({
+        x: x,
+        y: y,
+        visible: true
+      }));
+    }
   };
 
   return Room;

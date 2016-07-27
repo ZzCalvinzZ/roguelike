@@ -1,4 +1,4 @@
-var CELL_SIZE, DEFAULT_MAP_SIZE, Level, MAX_ROOM_SIZE, MIN_ROOM_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH, camera, gamestate, player;
+var CELL_SIZE, DEFAULT_MAP_SIZE, Level, MAX_ROOM_SIZE, MIN_ROOM_SIZE, MONSTER_DENSITY, SCREEN_HEIGHT, SCREEN_WIDTH, camera, gamestate, player;
 
 CELL_SIZE = 20;
 
@@ -12,6 +12,8 @@ MIN_ROOM_SIZE = 4;
 
 MAX_ROOM_SIZE = 20;
 
+MONSTER_DENSITY = .01;
+
 camera = new PIXI.Container;
 
 player = new Player({
@@ -21,20 +23,10 @@ player = new Player({
 });
 
 Level = (function() {
-  Level.prototype.map_data = [];
-
-  Level.prototype.level = null;
-
-  Level.prototype.stage = null;
-
-  Level.prototype.start = {
-    x: null,
-    y: null
-  };
-
-  Level.prototype.rooms = [];
-
   function Level(options) {
+    this.map_data = [];
+    this.rooms = [];
+    this.cell_count = 0;
     if (options.level != null) {
       this.level = options.level;
       this.create_stage();
@@ -46,11 +38,11 @@ Level = (function() {
   Level.prototype.create_map = function(options) {
     var ref, ref1;
     if (this.level === 0) {
-      ref = map_utils.create_town_map(), this.map_data = ref[0], this.start = ref[1];
+      return ref = map_utils.create_town_map(), this.map_data = ref[0], this.start = ref[1], ref;
     } else {
       ref1 = map_utils.create_map_from_data(this.level), this.map_data = ref1[0], this.start = ref1[1];
+      return this.add_monsters();
     }
-    return this.add_monsters();
   };
 
   Level.prototype.create_stage = function() {
@@ -65,16 +57,12 @@ Level = (function() {
   };
 
   Level.prototype.add_monsters = function() {
-    var i, len, ref, results, room;
-    ref = this.rooms;
+    var i, j, monster_count, ref, results, room;
+    monster_count = this.cell_count * MONSTER_DENSITY;
     results = [];
-    for (i = 0, len = ref.length; i < len; i++) {
-      room = ref[i];
-      if (room.area() > 20 && ROT.RNG.getPercentage() < 20) {
-        results.push(room.draw_on_random_cell(Snake));
-      } else {
-        results.push(void 0);
-      }
+    for (i = j = 1, ref = monster_count; 1 <= ref ? j <= ref : j >= ref; i = 1 <= ref ? ++j : --j) {
+      room = this.rooms.random();
+      results.push(room.draw_on_random_cell(Snake));
     }
     return results;
   };

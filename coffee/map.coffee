@@ -53,8 +53,8 @@ map_utils = {
 		return [map, start]
 
 	create_map_from_data: (level) ->
-		min = level *10 + 70
-		max = level *10 + 140
+		min = level *10 + 400 
+		max = level *10 + 700
 
 		x_size = randomNum(min, max)
 		y_size = randomNum(min, max)
@@ -116,33 +116,12 @@ map_utils = {
 }
 
 class Room
-	origin: {
-		x: null
-		y: null
-	}
-
-	left: null
-	right: null
-	top: null
-	bottom: null
-
-	x_len: null
-	y_len: null
-
-	visible: false
-
-	created: true
-	out_of_bounds: false
-
-	map: null
-	level: null
-	stairs: []
-	doors: []
-
+	#left/right is x where the wall is
+	#top/bottom is y where the wall is
+	
 	constructor: (options) ->
+		[@stairs, @doors] = [[], []]
 		@map = options.map
-		@level = gamestate.level
-		@level.rooms.push(@)
 
 		@x_len = randomNum(MIN_ROOM_SIZE, MAX_ROOM_SIZE)
 		@y_len = randomNum(MIN_ROOM_SIZE, MAX_ROOM_SIZE)
@@ -188,11 +167,16 @@ class Room
 			@move_room_in_bounds()
 			@set_bounds()
 
+
 		@created = @can_create()
 
 		@visible = if options.start? then true else false
 
 		if @created or options.start?
+			@level = gamestate.level
+			@level.rooms.push(@)
+			console.log(@level)
+			@level.cell_count += @area()
 			@put_room_on_map()
 			map_utils.draw_box(@map, @x_len + 1, @y_len + 1, @origin.x, @origin.y, Wall, visible=@visible)
 
@@ -264,9 +248,10 @@ class Room
 			@origin.y = @map[0].length - @y_len + 1
 
 	area:() ->
-		@x_len * @y_len
+		(@x_len - 1) * (@y_len - 1)
 
 	draw_on_random_cell: (sprite) ->
-		x = randomNum(@left, @right)
-		y = randomNum(@top, @bottom)
-		@map[x][y].things.push(new sprite ({x:x, y:y}))
+		x = randomNum(@left + 1, @right)
+		y = randomNum(@top + 1, @bottom)
+		if (@map[x][y].things.length is 0)
+			@map[x][y].things.push(new sprite ({x:x, y:y, visible: true}))

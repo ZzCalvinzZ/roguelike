@@ -4,26 +4,22 @@ SCREEN_HEIGHT = 400
 DEFAULT_MAP_SIZE = 50
 MIN_ROOM_SIZE = 4
 MAX_ROOM_SIZE = 20
+MONSTER_DENSITY = .01
 
 camera = new(PIXI.Container)
 
 player = new Player({x:25,y:25,visible:true})
 
 class Level
-	map_data: []
-	level: null
-	stage: null
-	start: {
-		x: null
-		y: null
-	}
-	rooms: []
 
 	constructor: (options) ->
+		@map_data = []
+		@rooms = []
+		@cell_count = 0
+
 		if options.level?
 			@level = options.level
 			@create_stage()
-
 		else
 			console.log('need to pass in level')
 
@@ -33,8 +29,8 @@ class Level
 			[@map_data, @start] = map_utils.create_town_map()
 		else
 			[@map_data, @start] = map_utils.create_map_from_data(@level)
+			@add_monsters()
 
-		@add_monsters()
 
 	create_stage: () ->
 		@stage = new(PIXI.Container)
@@ -45,10 +41,11 @@ class Level
 		center_camera_on(player)
 
 	add_monsters: () ->
-		for room in @rooms
-			if room.area() > 20 and ROT.RNG.getPercentage() < 20
-				room.draw_on_random_cell(Snake)
+		monster_count = @cell_count * MONSTER_DENSITY
 
+		for i in [1..monster_count]
+			room = @rooms.random()
+			room.draw_on_random_cell(Snake)
 
 gamestate = {
 	levels: {}
