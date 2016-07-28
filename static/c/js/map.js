@@ -219,7 +219,6 @@ Room = (function() {
     if (this.created || (options.start != null)) {
       this.level = gamestate.level;
       this.level.rooms.push(this);
-      console.log(this.level);
       this.level.cell_count += this.area();
       this.put_room_on_map();
       map_utils.draw_box(this.map, this.x_len + 1, this.y_len + 1, this.origin.x, this.origin.y, Wall, visible = this.visible);
@@ -227,6 +226,7 @@ Room = (function() {
         destroy_all_things_in_cell(this.map[options.door_cell.x][options.door_cell.y]);
         this.add_door(options.door_cell.x, options.door_cell.y, options.prev_room);
       }
+      this.add_monsters();
     }
   }
 
@@ -344,6 +344,23 @@ Room = (function() {
         visible: true
       }));
     }
+  };
+
+  Room.prototype.add_monsters = function() {
+    var chance_of_monsters, i, j, monster_count, ref, results;
+    chance_of_monsters = 80;
+    console.log(ROT.RNG.getPercentage());
+    if (ROT.RNG.getPercentage() < chance_of_monsters) {
+      monster_count = randomNum(1, this.area() * MONSTER_DENSITY);
+    } else {
+      monster_count = 0;
+    }
+    console.log(monster_count);
+    results = [];
+    for (i = j = 0, ref = monster_count; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
+      results.push(this.draw_on_random_cell(Snake));
+    }
+    return results;
   };
 
   return Room;

@@ -175,7 +175,7 @@ class Room
 		if @created or options.start?
 			@level = gamestate.level
 			@level.rooms.push(@)
-			console.log(@level)
+			
 			@level.cell_count += @area()
 			@put_room_on_map()
 			map_utils.draw_box(@map, @x_len + 1, @y_len + 1, @origin.x, @origin.y, Wall, visible=@visible)
@@ -183,6 +183,8 @@ class Room
 			if options.door_cell?
 				destroy_all_things_in_cell(@map[options.door_cell.x][options.door_cell.y])
 				@add_door(options.door_cell.x, options.door_cell.y, options.prev_room)
+
+			@add_monsters()
 
 	add_door: (x, y, prev_room) ->
 		visible_door = @visible or prev_room.visible
@@ -255,3 +257,16 @@ class Room
 		y = randomNum(@top + 1, @bottom)
 		if (@map[x][y].things.length is 0)
 			@map[x][y].things.push(new sprite ({x:x, y:y, visible: true}))
+
+	add_monsters: () ->
+		chance_of_monsters = 80 #percent
+		console.log( ROT.RNG.getPercentage())
+		if ROT.RNG.getPercentage() < chance_of_monsters
+			monster_count = randomNum(1, @area() * MONSTER_DENSITY)
+		else
+			monster_count = 0
+		console.log(monster_count)
+
+		for i in [0..monster_count]
+			@draw_on_random_cell(Snake)
+

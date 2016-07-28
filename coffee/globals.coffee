@@ -29,7 +29,6 @@ class Level
 			[@map_data, @start] = map_utils.create_town_map()
 		else
 			[@map_data, @start] = map_utils.create_map_from_data(@level)
-			@add_monsters()
 
 
 	create_stage: () ->
@@ -39,13 +38,6 @@ class Level
 		[player.x, player.y] = [@start.x, @start.y]
 		player.draw()
 		center_camera_on(player)
-
-	add_monsters: () ->
-		monster_count = @cell_count * MONSTER_DENSITY
-
-		for i in [1..monster_count]
-			room = @rooms.random()
-			room.draw_on_random_cell(Snake)
 
 gamestate = {
 	levels: {}

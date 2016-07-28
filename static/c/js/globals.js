@@ -40,8 +40,7 @@ Level = (function() {
     if (this.level === 0) {
       return ref = map_utils.create_town_map(), this.map_data = ref[0], this.start = ref[1], ref;
     } else {
-      ref1 = map_utils.create_map_from_data(this.level), this.map_data = ref1[0], this.start = ref1[1];
-      return this.add_monsters();
+      return ref1 = map_utils.create_map_from_data(this.level), this.map_data = ref1[0], this.start = ref1[1], ref1;
     }
   };
 
@@ -54,17 +53,6 @@ Level = (function() {
     ref = [this.start.x, this.start.y], player.x = ref[0], player.y = ref[1];
     player.draw();
     return center_camera_on(player);
-  };
-
-  Level.prototype.add_monsters = function() {
-    var i, j, monster_count, ref, results, room;
-    monster_count = this.cell_count * MONSTER_DENSITY;
-    results = [];
-    for (i = j = 1, ref = monster_count; 1 <= ref ? j <= ref : j >= ref; i = 1 <= ref ? ++j : --j) {
-      room = this.rooms.random();
-      results.push(room.draw_on_random_cell(Snake));
-    }
-    return results;
   };
 
   return Level;
