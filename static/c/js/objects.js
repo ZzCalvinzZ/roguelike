@@ -3,15 +3,11 @@ var BaseObject, Door, MovableObject, Openable, Player, Stairs, Wall,
   hasProp = {}.hasOwnProperty;
 
 BaseObject = (function() {
-  BaseObject.prototype.sprite = null;
-
-  BaseObject.prototype.solid = false;
-
-  BaseObject.prototype.visible = false;
-
-  BaseObject.prototype.distant = false;
-
   function BaseObject(options) {
+    this.sprite = null;
+    this.solid = false;
+    this.visible = false;
+    this.distant = false;
     this.x = options.x;
     this.y = options.y;
     this.visible = options.visible || false;
@@ -40,11 +36,10 @@ BaseObject = (function() {
 Openable = (function(superClass) {
   extend(Openable, superClass);
 
-  function Openable() {
-    return Openable.__super__.constructor.apply(this, arguments);
+  function Openable(options) {
+    Openable.__super__.constructor.call(this, options);
+    this.openable = true;
   }
-
-  Openable.prototype.openable = true;
 
   return Openable;
 
@@ -107,12 +102,10 @@ MovableObject = (function(superClass) {
 Player = (function(superClass) {
   extend(Player, superClass);
 
-  Player.prototype.player = true;
-
-  Player.prototype.opening = false;
-
   function Player(options) {
     Player.__super__.constructor.call(this, options);
+    this.player = true;
+    this.opening = false;
     this.sprite = createSprite('static/img/player_female.png');
   }
 
@@ -157,10 +150,9 @@ Player = (function(superClass) {
 Wall = (function(superClass) {
   extend(Wall, superClass);
 
-  Wall.prototype.solid = true;
-
   function Wall(options) {
     Wall.__super__.constructor.call(this, options);
+    this.solid = true;
     this.sprite = createSprite('static/img/wall20.png');
     this.draw();
   }
@@ -172,14 +164,11 @@ Wall = (function(superClass) {
 Door = (function(superClass) {
   extend(Door, superClass);
 
-  Door.prototype.open_texture = PIXI.Texture.fromImage('static/img/door_open.png');
-
-  Door.prototype.closed_texture = PIXI.Texture.fromImage('static/img/door_closed.png');
-
-  Door.prototype.rooms = [];
-
   function Door(options) {
     Door.__super__.constructor.call(this, options);
+    this.open_texture = PIXI.Texture.fromImage('static/img/door_open.png');
+    this.closed_texture = PIXI.Texture.fromImage('static/img/door_closed.png');
+    this.rooms = [];
     this.is_open = options.is_open || false;
     this.sprite = createSprite('static/img/door_closed.png');
     if (this.is_open) {
@@ -219,10 +208,9 @@ Door = (function(superClass) {
 Stairs = (function(superClass) {
   extend(Stairs, superClass);
 
-  Stairs.prototype.stairs = true;
-
   function Stairs(options) {
     Stairs.__super__.constructor.call(this, options);
+    this.stairs = true;
     if (options.up) {
       this.sprite = createSprite('static/img/stairs_up.png');
       this.up = true;

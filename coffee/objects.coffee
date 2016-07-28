@@ -1,10 +1,11 @@
 class BaseObject
-	sprite: null
-	solid: false
-	visible: false
-	distant: false
 
 	constructor: (options) ->
+		@sprite = null
+		@solid = false
+		@visible = false
+		@distant = false
+
 		@x = options.x
 		@y = options.y
 		@visible = options.visible or false
@@ -23,7 +24,9 @@ class BaseObject
 		return JSON.stringify(this)
 
 class Openable extends BaseObject
-	openable: true
+	constructor: (options) ->
+		super(options)
+		@openable = true
 
 class MovableObject extends BaseObject
 	move: (direction) ->
@@ -66,12 +69,12 @@ class MovableObject extends BaseObject
 		#console.log(gamestate.level.map_data[@x][@y])
 
 class Player extends MovableObject
-	player: true
-	opening: false
 	#sprite: new PIXI.Text('@', {'fill': 'white', 'font': '17px Arial'})
 
 	constructor: (options) ->
 		super(options)
+		@player = true
+		@opening = false
 		@sprite = createSprite('static/img/player_female.png')
 
 	open: (direction) ->
@@ -89,20 +92,20 @@ class Player extends MovableObject
 				target.use()
 
 class Wall extends BaseObject
-	solid: true
 
 	constructor: (options) ->
 		super(options)
+		@solid = true
 		@sprite = createSprite('static/img/wall20.png')
 		@draw()
 
 class Door extends Openable
-	open_texture: PIXI.Texture.fromImage('static/img/door_open.png')
-	closed_texture: PIXI.Texture.fromImage('static/img/door_closed.png')
-	rooms: []
 
 	constructor: (options) ->
 		super(options)
+		@open_texture = PIXI.Texture.fromImage('static/img/door_open.png')
+		@closed_texture = PIXI.Texture.fromImage('static/img/door_closed.png')
+		@rooms = []
 		@is_open = options.is_open or false
 
 		@sprite = createSprite('static/img/door_closed.png')
@@ -127,10 +130,10 @@ class Door extends Openable
 		@draw()
 
 class Stairs extends BaseObject
-	stairs: true
 
 	constructor: (options) ->
 		super(options)
+		@stairs = true
 		if options.up
 			@sprite = createSprite('static/img/stairs_up.png')
 			@up = true
