@@ -20,6 +20,8 @@ Enemy = (function(superClass) {
       return function(x, y) {
         var ref;
         if (count <= 1 && !(x === to.x && y === to.y)) {
+          gamestate.map()[_this.x][_this.y].things.remove(_this);
+          gamestate.map()[x][y].things.push(_this);
           ref = [x, y], _this.x = ref[0], _this.y = ref[1];
           _this.draw();
           return count += 1;

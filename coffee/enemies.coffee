@@ -11,6 +11,8 @@ class Enemy extends BaseObject
 		path._fromY = @y
 		path.compute(@x, @y, (x, y) =>
 			if count <= 1 and not (x == to.x and y == to.y)
+				gamestate.map()[@x][@y].things.remove(@)
+				gamestate.map()[x][y].things.push(@)
 				[@x, @y] = [x, y]
 				@draw()
 				count += 1
