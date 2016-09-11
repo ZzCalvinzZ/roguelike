@@ -10,6 +10,24 @@ Enemy = (function(superClass) {
     this.solid = true;
   }
 
+  Enemy.prototype.normal_move = function(to) {
+    var count, path;
+    path = new ROT.Path.Dijkstra(to.x, to.y, gamestate.cell_is_passable);
+    count = 0;
+    path._fromX = this.x;
+    path._fromY = this.y;
+    return path.compute(this.x, this.y, (function(_this) {
+      return function(x, y) {
+        var ref;
+        if (count <= 1 && !(x === to.x && y === to.y)) {
+          ref = [x, y], _this.x = ref[0], _this.y = ref[1];
+          _this.draw();
+          return count += 1;
+        }
+      };
+    })(this));
+  };
+
   return Enemy;
 
 })(BaseObject);
@@ -22,6 +40,10 @@ Snake = (function(superClass) {
     this.sprite = createSprite('static/img/snake.png');
     this.draw();
   }
+
+  Snake.prototype.move = function(to) {
+    return this.normal_move(to);
+  };
 
   return Snake;
 

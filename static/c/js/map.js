@@ -177,6 +177,7 @@ Room = (function() {
     var ref, visible;
     ref = [[], []], this.stairs = ref[0], this.doors = ref[1];
     this.map = options.map;
+    this.monsters = [];
     this.x_len = randomNum(MIN_ROOM_SIZE, MAX_ROOM_SIZE);
     this.y_len = randomNum(MIN_ROOM_SIZE, MAX_ROOM_SIZE);
     if (options.start != null) {
@@ -338,27 +339,23 @@ Room = (function() {
     x = randomNum(this.left + 1, this.right);
     y = randomNum(this.top + 1, this.bottom);
     if (this.map[x][y].things.length === 0) {
-      return this.map[x][y].things.push(new sprite({
+      sprite = new sprite({
         x: x,
         y: y,
         visible: true
-      }));
+      });
+      this.map[x][y].things.push(sprite);
+      return this.monsters.push(sprite);
     }
   };
 
   Room.prototype.add_monsters = function() {
-    var chance_of_monsters, i, j, monster_count, ref, results;
-    chance_of_monsters = 80;
-    console.log(ROT.RNG.getPercentage());
-    if (ROT.RNG.getPercentage() < chance_of_monsters) {
-      monster_count = randomNum(1, this.area() * MONSTER_DENSITY);
-    } else {
-      monster_count = 0;
-    }
-    console.log(monster_count);
+    var i, j, monster, monster_count, ref, results;
+    monster_count = randomNum(0, this.area() * MONSTER_DENSITY);
     results = [];
-    for (i = j = 0, ref = monster_count; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
-      results.push(this.draw_on_random_cell(Snake));
+    for (i = j = 0, ref = monster_count; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
+      monster = ROT.RNG.getWeightedValue(this.level.get_monsters());
+      results.push(this.draw_on_random_cell(window[monster]));
     }
     return results;
   };

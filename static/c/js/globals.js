@@ -12,7 +12,7 @@ MIN_ROOM_SIZE = 4;
 
 MAX_ROOM_SIZE = 20;
 
-MONSTER_DENSITY = .01;
+MONSTER_DENSITY = .04;
 
 camera = new PIXI.Container;
 
@@ -23,6 +23,12 @@ player = new Player({
 });
 
 Level = (function() {
+  Level.prototype.MONSTERS = {
+    1: {
+      'Snake': 5
+    }
+  };
+
   function Level(options) {
     this.map_data = [];
     this.rooms = [];
@@ -55,6 +61,10 @@ Level = (function() {
     return center_camera_on(player);
   };
 
+  Level.prototype.get_monsters = function() {
+    return this.MONSTERS[this.level];
+  };
+
   return Level;
 
 })();
@@ -63,6 +73,9 @@ gamestate = {
   levels: {},
   level: null,
   ready: false,
+  map: function() {
+    return this.level.map_data;
+  },
   go_up_a_level: function() {
     var next_level;
     next_level = this.level.level - 1;
@@ -90,5 +103,19 @@ gamestate = {
     }
     camera.addChild(gamestate.level.stage);
     return this.level.reset_map_to_entrance();
+  },
+  cell_is_passable: function(x, y, exclude_objects) {
+    var i, len, ref, thing;
+    if (x === this._fromX && y === this._fromY) {
+      return true;
+    }
+    ref = gamestate.map()[x][y].things;
+    for (i = 0, len = ref.length; i < len; i++) {
+      thing = ref[i];
+      if (thing.solid === true) {
+        return false;
+      }
+    }
+    return true;
   }
 };

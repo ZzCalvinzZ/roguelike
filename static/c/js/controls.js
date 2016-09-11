@@ -71,10 +71,11 @@ setupKeybindings = function() {
   do_direction = function(direction) {
     if (player.opening === true) {
       player.open(direction);
-      return player.opening = false;
+      player.opening = false;
     } else {
-      return player.move(direction);
+      player.move(direction);
     }
+    return player.move_enemies();
   };
   left.press = function() {
     return do_direction('left');

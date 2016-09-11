@@ -69,6 +69,7 @@ setupKeybindings = ->
 		else
 			player.move(direction)
 
+		player.move_enemies()
 
 	left.press = ->
 		do_direction('left')

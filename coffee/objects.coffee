@@ -91,6 +91,15 @@ class Player extends MovableObject
 			if target.stairs
 				target.use()
 
+	move_enemies: () ->
+		cell = gamestate.map()[@x][@y]
+		if cell.room
+			monsters = cell.room.monsters
+
+			for monster in monsters
+				monster.move({@x, @y})
+
+
 class Wall extends BaseObject
 
 	constructor: (options) ->

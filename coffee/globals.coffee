@@ -4,13 +4,20 @@ SCREEN_HEIGHT = 400
 DEFAULT_MAP_SIZE = 50
 MIN_ROOM_SIZE = 4
 MAX_ROOM_SIZE = 20
-MONSTER_DENSITY = .01
+MONSTER_DENSITY = .04
 
 camera = new(PIXI.Container)
 
 player = new Player({x:25,y:25,visible:true})
 
 class Level
+
+	#monster: density
+	MONSTERS: {
+		1: {
+			'Snake': 5
+		}
+	}
 
 	constructor: (options) ->
 		@map_data = []
@@ -39,10 +46,14 @@ class Level
 		player.draw()
 		center_camera_on(player)
 
+	get_monsters: () ->
+		@MONSTERS[@level]
+
 gamestate = {
 	levels: {}
 	level: null
 	ready: false
+	map: () -> @level.map_data
 
 	go_up_a_level: () ->
 		next_level = @level.level - 1
@@ -68,4 +79,14 @@ gamestate = {
 		
 		camera.addChild(gamestate.level.stage)
 		@level.reset_map_to_entrance()
+
+	cell_is_passable: (x, y, exclude_objects) ->
+		if (x == @._fromX and y == @._fromY)
+			return true
+
+		for thing in gamestate.map()[x][y].things
+			if thing.solid == true 
+				return false
+
+		return true
 }

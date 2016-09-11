@@ -143,6 +143,23 @@ Player = (function(superClass) {
     return results;
   };
 
+  Player.prototype.move_enemies = function() {
+    var cell, i, len, monster, monsters, results;
+    cell = gamestate.map()[this.x][this.y];
+    if (cell.room) {
+      monsters = cell.room.monsters;
+      results = [];
+      for (i = 0, len = monsters.length; i < len; i++) {
+        monster = monsters[i];
+        results.push(monster.move({
+          x: this.x,
+          y: this.y
+        }));
+      }
+      return results;
+    }
+  };
+
   return Player;
 
 })(MovableObject);

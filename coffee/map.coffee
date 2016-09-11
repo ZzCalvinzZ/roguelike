@@ -122,6 +122,7 @@ class Room
 	constructor: (options) ->
 		[@stairs, @doors] = [[], []]
 		@map = options.map
+		@monsters = []
 
 		@x_len = randomNum(MIN_ROOM_SIZE, MAX_ROOM_SIZE)
 		@y_len = randomNum(MIN_ROOM_SIZE, MAX_ROOM_SIZE)
@@ -256,17 +257,14 @@ class Room
 		x = randomNum(@left + 1, @right)
 		y = randomNum(@top + 1, @bottom)
 		if (@map[x][y].things.length is 0)
-			@map[x][y].things.push(new sprite ({x:x, y:y, visible: true}))
+			sprite = new sprite ({x:x, y:y, visible: true})
+			@map[x][y].things.push(sprite)
+			@monsters.push(sprite)
 
 	add_monsters: () ->
-		chance_of_monsters = 80 #percent
-		console.log( ROT.RNG.getPercentage())
-		if ROT.RNG.getPercentage() < chance_of_monsters
-			monster_count = randomNum(1, @area() * MONSTER_DENSITY)
-		else
-			monster_count = 0
-		console.log(monster_count)
+		monster_count = randomNum(0, @area() * MONSTER_DENSITY)
 
-		for i in [0..monster_count]
-			@draw_on_random_cell(Snake)
+		for i in [0...monster_count]
+			monster = ROT.RNG.getWeightedValue(@level.get_monsters())
+			@draw_on_random_cell(window[monster])
 
