@@ -1,6 +1,7 @@
 var BaseObject, Door, MovableObject, Openable, Player, Stairs, Wall,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-  hasProp = {}.hasOwnProperty;
+  hasProp = {}.hasOwnProperty,
+  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 BaseObject = (function() {
   function BaseObject(options) {
@@ -144,13 +145,30 @@ Player = (function(superClass) {
   };
 
   Player.prototype.move_enemies = function() {
-    var cell, i, len, monster, monsters, results;
+    var cell, door, i, j, k, l, len, len1, len2, len3, monster, monsters, ref, ref1, results, room, rooms, this_room;
     cell = gamestate.map()[this.x][this.y];
-    if (cell.room) {
-      monsters = cell.room.monsters;
+    this_room = cell.room;
+    if (this_room) {
+      rooms = [];
+      ref = this_room.doors;
+      for (i = 0, len = ref.length; i < len; i++) {
+        door = ref[i];
+        ref1 = door.rooms;
+        for (j = 0, len1 = ref1.length; j < len1; j++) {
+          room = ref1[j];
+          if (indexOf.call(rooms, room) < 0) {
+            rooms.push(room);
+          }
+        }
+      }
+      monsters = [];
+      for (k = 0, len2 = rooms.length; k < len2; k++) {
+        room = rooms[k];
+        monsters.push.apply(monsters, room.monsters);
+      }
       results = [];
-      for (i = 0, len = monsters.length; i < len; i++) {
-        monster = monsters[i];
+      for (l = 0, len3 = monsters.length; l < len3; l++) {
+        monster = monsters[l];
         results.push(monster.move({
           x: this.x,
           y: this.y

@@ -342,7 +342,8 @@ Room = (function() {
       sprite = new sprite({
         x: x,
         y: y,
-        visible: true
+        visible: true,
+        room: this
       });
       this.map[x][y].things.push(sprite);
       return this.monsters.push(sprite);

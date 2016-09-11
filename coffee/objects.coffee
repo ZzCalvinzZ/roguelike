@@ -93,8 +93,19 @@ class Player extends MovableObject
 
 	move_enemies: () ->
 		cell = gamestate.map()[@x][@y]
-		if cell.room
-			monsters = cell.room.monsters
+		this_room = cell.room
+
+		if this_room
+
+			rooms = []
+			for door in this_room.doors
+				for room in door.rooms
+					if room not in rooms
+						rooms.push(room)
+			
+			monsters = []
+			for room in rooms
+				monsters.push(room.monsters...)
 
 			for monster in monsters
 				monster.move({@x, @y})

@@ -257,7 +257,7 @@ class Room
 		x = randomNum(@left + 1, @right)
 		y = randomNum(@top + 1, @bottom)
 		if (@map[x][y].things.length is 0)
-			sprite = new sprite ({x:x, y:y, visible: true})
+			sprite = new sprite ({x:x, y:y, visible: true, room: @})
 			@map[x][y].things.push(sprite)
 			@monsters.push(sprite)
 

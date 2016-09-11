@@ -61,13 +61,16 @@ keyboard = function(keyCodes) {
 };
 
 setupKeybindings = function() {
-  var descend, do_direction, down, left, open, right, up;
+  var descend, do_direction, down, left, open, right, take_turn, up;
   left = keyboard([37, 72]);
   up = keyboard([38, 75]);
   right = keyboard([39, 76]);
   down = keyboard([40, 74]);
   open = keyboard([79]);
   descend = keyboard(['>']);
+  take_turn = function() {
+    return player.move_enemies();
+  };
   do_direction = function(direction) {
     if (player.opening === true) {
       player.open(direction);
@@ -75,7 +78,7 @@ setupKeybindings = function() {
     } else {
       player.move(direction);
     }
-    return player.move_enemies();
+    return take_turn();
   };
   left.press = function() {
     return do_direction('left');

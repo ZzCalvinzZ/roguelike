@@ -62,6 +62,9 @@ setupKeybindings = ->
 	open = keyboard([79])
 	descend = keyboard(['>'])
 
+	take_turn = () ->
+		player.move_enemies()
+
 	do_direction = (direction) ->
 		if player.opening is true
 			player.open(direction)
@@ -69,7 +72,7 @@ setupKeybindings = ->
 		else
 			player.move(direction)
 
-		player.move_enemies()
+		take_turn()
 
 	left.press = ->
 		do_direction('left')

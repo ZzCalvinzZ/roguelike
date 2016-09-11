@@ -8,6 +8,7 @@ Enemy = (function(superClass) {
   function Enemy(options) {
     Enemy.__super__.constructor.call(this, options);
     this.solid = true;
+    this.room = options.room;
   }
 
   Enemy.prototype.normal_move = function(to) {
@@ -18,14 +19,21 @@ Enemy = (function(superClass) {
     path._fromY = this.y;
     return path.compute(this.x, this.y, (function(_this) {
       return function(x, y) {
-        var ref;
-        if (count <= 1 && !(x === to.x && y === to.y)) {
-          gamestate.map()[_this.x][_this.y].things.remove(_this);
-          gamestate.map()[x][y].things.push(_this);
+        var curr_cell, next_cell, ref;
+        if (count === 1 && !(x === to.x && y === to.y)) {
+          curr_cell = gamestate.map()[_this.x][_this.y];
+          next_cell = gamestate.map()[x][y];
+          curr_cell.things.remove(_this);
+          if (curr_cell.room === null) {
+            _this.room.monsters.remove(_this);
+            _this.room = next_cell.room;
+            _this.room.monsters.push(_this);
+          }
+          next_cell.things.push(_this);
           ref = [x, y], _this.x = ref[0], _this.y = ref[1];
           _this.draw();
-          return count += 1;
         }
+        return count += 1;
       };
     })(this));
   };
