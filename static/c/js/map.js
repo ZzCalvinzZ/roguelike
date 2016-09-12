@@ -227,7 +227,9 @@ Room = (function() {
         destroy_all_things_in_cell(this.map[options.door_cell.x][options.door_cell.y]);
         this.add_door(options.door_cell.x, options.door_cell.y, options.prev_room);
       }
-      this.add_monsters();
+      if (options.start == null) {
+        this.add_monsters();
+      }
     }
   }
 
@@ -342,7 +344,7 @@ Room = (function() {
       sprite = new sprite({
         x: x,
         y: y,
-        visible: true,
+        visible: MONSTER_DEBUG,
         room: this
       });
       this.map[x][y].things.push(sprite);

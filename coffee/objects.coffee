@@ -153,7 +153,6 @@ class Player extends MovableObject
 		}
 
 
-
 class Wall extends BaseObject
 
 	constructor: (options) ->

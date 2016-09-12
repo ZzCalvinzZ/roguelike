@@ -1,4 +1,5 @@
 DEBUG = false
+MONSTER_DEBUG = false
 
 CELL_SIZE = 20
 SCREEN_WIDTH = 800

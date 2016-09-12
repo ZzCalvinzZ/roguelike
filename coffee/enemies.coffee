@@ -71,7 +71,6 @@ class Snake extends Enemy
 	constructor: (options) ->
 		super(options)
 		@set_stats()
-		console.log @stats
 		@sprite = createSprite('static/img/snake.png')
 		@draw()
 

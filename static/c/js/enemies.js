@@ -113,7 +113,6 @@ Snake = (function(superClass) {
   function Snake(options) {
     Snake.__super__.constructor.call(this, options);
     this.set_stats();
-    console.log(this.stats);
     this.sprite = createSprite('static/img/snake.png');
     this.draw();
   }

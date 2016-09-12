@@ -185,7 +185,8 @@ class Room
 				destroy_all_things_in_cell(@map[options.door_cell.x][options.door_cell.y])
 				@add_door(options.door_cell.x, options.door_cell.y, options.prev_room)
 
-			@add_monsters()
+			if not options.start?
+				@add_monsters()
 
 	add_door: (x, y, prev_room) ->
 		visible_door = @visible or prev_room.visible
@@ -257,7 +258,7 @@ class Room
 		x = randomNum(@left + 1, @right)
 		y = randomNum(@top + 1, @bottom)
 		if (@map[x][y].things.length is 0)
-			sprite = new sprite ({x:x, y:y, visible: true, room: @})
+			sprite = new sprite ({x:x, y:y, visible: MONSTER_DEBUG, room: @})
 			@map[x][y].things.push(sprite)
 			@monsters.push(sprite)
 

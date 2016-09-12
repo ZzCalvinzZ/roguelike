@@ -190,7 +190,6 @@ Player = (function(superClass) {
     });
     rooms = door !== void 0 ? door.rooms : [];
     if (rooms.length === 0) {
-      console.log("msg");
       this_room = cell.room;
       if (this_room) {
         ref = this_room.doors;
@@ -206,7 +205,6 @@ Player = (function(superClass) {
         }
       }
     }
-    console.log(rooms);
     if (rooms.length > 0) {
       monsters = [];
       for (k = 0, len2 = rooms.length; k < len2; k++) {
