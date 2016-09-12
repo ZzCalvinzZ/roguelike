@@ -66,13 +66,16 @@ setupKeybindings = ->
 		player.move_enemies()
 
 	do_direction = (direction) ->
+		turn_taken
 		if player.opening is true
-			player.open(direction)
+			turn_taken = player.open(direction)
 			player.opening = false
 		else
-			player.move(direction)
+			turn_taken = player.move(direction)
 
-		take_turn()
+
+		if turn_taken
+			take_turn()
 
 	left.press = ->
 		do_direction('left')

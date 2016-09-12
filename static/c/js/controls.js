@@ -72,13 +72,17 @@ setupKeybindings = function() {
     return player.move_enemies();
   };
   do_direction = function(direction) {
+    turn_taken;
+    var turn_taken;
     if (player.opening === true) {
-      player.open(direction);
+      turn_taken = player.open(direction);
       player.opening = false;
     } else {
-      player.move(direction);
+      turn_taken = player.move(direction);
     }
-    return take_turn();
+    if (turn_taken) {
+      return take_turn();
+    }
   };
   left.press = function() {
     return do_direction('left');

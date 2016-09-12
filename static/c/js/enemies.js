@@ -8,6 +8,7 @@ Enemy = (function(superClass) {
 
   function Enemy(options) {
     Enemy.__super__.constructor.call(this, options);
+    this.enemy = true;
     this.solid = true;
     this.room = options.room;
   }
@@ -58,7 +59,6 @@ Enemy = (function(superClass) {
     };
     this.movement_bar -= player.stats.speed;
     turns = this.check_movement();
-    console.log(turns);
     if (turns > 0) {
       path = new ROT.Path.Dijkstra(to.x, to.y, gamestate.cell_is_passable);
       count = 0;
@@ -82,7 +82,7 @@ Enemy = (function(superClass) {
 
   return Enemy;
 
-})(BaseObject);
+})(CombatObject);
 
 Snake = (function(superClass) {
   extend(Snake, superClass);

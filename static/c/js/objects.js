@@ -1,4 +1,4 @@
-var BaseObject, Door, MovableObject, Openable, Player, Stairs, Wall,
+var BaseObject, CombatObject, Door, MovableObject, Openable, Player, Stairs, Wall,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
@@ -46,6 +46,19 @@ Openable = (function(superClass) {
 
 })(BaseObject);
 
+CombatObject = (function(superClass) {
+  extend(CombatObject, superClass);
+
+  function CombatObject() {
+    return CombatObject.__super__.constructor.apply(this, arguments);
+  }
+
+  CombatObject.prototype.defend = function(attacker) {};
+
+  return CombatObject;
+
+})(BaseObject);
+
 MovableObject = (function(superClass) {
   extend(MovableObject, superClass);
 
@@ -53,52 +66,76 @@ MovableObject = (function(superClass) {
     return MovableObject.__super__.constructor.apply(this, arguments);
   }
 
-  MovableObject.prototype.move = function(direction) {
-    var none_are_solid, targets;
-    targets = get_targets(direction, this.x, this.y);
-    none_are_solid = function(targets) {
-      var i, len, target;
-      for (i = 0, len = targets.length; i < len; i++) {
-        target = targets[i];
-        if (target.solid) {
-          return false;
-        }
+  MovableObject.prototype.attack = function(targets) {
+    var i, len, results, target;
+    results = [];
+    for (i = 0, len = targets.length; i < len; i++) {
+      target = targets[i];
+      if (target.enemy) {
+        results.push(target.defend(this));
+      } else {
+        results.push(void 0);
       }
-      return true;
-    };
+    }
+    return results;
+  };
+
+  MovableObject.prototype.move = function(direction) {
+    var DEBUG, none_are_solid, targets;
+    targets = get_targets(direction, this.x, this.y);
+    none_are_solid = (function(_this) {
+      return function(targets) {
+        var i, len, target;
+        for (i = 0, len = targets.length; i < len; i++) {
+          target = targets[i];
+          if (target.solid) {
+            _this.attack(targets);
+            return false;
+          }
+        }
+        return true;
+      };
+    })(this);
     if (direction === 'left' && none_are_solid(targets)) {
       this.x -= 1;
       this.sprite.x -= CELL_SIZE;
       if (this.player && this.sprite.x < SCREEN_WIDTH / 3 - camera.x) {
         camera.x += CELL_SIZE;
       }
-    }
-    if (direction === 'right' && none_are_solid(targets)) {
+      return true;
+    } else if (direction === 'right' && none_are_solid(targets)) {
       this.x += 1;
       this.sprite.x += CELL_SIZE;
       if (this.player && this.sprite.x > 2 * SCREEN_WIDTH / 3 - camera.x) {
         camera.x -= CELL_SIZE;
       }
-    }
-    if (direction === 'up' && none_are_solid(targets)) {
+      return true;
+    } else if (direction === 'up' && none_are_solid(targets)) {
       this.y -= 1;
       this.sprite.y -= CELL_SIZE;
       if (this.player && this.sprite.y < SCREEN_HEIGHT / 3 - camera.y) {
         camera.y += CELL_SIZE;
       }
-    }
-    if (direction === 'down' && none_are_solid(targets)) {
+      return true;
+    } else if (direction === 'down' && none_are_solid(targets)) {
       this.y += 1;
       this.sprite.y += CELL_SIZE;
       if (this.player && this.sprite.y > 2 * SCREEN_HEIGHT / 3 - camera.y) {
-        return camera.y -= CELL_SIZE;
+        camera.y -= CELL_SIZE;
       }
+      return true;
+    }
+    return false;
+    if (DEBUG = true) {
+      console.log("x: " + this.x);
+      console.log("y: " + this.y);
+      return console.log(gamestate.level.map_data[this.x][this.y]);
     }
   };
 
   return MovableObject;
 
-})(BaseObject);
+})(CombatObject);
 
 Player = (function(superClass) {
   extend(Player, superClass);

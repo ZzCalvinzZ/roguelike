@@ -1,6 +1,8 @@
-class Enemy extends BaseObject
+class Enemy extends CombatObject
+
 	constructor: (options) ->
 		super(options)
+		@enemy = true
 		@solid = true
 		@room = options.room
 
@@ -43,7 +45,6 @@ class Enemy extends BaseObject
 
 		@movement_bar -= player.stats.speed
 		turns = @check_movement()
-		console.log turns
 
 		if turns > 0
 			path = new ROT.Path.Dijkstra(to.x, to.y, gamestate.cell_is_passable)

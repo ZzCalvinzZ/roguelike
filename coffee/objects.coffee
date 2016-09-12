@@ -28,13 +28,24 @@ class Openable extends BaseObject
 		super(options)
 		@openable = true
 
-class MovableObject extends BaseObject
+class CombatObject extends BaseObject
+	defend: (attacker) ->
+		return
+
+class MovableObject extends CombatObject
+	attack: (targets) ->
+		for target in targets
+			if target.enemy
+				target.defend(@)
+
 	move: (direction) ->
 		targets = get_targets(direction, @x, @y)
 
-		none_are_solid = (targets) ->
+		none_are_solid = (targets) =>
 			for target in targets
-				return false if target.solid
+				if target.solid
+					@attack(targets)
+					return false
 			return true
 
 		if direction is 'left' and none_are_solid(targets)
@@ -44,29 +55,41 @@ class MovableObject extends BaseObject
 			if @player and @sprite.x < SCREEN_WIDTH / 3 - camera.x
 				camera.x += CELL_SIZE
 
-		if direction is 'right' and none_are_solid(targets)
+			return true
+
+		else if direction is 'right' and none_are_solid(targets)
 			@x += 1
 			@sprite.x += CELL_SIZE
 
 			if @player and @sprite.x > 2 * SCREEN_WIDTH / 3 - camera.x
 				camera.x -= CELL_SIZE
 
-		if direction is 'up' and none_are_solid(targets)
+			return true
+
+		else if direction is 'up' and none_are_solid(targets)
 			@y -= 1
 			@sprite.y -= CELL_SIZE
 
 			if @player and @sprite.y < SCREEN_HEIGHT / 3 - camera.y
 				camera.y += CELL_SIZE
 
-		if direction is 'down' and none_are_solid(targets)
+			return true
+
+		else if direction is 'down' and none_are_solid(targets)
 			@y += 1
 			@sprite.y += CELL_SIZE
 
 			if @player and @sprite.y > 2 * SCREEN_HEIGHT / 3 - camera.y
 				camera.y -= CELL_SIZE
-		#console.log("x: " + @x)
-		#console.log("y: " + @y)
-		#console.log(gamestate.level.map_data[@x][@y])
+			
+			return true
+
+		return false
+
+		if DEBUG = true
+			console.log("x: " + @x)
+			console.log("y: " + @y)
+			console.log(gamestate.level.map_data[@x][@y])
 
 class Player extends MovableObject
 	#sprite: new PIXI.Text('@', {'fill': 'white', 'font': '17px Arial'})
