@@ -105,6 +105,7 @@ Player = (function(superClass) {
 
   function Player(options) {
     Player.__super__.constructor.call(this, options);
+    this.set_stats(options);
     this.player = true;
     this.opening = false;
     this.sprite = createSprite('static/img/player_female.png');
@@ -169,13 +170,20 @@ Player = (function(superClass) {
       results = [];
       for (l = 0, len3 = monsters.length; l < len3; l++) {
         monster = monsters[l];
-        results.push(monster.move({
-          x: this.x,
-          y: this.y
-        }));
+        results.push(monster.move(this));
       }
       return results;
     }
+  };
+
+  Player.prototype.set_stats = function(options) {
+    return this.stats = {
+      speed: options.speed || 50,
+      health: options.health || 50,
+      attack: options.attack || 10,
+      defense: options.defense || 10,
+      armor: options.defense || 10
+    };
   };
 
   return Player;

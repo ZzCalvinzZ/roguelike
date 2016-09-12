@@ -73,6 +73,7 @@ class Player extends MovableObject
 
 	constructor: (options) ->
 		super(options)
+		@set_stats(options)
 		@player = true
 		@opening = false
 		@sprite = createSprite('static/img/player_female.png')
@@ -108,7 +109,17 @@ class Player extends MovableObject
 				monsters.push(room.monsters...)
 
 			for monster in monsters
-				monster.move({@x, @y})
+				monster.move(@)
+
+	set_stats: (options) ->
+		@stats = {
+			speed: options.speed || 50,
+			health: options.health || 50,
+			attack: options.attack || 10,
+			defense: options.defense || 10,
+			armor: options.defense || 10,
+		}
+
 
 
 class Wall extends BaseObject

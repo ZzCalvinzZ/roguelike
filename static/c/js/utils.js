@@ -1,4 +1,4 @@
-var center_camera_on, createSprite, destroy_all_things_in_cell, destroy_sprite, get_camera_center, get_targets, randomNum, random_choice, sleep,
+var center_camera_on, createSprite, destroy_all_things_in_cell, destroy_sprite, get_camera_center, get_targets, randomNum, random_choice, round_pos, sleep,
   slice = [].slice;
 
 Array.prototype.remove = function() {
@@ -97,4 +97,13 @@ randomNum = function(max, min) {
 
 random_choice = function(list) {
   return list[Math.floor(Math.random() * list.length)];
+};
+
+round_pos = function(number) {
+  var num;
+  if (number <= 1) {
+    return 1;
+  }
+  num = Math.round(number);
+  return num;
 };

@@ -55,3 +55,11 @@ randomNum = (max,min=0) ->
 
 random_choice = (list) ->
 	return list[Math.floor(Math.random() * list.length)]
+
+round_pos = (number) ->
+	if number <= 1
+		return 1
+
+	num = Math.round(number)
+
+	return num
