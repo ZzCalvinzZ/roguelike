@@ -117,16 +117,25 @@ class Player extends MovableObject
 
 	move_enemies: () ->
 		cell = gamestate.map()[@x][@y]
-		this_room = cell.room
 
-		if this_room
+		#if standing in doorway get adjacent rooms
+		door = _.findWhere(cell.things, {door: true})
+		rooms = if door != undefined then door.rooms else []
 
-			rooms = []
-			for door in this_room.doors
-				for room in door.rooms
-					if room not in rooms
-						rooms.push(room)
-			
+
+		#get this room and adjacent rooms
+		if rooms.length == 0
+			this_room = cell.room
+
+			if this_room
+				for door in this_room.doors
+					for room in door.rooms
+						if room not in rooms
+							rooms.push(room)
+
+		#move monsters in rooms
+		if rooms.length > 0
+				
 			monsters = []
 			for room in rooms
 				monsters.push(room.monsters...)
@@ -157,6 +166,7 @@ class Door extends Openable
 
 	constructor: (options) ->
 		super(options)
+		@door = true
 		@open_texture = PIXI.Texture.fromImage('static/img/door_open.png')
 		@closed_texture = PIXI.Texture.fromImage('static/img/door_closed.png')
 		@rooms = []

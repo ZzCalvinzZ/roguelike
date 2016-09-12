@@ -185,20 +185,29 @@ Player = (function(superClass) {
   Player.prototype.move_enemies = function() {
     var cell, door, i, j, k, l, len, len1, len2, len3, monster, monsters, ref, ref1, results, room, rooms, this_room;
     cell = gamestate.map()[this.x][this.y];
-    this_room = cell.room;
-    if (this_room) {
-      rooms = [];
-      ref = this_room.doors;
-      for (i = 0, len = ref.length; i < len; i++) {
-        door = ref[i];
-        ref1 = door.rooms;
-        for (j = 0, len1 = ref1.length; j < len1; j++) {
-          room = ref1[j];
-          if (indexOf.call(rooms, room) < 0) {
-            rooms.push(room);
+    door = _.findWhere(cell.things, {
+      door: true
+    });
+    rooms = door !== void 0 ? door.rooms : [];
+    if (rooms.length === 0) {
+      console.log("msg");
+      this_room = cell.room;
+      if (this_room) {
+        ref = this_room.doors;
+        for (i = 0, len = ref.length; i < len; i++) {
+          door = ref[i];
+          ref1 = door.rooms;
+          for (j = 0, len1 = ref1.length; j < len1; j++) {
+            room = ref1[j];
+            if (indexOf.call(rooms, room) < 0) {
+              rooms.push(room);
+            }
           }
         }
       }
+    }
+    console.log(rooms);
+    if (rooms.length > 0) {
       monsters = [];
       for (k = 0, len2 = rooms.length; k < len2; k++) {
         room = rooms[k];
@@ -246,6 +255,7 @@ Door = (function(superClass) {
 
   function Door(options) {
     Door.__super__.constructor.call(this, options);
+    this.door = true;
     this.open_texture = PIXI.Texture.fromImage('static/img/door_open.png');
     this.closed_texture = PIXI.Texture.fromImage('static/img/door_closed.png');
     this.rooms = [];
