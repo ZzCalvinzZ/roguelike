@@ -14,10 +14,6 @@ BaseObject = (function() {
     this.visible = options.visible || false;
   }
 
-  BaseObject.prototype.remove_sprite = function() {
-    return gamestate.level.stage.addChild(this.sprite);
-  };
-
   BaseObject.prototype.draw = function() {
     this.sprite.x = this.x * CELL_SIZE;
     this.sprite.y = this.y * CELL_SIZE;
@@ -49,11 +45,39 @@ Openable = (function(superClass) {
 CombatObject = (function(superClass) {
   extend(CombatObject, superClass);
 
-  function CombatObject() {
-    return CombatObject.__super__.constructor.apply(this, arguments);
+  function CombatObject(options) {
+    CombatObject.__super__.constructor.call(this, options);
+    this.damage = 0;
   }
 
-  CombatObject.prototype.defend = function(attacker) {};
+  CombatObject.prototype.defend = function(attacker) {
+    if (this.successful_hit()) {
+      this.damage += attacker.attack();
+    }
+    if (this.hp() < 0) {
+      return this.die();
+    }
+  };
+
+  CombatObject.prototype.defense = function() {
+    return this.stats.stats.def;
+  };
+
+  CombatObject.prototype.attack = function() {
+    return this.stats.att;
+  };
+
+  CombatObject.prototype.hp = function() {
+    return this.stats.hp - this.damage;
+  };
+
+  CombatObject.prototype.die = function() {
+    return console.log("immplement this method");
+  };
+
+  CombatObject.prototype.successful_hit = function(attacker) {
+    return true;
+  };
 
   return CombatObject;
 
@@ -66,7 +90,7 @@ MovableObject = (function(superClass) {
     return MovableObject.__super__.constructor.apply(this, arguments);
   }
 
-  MovableObject.prototype.attack = function(targets) {
+  MovableObject.prototype.attack_object = function(targets) {
     var i, len, results, target;
     results = [];
     for (i = 0, len = targets.length; i < len; i++) {
@@ -89,7 +113,7 @@ MovableObject = (function(superClass) {
         for (i = 0, len = targets.length; i < len; i++) {
           target = targets[i];
           if (target.solid) {
-            _this.attack(targets);
+            _this.attack_object(targets);
             return false;
           }
         }
@@ -222,11 +246,12 @@ Player = (function(superClass) {
 
   Player.prototype.set_stats = function(options) {
     return this.stats = {
-      speed: options.speed || 50,
-      health: options.health || 50,
-      attack: options.attack || 10,
-      defense: options.defense || 10,
-      armor: options.defense || 10
+      spd: options.speed || 50,
+      hp: options.health || 50,
+      att: options.attack || 10,
+      dex: options.dexterity || 10,
+      def: options.defense || 10,
+      rm: options.defense || 10
     };
   };
 

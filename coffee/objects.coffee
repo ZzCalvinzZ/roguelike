@@ -10,9 +10,6 @@ class BaseObject
 		@y = options.y
 		@visible = options.visible or false
 
-	remove_sprite: () ->
-		gamestate.level.stage.addChild(@sprite)
-
 	draw: () ->
 		@sprite.x = @x * CELL_SIZE
 		@sprite.y = @y * CELL_SIZE
@@ -29,11 +26,35 @@ class Openable extends BaseObject
 		@openable = true
 
 class CombatObject extends BaseObject
+	constructor: (options) ->
+		super(options)
+		@damage = 0
+
 	defend: (attacker) ->
-		return
+
+		if @successful_hit()
+			@damage += attacker.attack()
+
+		if @hp() < 0
+			@die()
+
+	defense: () ->
+		@stats.stats.def
+
+	attack: () ->
+		@stats.att
+
+	hp: () ->
+		@stats.hp - @damage
+
+	die: () ->
+		console.log("immplement this method")
+
+	successful_hit: (attacker) ->
+		return true
 
 class MovableObject extends CombatObject
-	attack: (targets) ->
+	attack_object: (targets) ->
 		for target in targets
 			if target.enemy
 				target.defend(@)
@@ -44,7 +65,7 @@ class MovableObject extends CombatObject
 		none_are_solid = (targets) =>
 			for target in targets
 				if target.solid
-					@attack(targets)
+					@attack_object(targets)
 					return false
 			return true
 
@@ -145,11 +166,12 @@ class Player extends MovableObject
 
 	set_stats: (options) ->
 		@stats = {
-			speed: options.speed || 50,
-			health: options.health || 50,
-			attack: options.attack || 10,
-			defense: options.defense || 10,
-			armor: options.defense || 10,
+			spd: options.speed || 50,
+			hp: options.health || 50,
+			att: options.attack || 10,
+			dex: options.dexterity || 10,
+			def: options.defense || 10,
+			rm: options.defense || 10,
 		}
 
 

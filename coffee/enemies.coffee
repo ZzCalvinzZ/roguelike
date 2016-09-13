@@ -6,13 +6,24 @@ class Enemy extends CombatObject
 		@solid = true
 		@room = options.room
 
+	destroy: () ->
+		cell = gamestate.map()[@x][@y]
+
+		cell.things.remove(@)
+		@room.monsters.remove(@)
+
+		destroy_sprite(@sprite)
+
+	die: () ->
+		@destroy()
+
 	set_stats: () ->
 		@stats = {}
 
 		for key, val of @stat_config
 			@stats[key] = round_pos(ROT.RNG.getNormal(val.mean, val.stddev))
 
-		@movement_bar = @stats.speed
+		@movement_bar = @stats.spd
 
 	#return how many turns they get to take
 	check_movement: () ->
@@ -21,7 +32,7 @@ class Enemy extends CombatObject
 		if (@movement_bar <= 0)
 			extra = 0 - @movement_bar
 			turns += 1
-			@movement_bar = @stats.speed - extra
+			@movement_bar = @stats.spd - extra
 			turns += @check_movement()
 
 		return turns
@@ -43,7 +54,7 @@ class Enemy extends CombatObject
 	normal_move: (player) ->
 		to = {x:player.x, y:player.y}
 
-		@movement_bar -= player.stats.speed
+		@movement_bar -= player.stats.spd
 		turns = @check_movement()
 
 		if turns > 0
@@ -61,11 +72,12 @@ class Enemy extends CombatObject
 class Snake extends Enemy
 
 	stat_config: {
-		speed: {mean: 50, stddev: 5}
-		health: {mean: 10, stddev: 2}
-		attack: {mean: 3, stddev: 2}
-		defense: {mean: 5, stddev: 2}
-		armor: {mean: 0, stddev: 0}
+		spd: {mean: 50, stddev: 5}
+		hp: {mean: 10, stddev: 2}
+		att: {mean: 3, stddev: 2}
+		dex: {mean: 3, stddev: 2}
+		def: {mean: 5, stddev: 2}
+		arm: {mean: 0, stddev: 0}
 	}
 
 	constructor: (options) ->

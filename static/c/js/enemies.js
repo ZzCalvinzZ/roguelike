@@ -13,6 +13,18 @@ Enemy = (function(superClass) {
     this.room = options.room;
   }
 
+  Enemy.prototype.destroy = function() {
+    var cell;
+    cell = gamestate.map()[this.x][this.y];
+    cell.things.remove(this);
+    this.room.monsters.remove(this);
+    return destroy_sprite(this.sprite);
+  };
+
+  Enemy.prototype.die = function() {
+    return this.destroy();
+  };
+
   Enemy.prototype.set_stats = function() {
     var key, ref, val;
     this.stats = {};
@@ -21,7 +33,7 @@ Enemy = (function(superClass) {
       val = ref[key];
       this.stats[key] = round_pos(ROT.RNG.getNormal(val.mean, val.stddev));
     }
-    return this.movement_bar = this.stats.speed;
+    return this.movement_bar = this.stats.spd;
   };
 
   Enemy.prototype.check_movement = function() {
@@ -30,7 +42,7 @@ Enemy = (function(superClass) {
     if (this.movement_bar <= 0) {
       extra = 0 - this.movement_bar;
       turns += 1;
-      this.movement_bar = this.stats.speed - extra;
+      this.movement_bar = this.stats.spd - extra;
       turns += this.check_movement();
     }
     return turns;
@@ -57,7 +69,7 @@ Enemy = (function(superClass) {
       x: player.x,
       y: player.y
     };
-    this.movement_bar -= player.stats.speed;
+    this.movement_bar -= player.stats.spd;
     turns = this.check_movement();
     if (turns > 0) {
       path = new ROT.Path.Dijkstra(to.x, to.y, gamestate.cell_is_passable);
@@ -88,23 +100,27 @@ Snake = (function(superClass) {
   extend(Snake, superClass);
 
   Snake.prototype.stat_config = {
-    speed: {
+    spd: {
       mean: 50,
       stddev: 5
     },
-    health: {
+    hp: {
       mean: 10,
       stddev: 2
     },
-    attack: {
+    att: {
       mean: 3,
       stddev: 2
     },
-    defense: {
+    dex: {
+      mean: 3,
+      stddev: 2
+    },
+    def: {
       mean: 5,
       stddev: 2
     },
-    armor: {
+    arm: {
       mean: 0,
       stddev: 0
     }
