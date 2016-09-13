@@ -68,7 +68,6 @@ CombatObject = (function(superClass) {
   CombatObject.prototype.defend = function(attacker) {
     if (this.successful_hit()) {
       this.damage += attacker.attack();
-      console.log(this.damage);
     }
     if (this.hp() < 0) {
       return this.die();
