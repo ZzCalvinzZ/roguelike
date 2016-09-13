@@ -47,6 +47,7 @@ class Level
 	reset_map_to_entrance: () ->
 		[player.x, player.y] = [@start.x, @start.y]
 		player.draw()
+		@map_data[player.x][player.y].things.push(player)
 		center_camera_on(player)
 
 	get_monsters: () ->

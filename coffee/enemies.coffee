@@ -1,10 +1,9 @@
-class Enemy extends CombatObject
+class Enemy extends MovableObject
 
 	constructor: (options) ->
 		super(options)
-		@enemy = true
+		@bad = true
 		@solid = true
-		@room = options.room
 
 	destroy: () ->
 		cell = gamestate.map()[@x][@y]
@@ -37,20 +36,6 @@ class Enemy extends CombatObject
 
 		return turns
 
-	move_to_cell: (x, y) ->
-		curr_cell = gamestate.map()[@x][@y]
-		next_cell = gamestate.map()[x][y]
-
-		curr_cell.things.remove(@)
-		if curr_cell.room == null
-			@room.monsters.remove(@)
-			@room = next_cell.room
-			@room.monsters.push(@)
-
-		next_cell.things.push(@)
-		[@x, @y] = [x, y]
-		@draw()
-	
 	normal_move: (player) ->
 		to = {x:player.x, y:player.y}
 
@@ -64,8 +49,13 @@ class Enemy extends CombatObject
 			path._fromX = @x
 			path._fromY = @y
 			path.compute(@x, @y, (x, y) =>
-				if count in [1..turns] and not (x == to.x and y == to.y)
-					@move_to_cell(x, y)
+				at_destination = (x == to.x and y == to.y)
+				if count in [1..turns]
+					if at_destination
+						@attack_object(gamestate.map()[x][y].things, 'good')
+					else
+						@move_to_cell(x, y)
+
 				count += 1
 			)
 

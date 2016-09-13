@@ -62,6 +62,7 @@ Level = (function() {
     var ref;
     ref = [this.start.x, this.start.y], player.x = ref[0], player.y = ref[1];
     player.draw();
+    this.map_data[player.x][player.y].things.push(player);
     return center_camera_on(player);
   };
 

@@ -8,9 +8,8 @@ Enemy = (function(superClass) {
 
   function Enemy(options) {
     Enemy.__super__.constructor.call(this, options);
-    this.enemy = true;
+    this.bad = true;
     this.solid = true;
-    this.room = options.room;
   }
 
   Enemy.prototype.destroy = function() {
@@ -48,21 +47,6 @@ Enemy = (function(superClass) {
     return turns;
   };
 
-  Enemy.prototype.move_to_cell = function(x, y) {
-    var curr_cell, next_cell, ref;
-    curr_cell = gamestate.map()[this.x][this.y];
-    next_cell = gamestate.map()[x][y];
-    curr_cell.things.remove(this);
-    if (curr_cell.room === null) {
-      this.room.monsters.remove(this);
-      this.room = next_cell.room;
-      this.room.monsters.push(this);
-    }
-    next_cell.things.push(this);
-    ref = [x, y], this.x = ref[0], this.y = ref[1];
-    return this.draw();
-  };
-
   Enemy.prototype.normal_move = function(player) {
     var count, path, to, turns;
     to = {
@@ -78,13 +62,18 @@ Enemy = (function(superClass) {
       path._fromY = this.y;
       return path.compute(this.x, this.y, (function(_this) {
         return function(x, y) {
-          var i, results;
+          var at_destination, i, results;
+          at_destination = x === to.x && y === to.y;
           if (indexOf.call((function() {
             results = [];
             for (var i = 1; 1 <= turns ? i <= turns : i >= turns; 1 <= turns ? i++ : i--){ results.push(i); }
             return results;
-          }).apply(this), count) >= 0 && !(x === to.x && y === to.y)) {
-            _this.move_to_cell(x, y);
+          }).apply(this), count) >= 0) {
+            if (at_destination) {
+              _this.attack_object(gamestate.map()[x][y].things, 'good');
+            } else {
+              _this.move_to_cell(x, y);
+            }
           }
           return count += 1;
         };
@@ -94,7 +83,7 @@ Enemy = (function(superClass) {
 
   return Enemy;
 
-})(CombatObject);
+})(MovableObject);
 
 Snake = (function(superClass) {
   extend(Snake, superClass);

@@ -61,13 +61,14 @@ keyboard = function(keyCodes) {
 };
 
 setupKeybindings = function() {
-  var descend, do_direction, down, left, open, right, take_turn, up;
+  var descend, do_direction, down, left, open, right, take_turn, up, wait;
   left = keyboard([37, 72]);
   up = keyboard([38, 75]);
   right = keyboard([39, 76]);
   down = keyboard([40, 74]);
   open = keyboard([79]);
   descend = keyboard(['>']);
+  wait = keyboard([' ']);
   take_turn = function() {
     return player.move_enemies();
   };
@@ -107,5 +108,9 @@ setupKeybindings = function() {
   descend.press = function() {
     return player.use_stairs();
   };
-  return descend.release = function() {};
+  descend.release = function() {};
+  wait.press = function() {
+    return take_turn();
+  };
+  return wait.release = function() {};
 };

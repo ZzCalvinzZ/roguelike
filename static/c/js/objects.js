@@ -48,11 +48,27 @@ CombatObject = (function(superClass) {
   function CombatObject(options) {
     CombatObject.__super__.constructor.call(this, options);
     this.damage = 0;
+    this.room = options.room;
   }
+
+  CombatObject.prototype.attack_object = function(targets, type) {
+    var i, len, results, target;
+    results = [];
+    for (i = 0, len = targets.length; i < len; i++) {
+      target = targets[i];
+      if (target[type] === true) {
+        results.push(target.defend(this));
+      } else {
+        results.push(void 0);
+      }
+    }
+    return results;
+  };
 
   CombatObject.prototype.defend = function(attacker) {
     if (this.successful_hit()) {
       this.damage += attacker.attack();
+      console.log(this.damage);
     }
     if (this.hp() < 0) {
       return this.die();
@@ -90,22 +106,23 @@ MovableObject = (function(superClass) {
     return MovableObject.__super__.constructor.apply(this, arguments);
   }
 
-  MovableObject.prototype.attack_object = function(targets) {
-    var i, len, results, target;
-    results = [];
-    for (i = 0, len = targets.length; i < len; i++) {
-      target = targets[i];
-      if (target.enemy) {
-        results.push(target.defend(this));
-      } else {
-        results.push(void 0);
-      }
+  MovableObject.prototype.move_to_cell = function(x, y) {
+    var curr_cell, next_cell, ref;
+    curr_cell = gamestate.map()[this.x][this.y];
+    next_cell = gamestate.map()[x][y];
+    curr_cell.things.remove(this);
+    if (curr_cell.room === null) {
+      this.room.monsters.remove(this);
+      this.room = next_cell.room;
+      this.room.monsters.push(this);
     }
-    return results;
+    next_cell.things.push(this);
+    ref = [x, y], this.x = ref[0], this.y = ref[1];
+    return this.draw();
   };
 
   MovableObject.prototype.move = function(direction) {
-    var DEBUG, none_are_solid, targets;
+    var moved, new_cell, none_are_solid, targets;
     targets = get_targets(direction, this.x, this.y);
     none_are_solid = (function(_this) {
       return function(targets) {
@@ -113,48 +130,60 @@ MovableObject = (function(superClass) {
         for (i = 0, len = targets.length; i < len; i++) {
           target = targets[i];
           if (target.solid) {
-            _this.attack_object(targets);
+            _this.attack_object(targets, 'bad');
             return false;
           }
         }
         return true;
       };
     })(this);
+    new_cell = {
+      x: this.x,
+      y: this.y
+    };
+    moved = false;
     if (direction === 'left' && none_are_solid(targets)) {
+      new_cell.x -= 1;
       this.x -= 1;
       this.sprite.x -= CELL_SIZE;
       if (this.player && this.sprite.x < SCREEN_WIDTH / 3 - camera.x) {
         camera.x += CELL_SIZE;
       }
-      return true;
+      moved = true;
     } else if (direction === 'right' && none_are_solid(targets)) {
+      new_cell.x += 1;
       this.x += 1;
       this.sprite.x += CELL_SIZE;
       if (this.player && this.sprite.x > 2 * SCREEN_WIDTH / 3 - camera.x) {
         camera.x -= CELL_SIZE;
       }
-      return true;
+      moved = true;
     } else if (direction === 'up' && none_are_solid(targets)) {
+      new_cell.y -= 1;
       this.y -= 1;
       this.sprite.y -= CELL_SIZE;
       if (this.player && this.sprite.y < SCREEN_HEIGHT / 3 - camera.y) {
         camera.y += CELL_SIZE;
       }
-      return true;
+      moved = true;
     } else if (direction === 'down' && none_are_solid(targets)) {
+      new_cell.y += 1;
       this.y += 1;
       this.sprite.y += CELL_SIZE;
       if (this.player && this.sprite.y > 2 * SCREEN_HEIGHT / 3 - camera.y) {
         camera.y -= CELL_SIZE;
       }
-      return true;
+      moved = true;
     }
-    return false;
-    if (DEBUG = true) {
+    if (moved) {
+      this.move_to_cell(new_cell.x, new_cell.y);
+    }
+    if (DEBUG === true) {
       console.log("x: " + this.x);
       console.log("y: " + this.y);
-      return console.log(gamestate.level.map_data[this.x][this.y]);
+      console.log(gamestate.level.map_data[this.x][this.y]);
     }
+    return moved;
   };
 
   return MovableObject;
@@ -166,6 +195,7 @@ Player = (function(superClass) {
 
   function Player(options) {
     Player.__super__.constructor.call(this, options);
+    this.good = true;
     this.set_stats(options);
     this.player = true;
     this.opening = false;

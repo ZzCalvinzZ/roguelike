@@ -61,6 +61,7 @@ setupKeybindings = ->
 	down = keyboard([40, 74])
 	open = keyboard([79])
 	descend = keyboard(['>'])
+	wait = keyboard([' '])
 
 	take_turn = () ->
 		player.move_enemies()
@@ -106,3 +107,8 @@ setupKeybindings = ->
 		player.use_stairs()
 
 	descend.release = ->
+
+	wait.press = ->
+		take_turn()
+
+	wait.release = ->

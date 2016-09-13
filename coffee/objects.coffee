@@ -29,6 +29,12 @@ class CombatObject extends BaseObject
 	constructor: (options) ->
 		super(options)
 		@damage = 0
+		@room = options.room
+
+	attack_object: (targets, type) ->
+		for target in targets
+			if target[type] == true
+				target.defend(@)
 
 	defend: (attacker) ->
 
@@ -54,69 +60,90 @@ class CombatObject extends BaseObject
 		return true
 
 class MovableObject extends CombatObject
-	attack_object: (targets) ->
-		for target in targets
-			if target.enemy
-				target.defend(@)
+	move_to_cell: (x, y) ->
+		curr_cell = gamestate.map()[@x][@y]
+		next_cell = gamestate.map()[x][y]
 
+		curr_cell.things.remove(@)
+		if curr_cell.room == null
+			@room.monsters.remove(@)
+			@room = next_cell.room
+			@room.monsters.push(@)
+
+		next_cell.things.push(@)
+		[@x, @y] = [x, y]
+		@draw()
+	
 	move: (direction) ->
 		targets = get_targets(direction, @x, @y)
 
 		none_are_solid = (targets) =>
 			for target in targets
 				if target.solid
-					@attack_object(targets)
+					@attack_object(targets, 'bad')
 					return false
 			return true
 
+		new_cell = {x:@x, y:@y}
+		moved = false
+
 		if direction is 'left' and none_are_solid(targets)
+			new_cell.x -= 1
 			@x -= 1
 			@sprite.x -= CELL_SIZE
 
 			if @player and @sprite.x < SCREEN_WIDTH / 3 - camera.x
 				camera.x += CELL_SIZE
 
-			return true
+			moved = true
 
 		else if direction is 'right' and none_are_solid(targets)
+			new_cell.x += 1
 			@x += 1
 			@sprite.x += CELL_SIZE
 
 			if @player and @sprite.x > 2 * SCREEN_WIDTH / 3 - camera.x
 				camera.x -= CELL_SIZE
 
-			return true
+			moved = true
 
 		else if direction is 'up' and none_are_solid(targets)
+			new_cell.y -= 1
 			@y -= 1
 			@sprite.y -= CELL_SIZE
 
 			if @player and @sprite.y < SCREEN_HEIGHT / 3 - camera.y
 				camera.y += CELL_SIZE
 
-			return true
+			moved = true
 
 		else if direction is 'down' and none_are_solid(targets)
+			new_cell.y += 1
 			@y += 1
 			@sprite.y += CELL_SIZE
 
 			if @player and @sprite.y > 2 * SCREEN_HEIGHT / 3 - camera.y
 				camera.y -= CELL_SIZE
 			
-			return true
+			moved = true
 
-		return false
+		if moved
+			@move_to_cell(new_cell.x, new_cell.y)
 
-		if DEBUG = true
+		#debug stuff
+		if DEBUG == true
 			console.log("x: " + @x)
 			console.log("y: " + @y)
 			console.log(gamestate.level.map_data[@x][@y])
+
+		return moved
 
 class Player extends MovableObject
 	#sprite: new PIXI.Text('@', {'fill': 'white', 'font': '17px Arial'})
 
 	constructor: (options) ->
 		super(options)
+		@good = true
 		@set_stats(options)
 		@player = true
 		@opening = false
