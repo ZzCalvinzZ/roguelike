@@ -27,12 +27,6 @@ player = new Player({
 });
 
 Level = (function() {
-  Level.prototype.MONSTERS = {
-    1: {
-      'Snake': 5
-    }
-  };
-
   function Level(options) {
     this.map_data = [];
     this.rooms = [];
@@ -66,8 +60,17 @@ Level = (function() {
     return center_camera_on(player);
   };
 
-  Level.prototype.get_monsters = function() {
-    return this.MONSTERS[this.level];
+  Level.prototype.get_weighted_enemies = function() {
+    var enemy, i, len, ref, weighted_enemies;
+    weighted_enemies = {};
+    ref = gamestate.enemies;
+    for (i = 0, len = ref.length; i < len; i++) {
+      enemy = ref[i];
+      if (enemy.level === this.level) {
+        weighted_enemies[enemy.id] = enemy.density;
+      }
+    }
+    return weighted_enemies;
   };
 
   return Level;
@@ -81,6 +84,7 @@ gamestate = {
   map: function() {
     return this.level.map_data;
   },
+  enemies: [],
   go_up_a_level: function() {
     var next_level;
     next_level = this.level.level - 1;

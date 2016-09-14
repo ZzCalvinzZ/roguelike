@@ -1,5 +1,9 @@
 $(window).on "load",  ->
 
+	$.get '/data', (result) ->
+		for enemy in result.enemies
+			gamestate.enemies.push(enemy)
+
 	#readjust canvas when adjusting window
 	window.onresize = (event) ->
 		SCREEN_WIDTH = window.innerWidth

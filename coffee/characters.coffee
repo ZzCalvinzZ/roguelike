@@ -181,6 +181,8 @@ class Enemy extends MovableObject
 		super(options)
 		@bad = true
 		@solid = true
+		@create(options)
+		@draw()
 
 	destroy: () ->
 		cell = gamestate.map()[@x][@y]
@@ -193,10 +195,15 @@ class Enemy extends MovableObject
 	die: () ->
 		@destroy()
 
-	set_stats: () ->
-		@stats = {}
+	create: (options) ->
+		@name = options.name
 
-		for key, val of @stat_config
+		@movement = options.movement || 'normal'
+
+		@sprite = createSprite(options.sprite)
+
+		@stats = {}
+		for key, val of options.stats
 			@stats[key] = round_pos(ROT.RNG.getNormal(val.mean, val.stddev))
 
 		@movement_bar = @stats.spd
@@ -212,6 +219,10 @@ class Enemy extends MovableObject
 			turns += @check_movement()
 
 		return turns
+
+	move: (player) ->
+		if @movement == 'normal'
+			@normal_move(player)
 
 	normal_move: (player) ->
 		to = {x:player.x, y:player.y}
@@ -235,23 +246,3 @@ class Enemy extends MovableObject
 
 				count += 1
 			)
-
-class Snake extends Enemy
-
-	stat_config: {
-		spd: {mean: 50, stddev: 5}
-		hp: {mean: 10, stddev: 2}
-		att: {mean: 3, stddev: 2}
-		dex: {mean: 3, stddev: 2}
-		def: {mean: 5, stddev: 2}
-		arm: {mean: 0, stddev: 0}
-	}
-
-	constructor: (options) ->
-		super(options)
-		@set_stats()
-		@sprite = createSprite('static/img/snake.png')
-		@draw()
-
-	move: (player) ->
-		@normal_move(player)

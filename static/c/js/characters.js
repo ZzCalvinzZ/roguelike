@@ -1,4 +1,4 @@
-var CombatObject, Enemy, MovableObject, Player, Snake,
+var CombatObject, Enemy, MovableObject, Player,
   extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
@@ -256,6 +256,8 @@ Enemy = (function(superClass) {
     Enemy.__super__.constructor.call(this, options);
     this.bad = true;
     this.solid = true;
+    this.create(options);
+    this.draw();
   }
 
   Enemy.prototype.destroy = function() {
@@ -270,10 +272,13 @@ Enemy = (function(superClass) {
     return this.destroy();
   };
 
-  Enemy.prototype.set_stats = function() {
+  Enemy.prototype.create = function(options) {
     var key, ref, val;
+    this.name = options.name;
+    this.movement = options.movement || 'normal';
+    this.sprite = createSprite(options.sprite);
     this.stats = {};
-    ref = this.stat_config;
+    ref = options.stats;
     for (key in ref) {
       val = ref[key];
       this.stats[key] = round_pos(ROT.RNG.getNormal(val.mean, val.stddev));
@@ -291,6 +296,12 @@ Enemy = (function(superClass) {
       turns += this.check_movement();
     }
     return turns;
+  };
+
+  Enemy.prototype.move = function(player) {
+    if (this.movement === 'normal') {
+      return this.normal_move(player);
+    }
   };
 
   Enemy.prototype.normal_move = function(player) {
@@ -330,48 +341,3 @@ Enemy = (function(superClass) {
   return Enemy;
 
 })(MovableObject);
-
-Snake = (function(superClass) {
-  extend(Snake, superClass);
-
-  Snake.prototype.stat_config = {
-    spd: {
-      mean: 50,
-      stddev: 5
-    },
-    hp: {
-      mean: 10,
-      stddev: 2
-    },
-    att: {
-      mean: 3,
-      stddev: 2
-    },
-    dex: {
-      mean: 3,
-      stddev: 2
-    },
-    def: {
-      mean: 5,
-      stddev: 2
-    },
-    arm: {
-      mean: 0,
-      stddev: 0
-    }
-  };
-
-  function Snake(options) {
-    Snake.__super__.constructor.call(this, options);
-    this.set_stats();
-    this.sprite = createSprite('static/img/snake.png');
-    this.draw();
-  }
-
-  Snake.prototype.move = function(player) {
-    return this.normal_move(player);
-  };
-
-  return Snake;
-
-})(Enemy);

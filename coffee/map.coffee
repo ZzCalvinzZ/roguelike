@@ -254,11 +254,14 @@ class Room
 	area:() ->
 		(@x_len - 1) * (@y_len - 1)
 
-	draw_on_random_cell: (sprite) ->
+	draw_on_random_cell: (sprite, config) ->
 		x = randomNum(@left + 1, @right)
 		y = randomNum(@top + 1, @bottom)
+
+		_.extend(config, {x:x, y:y, visible: MONSTER_DEBUG, room: @})
+
 		if (@map[x][y].things.length is 0)
-			sprite = new sprite ({x:x, y:y, visible: MONSTER_DEBUG, room: @})
+			sprite = new sprite (config)
 			@map[x][y].things.push(sprite)
 			@monsters.push(sprite)
 
@@ -266,6 +269,7 @@ class Room
 		monster_count = randomNum(0, @area() * MONSTER_DENSITY)
 
 		for i in [0...monster_count]
-			monster = ROT.RNG.getWeightedValue(@level.get_monsters())
-			@draw_on_random_cell(window[monster])
+			enemy_id = ROT.RNG.getWeightedValue(@level.get_weighted_enemies())
+			config = _.findWhere(gamestate.enemies, {id: enemy_id})
+			@draw_on_random_cell(Enemy, config)
 

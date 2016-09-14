@@ -1,5 +1,15 @@
 $(window).on("load", function() {
   var SCREEN_HEIGHT, SCREEN_WIDTH, gameLoop, renderer;
+  $.get('/data', function(result) {
+    var enemy, i, len, ref, results;
+    ref = result.enemies;
+    results = [];
+    for (i = 0, len = ref.length; i < len; i++) {
+      enemy = ref[i];
+      results.push(gamestate.enemies.push(enemy));
+    }
+    return results;
+  });
   window.onresize = function(event) {
     var SCREEN_HEIGHT, SCREEN_WIDTH;
     SCREEN_WIDTH = window.innerWidth;

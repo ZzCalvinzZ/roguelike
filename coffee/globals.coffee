@@ -15,13 +15,6 @@ player = new Player({x:25,y:25,visible:true})
 
 class Level
 
-	#monster: density
-	MONSTERS: {
-		1: {
-			'Snake': 5
-		}
-	}
-
 	constructor: (options) ->
 		@map_data = []
 		@rooms = []
@@ -50,14 +43,22 @@ class Level
 		@map_data[player.x][player.y].things.push(player)
 		center_camera_on(player)
 
-	get_monsters: () ->
-		@MONSTERS[@level]
+	get_weighted_enemies: () ->
+		weighted_enemies = {}
+
+		for enemy in gamestate.enemies
+			if enemy.level == @level
+				weighted_enemies[enemy.id] = enemy.density
+
+		return weighted_enemies
 
 gamestate = {
 	levels: {}
 	level: null
 	ready: false
 	map: () -> @level.map_data
+
+	enemies: []
 
 	go_up_a_level: () ->
 		next_level = @level.level - 1
