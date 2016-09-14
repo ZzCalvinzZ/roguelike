@@ -19,7 +19,7 @@ env.load_path = [
 
 env.register('utils', Bundle('utils.coffee', filters='coffeescript', output='c/js/utils.js'))
 env.register('objects', Bundle('objects.coffee', filters='coffeescript', output='c/js/objects.js'))
-env.register('enemies', Bundle('enemies.coffee', filters='coffeescript', output='c/js/enemies.js'))
+env.register('characters', Bundle('characters.coffee', filters='coffeescript', output='c/js/characters.js'))
 env.register('controls', Bundle('controls.coffee', filters='coffeescript', output='c/js/controls.js'))
 env.register('globals', Bundle('globals.coffee', filters='coffeescript', output='c/js/globals.js'))
 env.register('map', Bundle('map.coffee', filters='coffeescript', output='c/js/map.js'))

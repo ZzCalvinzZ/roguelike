@@ -62,10 +62,10 @@ keyboard = function(keyCodes) {
 
 setupKeybindings = function() {
   var descend, do_direction, down, left, open, right, take_turn, up, wait;
-  left = keyboard([37, 72]);
-  up = keyboard([38, 75]);
-  right = keyboard([39, 76]);
-  down = keyboard([40, 74]);
+  left = keyboard([37, 72, 52]);
+  up = keyboard([38, 75, 56]);
+  right = keyboard([39, 76, 54]);
+  down = keyboard([40, 74, 53]);
   open = keyboard([79]);
   descend = keyboard(['>']);
   wait = keyboard([' ']);
