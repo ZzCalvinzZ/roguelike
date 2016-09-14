@@ -65,7 +65,8 @@ class MovableObject extends CombatObject
 		next_cell = gamestate.map()[x][y]
 
 		curr_cell.things.remove(@)
-		if curr_cell.room == null
+
+		if curr_cell.room == null and @player != true
 			@room.monsters.remove(@)
 			@room = next_cell.room
 			@room.monsters.push(@)

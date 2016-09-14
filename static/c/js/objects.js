@@ -110,7 +110,7 @@ MovableObject = (function(superClass) {
     curr_cell = gamestate.map()[this.x][this.y];
     next_cell = gamestate.map()[x][y];
     curr_cell.things.remove(this);
-    if (curr_cell.room === null) {
+    if (curr_cell.room === null && this.player !== true) {
       this.room.monsters.remove(this);
       this.room = next_cell.room;
       this.room.monsters.push(this);
