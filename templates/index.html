@@ -19,14 +19,11 @@
 		</style>
 		<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
-	</head>
-	<body>
 		{# 
 		{% assets "libs" %}
 			<script type="text/javascript" src="{{ ASSET_URL }}"></script>
         {% endassets %}
 		#}
-
 		<script src="static/js/lib/jquery.min.js"></script>
 		<script src="static/js/lib/pixi.js"></script>
 		<script src="static/js/lib/howler.min.js"></script>
@@ -39,7 +36,8 @@
 		{% assets "globals" %}<script type="text/javascript" src="{{ ASSET_URL }}"></script>{% endassets %}
 		{% assets "map" %}<script type="text/javascript" src="{{ ASSET_URL }}"></script>{% endassets %}
 		{% assets "game" %}<script type="text/javascript" src="{{ ASSET_URL }}"></script>{% endassets %}
-
+	</head>
+	<body>
 	</body>
 </html>
 
