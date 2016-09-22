@@ -9,7 +9,9 @@ class BaseItem
 		@body_parts = options.body_parts || ''
 		@modifiers = options.modifiers || {}
 
-class Weapon
+		@effects = options.effects || []
+
+class Weapon extends BaseItem
 
 	constructor: (options) ->
 		super(options)

@@ -118,10 +118,14 @@ class Player extends MovableObject
 	constructor: (options) ->
 		super(options)
 		@good = true
+
 		@set_stats(options)
+
 		@player = true
 		@opening = false
 		@sprite = createSprite('static/img/player_female.png')
+
+		@capacity = options.capacity || 50
 
 	open: (direction) ->
 		targets = get_targets(direction, @x, @y)
